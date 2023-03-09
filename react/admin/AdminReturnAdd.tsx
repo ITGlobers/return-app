@@ -6,13 +6,14 @@ import { ReturnAddContainer } from './ReturnAdd/ReturnAddContainer'
 // import { ReturnDetailsProvider } from '../common/provider/ReturnDetailsProvider'
 // import { UpdateRequestStatusProvider } from './provider/UpdateRequestStatusProvider'
 
-interface CustomRouteProps {
-  params: {
-    id: string
-  }
-}
+// interface CustomRouteProps {
+//   params: {
+//     id: string
+//   }
+// }
 
-export const AdminReturnAdd = ({ params }: CustomRouteProps) => {
+export const AdminReturnAdd = () => {
+// export const AdminReturnAdd = ({ params }: CustomRouteProps) => {
   return (
     <AlertProvider>
       {/* <ReturnDetailsProvider requestId={params.id}>
@@ -20,7 +21,6 @@ export const AdminReturnAdd = ({ params }: CustomRouteProps) => {
           <ReturnDetailsContainer />
         </UpdateRequestStatusProvider>
       </ReturnDetailsProvider> */}
-      {params.id}
       <ReturnAddContainer />
     </AlertProvider>
   )
