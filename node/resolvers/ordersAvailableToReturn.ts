@@ -76,6 +76,7 @@ export const ordersAvailableToReturn = async (
     createParams({ maxDays, userEmail, page })
   )
 
+  console.log('list', list)
   const orderListPromises = []
 
   for (const order of list) {

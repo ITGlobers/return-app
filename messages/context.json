@@ -291,6 +291,7 @@
   "store/return-app.return-request-list.page-header.title": "My Returns",
   "store/return-app.return-request-list.page-header.goBack": "Go Back",
   "store/return-app.return-request-list.page-header.cta": "New Request",
+  "admin/return-app.return-request-list.page-header.cta": "New Request",
   "return-app.return-request-list.table.status.new": "New",
   "return-app.return-request-list.table.status.processing": "Processing",
   "return-app.return-request-list.table.status.pickedup-from-client": "Picked up from client",
