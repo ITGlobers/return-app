@@ -160,9 +160,12 @@ export const createOrdersToReturnSummary = async (
     }
   }
 
+  const sellerName = order.sellers[0].name
+
   return {
     orderId,
     creationDate,
+    sellerName,
     invoicedItems: await handleTranlateItems(invoicedItems, catalogGQL),
     processedItems,
     excludedItems,

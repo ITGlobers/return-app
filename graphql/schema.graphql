@@ -10,6 +10,7 @@ type Query {
   ordersAvailableToReturn(
     page: Int!
     storeUserEmail: String
+    filters: OrdersFilters
   ): OrdersToReturnList
     @withUserProfile
     @cacheControl(scope: PRIVATE, maxAge: SHORT)

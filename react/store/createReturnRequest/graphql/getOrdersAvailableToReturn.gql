@@ -2,6 +2,7 @@ query ordersAvailableToReturn($page: Int!) {
   ordersAvailableToReturn(page: $page) @context(provider: "vtex.return-app") {
     list {
       orderId
+      sellerName
       creationDate
       invoicedItems {
         id
