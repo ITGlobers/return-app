@@ -26,6 +26,7 @@ type InputInvoiceFields = Omit<
 >
 
 interface OrderListParams {
+  q: string
   clientEmail: string
   orderBy: 'creationDate,desc'
   f_status: 'invoiced'
@@ -41,14 +42,21 @@ export class OMSCustom extends OMS {
     })
   }
 
-  public listOrdersWithParams(params?: OrderListParams) {
-    return this.http.get<OrderList>(routes.orders, {
+  public listOrdersWithParams({q, ...params}: OrderListParams) {
+    console.log('params', params)
+    const requets = this.http.get<OrderList>(routes.orders, {
       headers: {
         VtexIdClientAutCookie: this.context.authToken,
       },
       metric: 'oms-list-order-with-params',
-      ...(params ? { params } : {}),
+      params: {
+        q,
+        f_creationDate: params.f_creationDate,
+      }
     })
+
+
+    return requets
   }
 
   public createInvoice(orderId: string, invoice: InputInvoiceFields) {
