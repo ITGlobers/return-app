@@ -10,8 +10,6 @@ import type {
 import type { ApolloQueryResult } from 'apollo-client'
 import { useCssHandles } from 'vtex.css-handles'
 
-import { StatusActionMenu } from './StatusActionMenu'
-
 const CSS_HANDLES = ['listTableFilterContainer'] as const
 
 interface Props {
@@ -46,7 +44,7 @@ const initialFilters = {
   id: '',
   createdIn: undefined,
   orderId: '',
-  sellerName: ''
+  sellerName: '',
 } as Filters
 
 const OrdersTableFilter = (props: Props) => {
@@ -75,13 +73,13 @@ const OrdersTableFilter = (props: Props) => {
   const handleSubmitFilters = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setIsFiltering(true)
-    refetch({ filter: selectedFilters, page: 1 })
+    refetch({ filters: selectedFilters, page: 1, isAdmin: true })
   }
 
   const handleResetFilters = () => {
     setIsFiltering(false)
     setFilters(initialFilters)
-    refetch({ filter: undefined, page: 1 })
+    refetch({ filters: undefined, page: 1, isAdmin: true })
   }
 
   const handleOnChange = (key: FilterKeys, value: string) => {
@@ -104,7 +102,8 @@ const OrdersTableFilter = (props: Props) => {
         ...filters,
         createdIn: filterDates,
       })
-      console.log(filters)
+      console.info(filters)
+
       return
     }
 
@@ -180,13 +179,6 @@ const OrdersTableFilter = (props: Props) => {
               />
             )}
           </FormattedMessage>
-        </div>
-        <div className="mh2">
-          <StatusActionMenu
-            handleOnChange={handleOnChange}
-            status={filters.status}
-            disabled={isDisabled && !isFiltering}
-          />
         </div>
         <div className="mh2">
           <Button

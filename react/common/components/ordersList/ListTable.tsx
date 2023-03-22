@@ -39,13 +39,13 @@ const OrderlListTableSchema = ({
     },
     sellerName: {
       title: (
-        <FormattedMessage id="store/return-app.return-order-list.table-header.seller-name" />
+        <FormattedMessage id="admin/return-app.return-order-list.table-header.seller-name" />
       ),
       minWidth: 150,
     },
     creationDate: {
       title: (
-        <FormattedMessage id="store/return-app.return-order-list.table-header.creation-date" />
+        <FormattedMessage id="admin/return-app.return-order-list.table-header.creation-date" />
       ),
       cellRenderer: function formatDate({ cellData }: { cellData: string }) {
         return (
@@ -61,7 +61,7 @@ const OrderlListTableSchema = ({
     },
     status: {
       title: (
-        <FormattedMessage id="store/return-app.return-order-list.table-header.items-to-return" />
+        <FormattedMessage id="admin/return-app.return-order-list.table-header.items-to-return" />
       ),
       cellRenderer: function availableProducts({ rowData }: RowData) {
         const { quantityAvailable, quantity } = createItemsSummary(rowData)
@@ -71,7 +71,7 @@ const OrderlListTableSchema = ({
     },
     selectOrder: {
       title: (
-        <FormattedMessage id="store/return-app.return-order-list.table-header.select-order" />
+        <FormattedMessage id="admin/return-app.return-order-list.table-header.select-order" />
       ),
       cellRenderer: function SelectOrderButton({ rowData }: RowData) {
         const { quantityAvailable } = createItemsSummary(rowData)
@@ -91,7 +91,7 @@ const OrderlListTableSchema = ({
               collapseLeft
               disabled={!quantityAvailable}
             >
-              <FormattedMessage id="store/return-app.return-order-list.table-header.select-order" />
+              <FormattedMessage id="admin/return-app.return-order-list.table-header.select-order" />
             </Button>
           </div>
         )
@@ -112,7 +112,12 @@ const OrderlListTableSchema = ({
   }
 }
 
-export const OrderList = ({ orders, handlePagination, refetch, isLoading }: Props) => {
+export const OrderList = ({
+  orders,
+  handlePagination,
+  refetch,
+  isLoading,
+}: Props) => {
   const {
     navigate,
     route: { domain },
@@ -157,7 +162,7 @@ export const OrderList = ({ orders, handlePagination, refetch, isLoading }: Prop
       <Table
         fullWidth
         emptyStateLabel={
-          <FormattedMessage id="store/return-app.return-order-list.table-empty-state-label.no-orders-available" />
+          <FormattedMessage id="admin/return-app.return-order-list.table-empty-state-label.no-orders-available" />
         }
         schema={OrderlListTableSchema({
           navigate,
@@ -174,7 +179,7 @@ export const OrderList = ({ orders, handlePagination, refetch, isLoading }: Prop
               ? totalItems
               : perPage * currentPage,
           textOf: (
-            <FormattedMessage id="store/return-app.return-order-list.table-pagination.text-of" />
+            <FormattedMessage id="admin/return-app.return-order-list.table-pagination.text-of" />
           ),
           totalItems,
         }}

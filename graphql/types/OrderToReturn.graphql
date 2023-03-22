@@ -99,5 +99,5 @@ input CreatedInInput {
 input OrdersFilters {
   createdIn: CreatedInInput
   orderId: String
-  sellerId: String
+  sellerName: String
 }

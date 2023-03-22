@@ -4,24 +4,12 @@ import type {
   OrdersToReturnList,
   QueryOrdersAvailableToReturnArgs,
 } from 'vtex.return-app'
-import { ContentWrapper, BaseLoading } from 'vtex.my-account-commons'
 import { FormattedMessage } from 'react-intl'
 import { Layout, PageHeader, PageBlock } from 'vtex.styleguide'
 
 import ORDERS_AVAILABLE_TO_RETURN from '../../store/createReturnRequest/graphql/getOrdersAvailableToReturn.gql'
 import { OrderList } from '../../common/components/ordersList/ListTable'
-import { OrderListStructureLoader } from '../../store/createReturnRequest/components/loaders/OrderListStructureLoader'
-
-
-const headerConfig = {
-  namespace: 'vtex-account__return-order-list',
-  title: <FormattedMessage id="store/return-app.request-return.page.header" />,
-  titleId: 'store/return-app.request-return.page.header"',
-  backButton: {
-    titleId: 'store/return-app.link',
-    path: '/my-returns',
-  },
-}
+import { AdminLoader } from '../AdminLoader'
 
 export const OrderListContainer = () => {
   const [ordersToReturn, setOrdersToReturn] = useState<OrdersToReturnList[]>([])
@@ -33,6 +21,7 @@ export const OrderListContainer = () => {
   >(ORDERS_AVAILABLE_TO_RETURN, {
     variables: {
       page: 1,
+      isAdmin: true,
     },
     fetchPolicy: 'no-cache',
   })
@@ -81,40 +70,41 @@ export const OrderListContainer = () => {
 
   return (
     <Layout
-    fullWidth
-    pageHeader={
-      <PageHeader
-        title={
-          <FormattedMessage id="admin/return-app.return-order-list.page-header.title" />
-        }
-        subtitle={
-          <FormattedMessage id="admin/return-app.return-order-list.page-header.subTitle" />
-        }
-      >
-      </PageHeader>
-    }
+      fullWidth
+      pageHeader={
+        <PageHeader
+          title={
+            <FormattedMessage id="admin/return-app.return-order-list.page-header.title" />
+          }
+          subtitle={
+            <FormattedMessage id="admin/return-app.return-order-list.page-header.subTitle" />
+          }
+        />
+      }
     >
       <PageBlock variation="full" fit="fill">
         <>
           {loading || error || !ordersToReturn.length ? (
-            // <BaseLoading
-            //   queryData={{ loading, error, refetch }}
-            //   headerConfig={headerConfig}
-            // >
-            //   {/* <OrderListStructureLoader /> */}
-            // </BaseLoading>
-            <div>Loading</div>
+            <AdminLoader
+              loading={loading}
+              error={error}
+              data={ordersToReturn}
+              errorMessages={{
+                errorTitle: (
+                  <FormattedMessage id="admin/return-app.return-request-details.error.title" />
+                ),
+                errorDescription: (
+                  <FormattedMessage id="admin/return-app.return-request-details.error.description" />
+                ),
+              }}
+            />
           ) : (
-            // <ContentWrapper {...headerConfig}>
-              // {() => (
-                <OrderList
-                  orders={ordersToReturn[currentPage - 1]}
-                  handlePagination={handlePagination}
-                  refetch={refetch}
-                  isLoading={loading}
-                />
-              // )}
-            // {/* </ContentWrapper> */}
+            <OrderList
+              orders={ordersToReturn[currentPage - 1]}
+              handlePagination={handlePagination}
+              refetch={refetch}
+              isLoading={loading}
+            />
           )}
         </>
       </PageBlock>

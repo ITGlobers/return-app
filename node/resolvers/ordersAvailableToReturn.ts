@@ -19,25 +19,54 @@ const createParams = ({
   maxDays,
   userEmail,
   page = 1,
-  filters
+  filters,
 }: {
   maxDays: number
   userEmail: string
   page: number
-  filters?: { orderId: string, sellerName: string, createdIn: { from: string; to:string } }
+  filters?: {
+    orderId: string
+    sellerName: string
+    createdIn: { from: string; to: string }
+  }
 }) => {
   const currentDate = getCurrentDate()
-  const { orderId, sellerName, createdIn } = filters ?? {}
 
-  return {
-    q: orderId,
+  let query = ''
+  let seller = ''
+  let creationDate = `creationDate:[${substractDays(
+    currentDate,
+    maxDays
+  )} TO ${currentDate}]`
+
+  if (filters) {
+    const { orderId, sellerName, createdIn } = filters
+
+    query = orderId || ''
+    seller = sellerName || ''
+    creationDate = createdIn
+      ? `creationDate:[${createdIn.from} TO ${createdIn.to}]`
+      : creationDate
+  }
+
+  console.info({
     clientEmail: userEmail,
     orderBy: 'creationDate,desc' as const,
     f_status: 'invoiced' as const,
-    f_creationDate: `creationDate:[${substractDays(
-      currentDate,
-      maxDays
-    )} TO ${currentDate}]`,
+    f_creationDate: creationDate,
+    q: query,
+    f_sellerNames: seller,
+    page,
+    per_page: 10 as const,
+  })
+
+  return {
+    clientEmail: userEmail,
+    orderBy: 'creationDate,desc' as const,
+    f_status: 'invoiced' as const,
+    f_creationDate: creationDate,
+    q: query,
+    f_sellerNames: seller,
     page,
     per_page: 10 as const,
   }
@@ -45,7 +74,16 @@ const createParams = ({
 
 export const ordersAvailableToReturn = async (
   _: unknown,
-  args: { page: number; storeUserEmail?: string; filters?: { orderId: string, sellerName: string, createdIn: { from: string; to:string } } },
+  args: {
+    page: number
+    storeUserEmail?: string
+    isAdmin?: boolean
+    filters?: {
+      orderId: string
+      sellerName: string
+      createdIn: { from: string; to: string }
+    }
+  },
   ctx: Context
 ): Promise<OrdersToReturnList> => {
   const {
@@ -58,7 +96,7 @@ export const ordersAvailableToReturn = async (
     },
   } = ctx
 
-  const { page, storeUserEmail, filters } = args
+  const { page, storeUserEmail, isAdmin, filters } = args
 
   const settings = await appSettings.get(SETTINGS_PATH, true)
 
@@ -66,15 +104,13 @@ export const ordersAvailableToReturn = async (
     throw new ResolverError('Return App settings is not configured')
   }
 
-  let { maxDays, excludedCategories } = settings
-  const { email, role } = userProfile ?? {}
+  const { maxDays, excludedCategories } = settings
+  const { email } = userProfile ?? {}
 
   let userEmail = (storeUserEmail ?? email) as string
 
-  console.info({ email, role })
-  if (role === 'admin') {
+  if (isAdmin) {
     userEmail = ''
-    maxDays = 90
   }
 
   // if (!userEmail) {

@@ -14,8 +14,7 @@ export const ReturnAddContainer = () => {
           subtitle={
             <FormattedMessage id="admin/return-app.return-add.page-header.subTitle" />
           }
-        >
-        </PageHeader>
+        />
       }
     >
       <PageBlock variation="full" fit="fill">

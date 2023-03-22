@@ -42,8 +42,7 @@ export class OMSCustom extends OMS {
     })
   }
 
-  public listOrdersWithParams({q, ...params}: OrderListParams) {
-    console.log('params', params)
+  public listOrdersWithParams({ q, ...params }: OrderListParams) {
     const requets = this.http.get<OrderList>(routes.orders, {
       headers: {
         VtexIdClientAutCookie: this.context.authToken,
@@ -51,10 +50,9 @@ export class OMSCustom extends OMS {
       metric: 'oms-list-order-with-params',
       params: {
         q,
-        f_creationDate: params.f_creationDate,
-      }
+        ...params,
+      },
     })
-
 
     return requets
   }
