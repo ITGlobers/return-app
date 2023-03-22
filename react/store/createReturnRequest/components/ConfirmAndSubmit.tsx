@@ -23,6 +23,7 @@ import { useStoreSettings } from '../../hooks/useStoreSettings'
 interface Props {
   onPageChange: (page: Page) => void
   items: ItemToReturn[]
+  isAdmin: boolean
 }
 
 type SubmissionStatus = 'success' | 'error' | 'idle'
@@ -36,7 +37,7 @@ const CSS_HANDLES = [
   'submitButtonWrapper',
 ] as const
 
-export const ConfirmAndSubmit = ({ onPageChange, items }: Props) => {
+export const ConfirmAndSubmit = ({ onPageChange, items, isAdmin }: Props) => {
   const { returnRequest, termsAndConditions } = useReturnRequest()
 
   const [createReturnRequest, { loading: creatingReturnRequest }] = useMutation<
@@ -94,7 +95,7 @@ export const ConfirmAndSubmit = ({ onPageChange, items }: Props) => {
   const handleAlertRedirect = () => {
     setConfirmationStatus('idle')
     navigate({
-      to: `#/my-returns`,
+      to: isAdmin ? '/admin/app/returns/orders/' : `#/my-returns`,
       replace: true,
     })
   }
@@ -111,6 +112,7 @@ export const ConfirmAndSubmit = ({ onPageChange, items }: Props) => {
           <ReturnInformationTable
             items={items}
             selectedItems={returnRequestValidated.items}
+            isAdmin
           />
           <div className="mv8">
             <Card>
@@ -126,9 +128,11 @@ export const ConfirmAndSubmit = ({ onPageChange, items }: Props) => {
                 >
                   <ConfirmContactDetails
                     contactDetails={returnRequestValidated.customerProfileData}
+                    isAdmin
                   />
                   <ConfirmPickupAddressDetails
                     pickupReturnData={returnRequestValidated.pickupReturnData}
+                    isAdmin
                   />
                 </section>
                 <section
@@ -140,9 +144,11 @@ export const ConfirmAndSubmit = ({ onPageChange, items }: Props) => {
                 >
                   <ConfirmPaymentMethods
                     refundPaymentData={returnRequestValidated.refundPaymentData}
+                    isAdmin
                   />
                   <ConfirmComment
                     userComment={returnRequestValidated.userComment}
+                    isAdmin
                   />
                 </section>
               </div>
@@ -156,12 +162,12 @@ export const ConfirmAndSubmit = ({ onPageChange, items }: Props) => {
                 type={confirmationStatus}
                 action={{
                   label: (
-                    <FormattedMessage id="store/return-app.confirm-and-submit.alert.label" />
+                    <FormattedMessage id={`${isAdmin ? 'admin': 'store'}/return-app.confirm-and-submit.alert.label`} />
                   ),
                   onClick: () => handleAlertRedirect(),
                 }}
               >
-                <FormattedMessage id="store/return-app.confirm-and-submit.alert.success" />
+                <FormattedMessage id={`${isAdmin ? 'admin': 'store'}/return-app.confirm-and-submit.alert.success`} />
               </Alert>
             )}
             {confirmationStatus !== 'error' ? null : (
@@ -169,12 +175,12 @@ export const ConfirmAndSubmit = ({ onPageChange, items }: Props) => {
                 type={confirmationStatus}
                 action={{
                   label: (
-                    <FormattedMessage id="store/return-app.confirm-and-submit.alert.error.label" />
+                    <FormattedMessage id={`${isAdmin ? 'admin': 'store'}/return-app.confirm-and-submit.alert.error.label`} />
                   ),
                   onClick: () => handleCreateReturnRequest(),
                 }}
               >
-                <FormattedMessage id="store/return-app.confirm-and-submit.alert.error" />
+                <FormattedMessage id={`${isAdmin ? 'admin': 'store'}/return-app.confirm-and-submit.alert.error`} />
               </Alert>
             )}
             {confirmationStatus !== 'idle' ? null : (
@@ -194,7 +200,7 @@ export const ConfirmAndSubmit = ({ onPageChange, items }: Props) => {
                     variation="secondary"
                     onClick={() => handlePageChange()}
                   >
-                    <FormattedMessage id="store/return-app.confirm-and-submit.button.back" />
+                    <FormattedMessage id={`${isAdmin ? 'admin': 'store'}/return-app.confirm-and-submit.button.back`} />
                   </Button>
                 </div>
                 <div
@@ -208,7 +214,7 @@ export const ConfirmAndSubmit = ({ onPageChange, items }: Props) => {
                     onClick={handleCreateReturnRequest}
                     isLoading={creatingReturnRequest}
                   >
-                    <FormattedMessage id="store/return-app.confirm-and-submit.button.submit" />
+                    <FormattedMessage id={`${isAdmin ? 'admin': 'store'}/return-app.confirm-and-submit.button.submit`} />
                   </Button>
                 </div>
               </div>

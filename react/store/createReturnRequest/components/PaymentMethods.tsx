@@ -16,7 +16,8 @@ import { defaultPaymentMethodsMessages } from '../../utils/defaultPaymentMethods
 import { isValidIBANNumber } from '../../utils/isValidIBANNumber'
 
 interface Props {
-  canRefundCard: boolean
+  canRefundCard: boolean,
+  isAdmin: boolean
 }
 
 type PaymentMethodsOptions = {
@@ -33,7 +34,7 @@ const messages = defineMessages({
   },
 })
 
-export const PaymentMethods = ({ canRefundCard }: Props) => {
+export const PaymentMethods = ({ canRefundCard, isAdmin }: Props) => {
   const { formatMessage } = useIntl()
   const handles = useCssHandles(CSS_HANDLES)
 
@@ -57,6 +58,7 @@ export const PaymentMethods = ({ canRefundCard }: Props) => {
       ...refundPaymentData,
       refundPaymentMethod: value as RefundPaymentMethod,
     }
+    console.log('refundPaymentPayload: ', refundPaymentPayload)
 
     updateReturnRequest({
       type: 'updateRefundPaymentData',
@@ -78,7 +80,7 @@ export const PaymentMethods = ({ canRefundCard }: Props) => {
     })
   }
 
-  const paymentMethods = () => {
+  const paymentMethods = (isAdmin: boolean) => {
     if (!allowedPaymentTypes) return []
     const { bank, card, giftCard } = allowedPaymentTypes
     const output: PaymentMethodsOptions[] = []
@@ -86,21 +88,21 @@ export const PaymentMethods = ({ canRefundCard }: Props) => {
     if (card && canRefundCard) {
       output.push({
         value: 'card',
-        label: formatMessage(defaultPaymentMethodsMessages.card),
+        label: formatMessage(isAdmin ? {id: defaultPaymentMethodsMessages.card.id.replace('store', 'admin')} : defaultPaymentMethodsMessages.card),
       })
     }
 
     if (giftCard) {
       output.push({
         value: 'giftCard',
-        label: formatMessage(defaultPaymentMethodsMessages.giftCard),
+        label: formatMessage(isAdmin ? {id: defaultPaymentMethodsMessages.giftCard.id.replace('store', 'admin')} : defaultPaymentMethodsMessages.giftCard),
       })
     }
 
     if (bank) {
       output.push({
         value: 'bank',
-        label: formatMessage(defaultPaymentMethodsMessages.bank),
+        label: formatMessage(isAdmin ? {id: defaultPaymentMethodsMessages.bank.id.replace('store', 'admin')} : defaultPaymentMethodsMessages.bank),
       })
     }
 
@@ -118,18 +120,18 @@ export const PaymentMethods = ({ canRefundCard }: Props) => {
       className={`${handles.paymentMethodContainer} flex-ns flex-wrap flex-auto flex-column pa4 mb6`}
     >
       <p>
-        <FormattedMessage id="store/return-app.return-order-details.payment-method.description" />
+        <FormattedMessage id={`${isAdmin ? 'admin': 'store'}/return-app.return-order-details.payment-method.description`} />
       </p>
       {!enablePaymentMethodSelection ? (
         <p className="i-s">
-          <FormattedMessage id="store/return-app.return-order-details.payment-method.default" />
+          <FormattedMessage id={`${isAdmin ? 'admin': 'store'}/return-app.return-order-details.payment-method.default`} />
         </p>
       ) : (
         <>
           <RadioGroup
             hideBorder
             name="refundPaymentMethod"
-            options={paymentMethods()}
+            options={paymentMethods(isAdmin)}
             value={refundPaymentData?.refundPaymentMethod ?? ''}
             onChange={handleRefundPaymentChange}
           />
@@ -137,7 +139,7 @@ export const PaymentMethods = ({ canRefundCard }: Props) => {
             <CustomMessage
               status="error"
               message={
-                <FormattedMessage id="store/return-app.return-payment-methods.input-payment-method.error" />
+                <FormattedMessage id={`${isAdmin ? 'admin': 'store'}/return-app.return-payment-methods.input-payment-method.error`} />
               }
             />
           ) : null}
@@ -148,7 +150,7 @@ export const PaymentMethods = ({ canRefundCard }: Props) => {
           <div className="flex-ns flex-wrap flex-auto flex-column mt6 mw6">
             <Input
               name="accountHolderName"
-              placeholder={formatMessage(messages.formAccountHolder)}
+              placeholder={formatMessage(isAdmin ? {id: messages.formAccountHolder.id.replace('store', 'admin')}: messages.formAccountHolder)}
               onChange={handleBankDetailsChange}
               value={refundPaymentData.accountHolderName ?? ''}
             />
@@ -156,7 +158,7 @@ export const PaymentMethods = ({ canRefundCard }: Props) => {
               <CustomMessage
                 status="error"
                 message={
-                  <FormattedMessage id="store/return-app.return-payment-methods.input-account-holder.error" />
+                  <FormattedMessage id={`${isAdmin ? 'admin': 'store'}/return-app.return-payment-methods.input-account-holder.error`} />
                 }
               />
             ) : null}
@@ -164,7 +166,7 @@ export const PaymentMethods = ({ canRefundCard }: Props) => {
           <div className="flex-ns flex-wrap flex-auto flex-column mt4 mw6">
             <Input
               name="iban"
-              placeholder={formatMessage(messages.formIBAN)}
+              placeholder={formatMessage(isAdmin ? {id: messages.formIBAN.id.replace('store', 'admin')}: messages.formIBAN)}
               onChange={handleBankDetailsChange}
               value={refundPaymentData.iban ?? ''}
             />
@@ -172,7 +174,7 @@ export const PaymentMethods = ({ canRefundCard }: Props) => {
               <CustomMessage
                 status="error"
                 message={
-                  <FormattedMessage id="store/return-app.return-payment-methods.input-iban.error" />
+                  <FormattedMessage id={`${isAdmin ? 'admin': 'store'}/return-app.return-payment-methods.input-iban.error`} />
                 }
               />
             ) : null}
@@ -182,7 +184,7 @@ export const PaymentMethods = ({ canRefundCard }: Props) => {
               <CustomMessage
                 status="error"
                 message={
-                  <FormattedMessage id="store/return-app.return-payment-methods.input-iban-invalid.error" />
+                  <FormattedMessage id={`${isAdmin ? 'admin': 'store'}/return-app.return-payment-methods.input-iban-invalid.error`} />
                 }
               />
             ) : null}

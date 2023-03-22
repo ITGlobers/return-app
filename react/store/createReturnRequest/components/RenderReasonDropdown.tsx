@@ -18,11 +18,18 @@ interface Props {
   onReasonChange: (reason: string, otherReason?: string) => void
   isExcluded: boolean
   creationDate?: string
+  isAdmin: boolean
 }
 
 export const RenderReasonDropdown = (props: Props) => {
-  const { reason, otherReason, onReasonChange, isExcluded, creationDate } =
-    props
+  const { 
+    reason,
+    otherReason,
+    onReasonChange,
+    isExcluded,
+    creationDate,
+    isAdmin
+  } = props
 
   const { formatMessage } = useIntl()
   const handles = useCssHandles(CSS_HANDLES)
@@ -61,7 +68,7 @@ export const RenderReasonDropdown = (props: Props) => {
   if (settings?.options?.enableOtherOptionSelection) {
     reasonOptions.push({
       value: 'otherReason',
-      label: formatMessage(defaultReturnReasonsMessages.reasonOtherReason),
+      label: formatMessage(isAdmin ? {id: defaultReturnReasonsMessages.reasonOtherReason.id.replace('store','admin')} : defaultReturnReasonsMessages.reasonOtherReason),
     })
   }
 
@@ -70,7 +77,7 @@ export const RenderReasonDropdown = (props: Props) => {
       <Dropdown
         disabled={isExcluded}
         placeholder={formatMessage(
-          defaultReturnReasonsMessages.reasonSelectReason
+          isAdmin ? {id: defaultReturnReasonsMessages.reasonSelectReason.id.replace('store', 'admin')} : defaultReturnReasonsMessages.reasonSelectReason
         )}
         size="small"
         options={reasonOptions}

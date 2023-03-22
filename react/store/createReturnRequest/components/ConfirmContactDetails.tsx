@@ -6,6 +6,7 @@ import { useRuntime } from 'vtex.render-runtime'
 
 interface Props {
   contactDetails: CustomerProfileDataInput
+  isAdmin: boolean
 }
 
 const CSS_HANDLES = [
@@ -14,7 +15,7 @@ const CSS_HANDLES = [
   'confirmContactText',
 ] as const
 
-export const ConfirmContactDetails = ({ contactDetails }: Props) => {
+export const ConfirmContactDetails = ({ contactDetails, isAdmin }: Props) => {
   const handles = useCssHandles(CSS_HANDLES)
 
   const {
@@ -28,7 +29,7 @@ export const ConfirmContactDetails = ({ contactDetails }: Props) => {
       }`}
     >
       <h2 className={`${handles.confirmContactTitle} mt0 mb6`}>
-        <FormattedMessage id="store/return-app.confirm-and-submit.contact-details.title" />
+        <FormattedMessage id={`${isAdmin ? 'admin': 'store'}/return-app.confirm-and-submit.contact-details.title`} />
       </h2>
       <p className={`${handles.confirmContactText} f6 gray`}>
         {contactDetails.name}

@@ -17,7 +17,7 @@
   },
   "admin.app.return-add": {
     "component": "AdminReturnAdd",
-    "path": "/admin/app/returns/orders/add/:id/"
+    "path": "/admin/app/returns/orders/add/:orderId/"
   },
   "admin.app.order-list": {
     "component": "AdminReturnOrderList",

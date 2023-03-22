@@ -15,6 +15,7 @@ import { useReturnRequest } from '../../hooks/useReturnRequest'
 
 interface Props {
   geoCoordinates: GeoCoordinates
+  isAdmin: boolean
 }
 
 interface PickupPointsDropdownOptions {
@@ -24,7 +25,7 @@ interface PickupPointsDropdownOptions {
 
 const CSS_HANDLES = ['pickupPointContainer'] as const
 
-export const PickupPointSelector = ({ geoCoordinates }: Props) => {
+export const PickupPointSelector = ({ geoCoordinates, isAdmin }: Props) => {
   const [lat, long] = geoCoordinates.toString().split(',')
   const handles = useCssHandles(CSS_HANDLES)
 
@@ -113,14 +114,14 @@ export const PickupPointSelector = ({ geoCoordinates }: Props) => {
           <Spinner />
         </div>
       ) : (
-        <FormattedMessage id="store/return-app.return-order-details.pickup-address.drop-off-points.dropdown.placehoder">
+        <FormattedMessage id={`${isAdmin ? 'admin': 'store'}/return-app.return-order-details.pickup-address.drop-off-points.dropdown.placehoder`} >
           {(placehoder) => (
             <Dropdown
               label=""
               error={Boolean(error)}
               errorMessage={
                 error ? (
-                  <FormattedMessage id="store/return-app.return-order-details.pickup-address.drop-off-points.dropdown.error" />
+                  <FormattedMessage id={`${isAdmin ? 'admin': 'store'}/return-app.return-order-details.pickup-address.drop-off-points.dropdown.error`} />
                 ) : undefined
               }
               placeholder={placehoder}

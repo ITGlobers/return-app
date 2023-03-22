@@ -8,7 +8,11 @@ import { useReturnRequest } from '../../hooks/useReturnRequest'
 
 const CSS_HANDLES = ['userCommentDetailsContainer'] as const
 
-export const UserCommentDetails = () => {
+type Props = {
+  isAdmin: boolean
+}
+
+export const UserCommentDetails = ({ isAdmin }: Props) => {
   const {
     returnRequest,
     actions: { updateReturnRequest },
@@ -30,7 +34,7 @@ export const UserCommentDetails = () => {
   return (
     <div className={`${handles.userCommentDetailsContainer} mt4 ph4`}>
       <p>
-        <FormattedMessage id="store/return-app.return-order-details.title.extra-comment" />
+        <FormattedMessage id={`${isAdmin ? 'admin': 'store'}/return-app.return-order-details.title.extra-comment`} />
       </p>
       <div>
         <Textarea

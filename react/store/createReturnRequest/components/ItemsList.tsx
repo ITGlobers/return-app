@@ -12,6 +12,7 @@ import { CustomMessage } from './layout/CustomMessage'
 interface Props {
   items: ItemToReturn[]
   creationDate?: string
+  isAdmin?: boolean
 }
 
 const CSS_HANDLES = ['itemsListContainer', 'itemsListTheadWrapper'] as const
@@ -55,25 +56,27 @@ export const messages = defineMessages({
   },
 })
 
+
 const TableHeaderRenderer = (
   formatMessage: IntlFormatters['formatMessage'],
-  addCondition: boolean
+  addCondition: boolean,
+  isAdmin: boolean | undefined
 ) => {
   return function Header(value: string) {
     if (!addCondition && value === 'condition') {
       return
     }
-
+    console.log('value', messages[value].id.replace('store', 'admin'))
     return (
       <th className="v-mid pv0 tl bb b--muted-4 normal bg-base bt ph3 z1 pv3-s">
-        {formatMessage(messages[value])}
+        {formatMessage(isAdmin ? {id: messages[value].id.replace('store', 'admin')} : messages[value])}
       </th>
     )
   }
 }
 
 export const ItemsList = (props: Props) => {
-  const { items, creationDate } = props
+  const { items, creationDate, isAdmin } = props
 
   const { data: storeSettings } = useStoreSettings()
   const { options } = storeSettings ?? {}
@@ -94,7 +97,8 @@ export const ItemsList = (props: Props) => {
 
   const TableHeader = TableHeaderRenderer(
     formatMessage,
-    Boolean(enableSelectItemCondition)
+    Boolean(enableSelectItemCondition),
+    isAdmin
   )
 
   return (
@@ -117,6 +121,7 @@ export const ItemsList = (props: Props) => {
             key={item.id}
             itemToReturn={item}
             creationDate={creationDate}
+            isAdmin
           />
         ))}
       </tbody>
@@ -124,7 +129,7 @@ export const ItemsList = (props: Props) => {
         <CustomMessage
           status="error"
           message={
-            <FormattedMessage id="store/return-app.return-items-list.no-items-selected.error" />
+            <FormattedMessage id={`${isAdmin ? 'admin': 'store'}/return-app.return-items-list.no-items-selected.error`} />
           }
         />
       ) : null}

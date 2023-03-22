@@ -27,9 +27,13 @@ const CSS_HANDLES = [
   'contactPhoneInputWrapper',
 ] as const
 
-export const ContactDetails = () => {
-  const handles = useCssHandles(CSS_HANDLES)
+type Props = {
+  isAdmin: boolean
+}
 
+export const ContactDetails = ({ isAdmin }: Props) => {
+  const handles = useCssHandles(CSS_HANDLES)
+  console.log('isAdmin', isAdmin)
   const {
     returnRequest: { customerProfileData },
     inputErrors,
@@ -59,13 +63,13 @@ export const ContactDetails = () => {
       className={`${handles.contactDetailsContainer} flex-ns flex-wrap flex-auto flex-column pa4`}
     >
       <p className={`${handles.contactDetailsContainer}`}>
-        <FormattedMessage id="store/return-app.return-order-details.title.contact-details" />
+        <FormattedMessage id={`${isAdmin ? 'admin': 'store'}/return-app.return-order-details.title.contact-details`} />
       </p>
       <div className={`${handles.contactNameInputWrapper} mb4`}>
         <Input
           name="name"
           required
-          placeholder={formatMessage(messages.nameInput)}
+          placeholder={formatMessage(isAdmin ? {id: messages.nameInput.id.replace('store', 'admin')} : messages.nameInput)}
           onChange={handleInputChange}
           value={name}
         />
@@ -73,7 +77,7 @@ export const ContactDetails = () => {
           <CustomMessage
             status="error"
             message={
-              <FormattedMessage id="store/return-app.return-contact-details.name-input.error" />
+              <FormattedMessage id={`${isAdmin ? 'admin': 'store'}/return-app.return-contact-details.name-input.error`} />
             }
           />
         ) : null}
@@ -82,7 +86,7 @@ export const ContactDetails = () => {
         <Input
           readOnly
           name="email"
-          placeholder={formatMessage(messages.emailInput)}
+          placeholder={formatMessage(isAdmin ? {id: messages.emailInput.id.replace('store', 'admin')} : messages.emailInput)}
           onChange={handleInputChange}
           value={email}
         />
@@ -91,7 +95,7 @@ export const ContactDetails = () => {
         <Input
           name="phoneNumber"
           required
-          placeholder={formatMessage(messages.phoneInput)}
+          placeholder={formatMessage(isAdmin ? {id: messages.phoneInput.id.replace('store', 'admin')} : messages.phoneInput)}
           onChange={handleInputChange}
           value={phoneNumber}
           maxLength={50}
@@ -100,7 +104,7 @@ export const ContactDetails = () => {
           <CustomMessage
             status="error"
             message={
-              <FormattedMessage id="store/return-app.return-contact-details.phone-input.error" />
+              <FormattedMessage id={`${isAdmin ? 'admin': 'store'}/return-app.return-contact-details.phone-input.error`} />
             }
           />
         ) : null}
