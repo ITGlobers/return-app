@@ -2,7 +2,7 @@ import React from 'react'
 import { Layout, PageHeader, PageBlock } from 'vtex.styleguide'
 import { FormattedMessage } from 'react-intl'
 
-export const ReturnAddContainer = () => {
+export const ReturnAddContainer = ({children}) => {
   return (
     <Layout
       fullWidth
@@ -18,7 +18,7 @@ export const ReturnAddContainer = () => {
       }
     >
       <PageBlock variation="full" fit="fill">
-        {/* <ListTable /> */}
+        {children}
       </PageBlock>
     </Layout>
   )

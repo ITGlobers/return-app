@@ -104,8 +104,8 @@ export const ordersAvailableToReturn = async (
     throw new ResolverError('Return App settings is not configured')
   }
 
-  const { maxDays, excludedCategories } = settings
-  const { email } = userProfile ?? {}
+  let { maxDays, excludedCategories } = settings
+  const { email, role } = userProfile ?? {}
 
   let userEmail = (storeUserEmail ?? email) as string
 

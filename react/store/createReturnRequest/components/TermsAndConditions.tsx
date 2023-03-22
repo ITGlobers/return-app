@@ -13,7 +13,11 @@ const CSS_HANDLES = [
   'termsAndConditionsLink',
 ] as const
 
-export const TermsAndConditions = () => {
+type Props = {
+  isAdmin: boolean
+}
+
+export const TermsAndConditions = ({ isAdmin }: Props) => {
   const {
     termsAndConditions,
     inputErrors,
@@ -44,7 +48,7 @@ export const TermsAndConditions = () => {
         key="formAgreeCheckbox"
         label={
           <FormattedMessage
-            id="store/return-app.return-order-details.terms-and-conditions.form-agree"
+            id={`${isAdmin ? 'admin': 'store'}/return-app.return-order-details.terms-and-conditions.form-agree`}
             values={{
               link: (
                 <span>
@@ -54,7 +58,7 @@ export const TermsAndConditions = () => {
                     target="_blank"
                     href={data?.termsUrl}
                   >
-                    <FormattedMessage id="store/return-app.return-order-details.terms-and-conditions.link" />
+                    <FormattedMessage id={`${isAdmin ? 'admin': 'store'}/return-app.return-order-details.terms-and-conditions.link`} />
                   </a>
                 </span>
               ),
@@ -69,7 +73,7 @@ export const TermsAndConditions = () => {
         <CustomMessage
           status="error"
           message={
-            <FormattedMessage id="store/return-app.return-terms-and-conditions.checkbox.error" />
+            <FormattedMessage id={`${isAdmin ? 'admin': 'store'}/return-app.return-terms-and-conditions.checkbox.error`} />
           }
         />
       ) : null}

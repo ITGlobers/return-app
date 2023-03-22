@@ -9,6 +9,7 @@ import { defaultReturnConditionsMessages } from '../../../common/utils/defaultRe
 interface Props {
   items: ItemToReturn[]
   selectedItems: ReturnRequestItemInput[]
+  isAdmin: boolean
 }
 
 const CSS_HANDLES = [
@@ -21,7 +22,7 @@ const CSS_HANDLES = [
   'returnInfoReasonConditionWrapper',
 ] as const
 
-export const ReturnInformationTable = ({ items, selectedItems }: Props) => {
+export const ReturnInformationTable = ({ items, selectedItems, isAdmin }: Props) => {
   const { formatMessage } = useIntl()
   const handles = useCssHandles(CSS_HANDLES)
 
@@ -38,12 +39,12 @@ export const ReturnInformationTable = ({ items, selectedItems }: Props) => {
           <th
             className={`${handles.returnInfoTableText} v-mid pv0 tl bb b--muted-4 normal bg-base bt ph3 z1 pv3-s tc`}
           >
-            <FormattedMessage id="store/return-app.return-order-details.table-header.product" />
+            <FormattedMessage id={`${isAdmin ? 'admin': 'store'}/return-app.return-order-details.table-header.product`} />
           </th>
           <th
             className={`${handles.returnInfoTableText} v-mid pv0 tl bb b--muted-4 normal bg-base bt ph3 z1 pv3-s tc`}
           >
-            <FormattedMessage id="store/return-app.return-order-details.table-header.quantity-to-return" />
+            <FormattedMessage id={`${isAdmin ? 'admin': 'store'}/return-app.return-order-details.table-header.quantity-to-return`} />
           </th>
         </tr>
       </thead>
@@ -73,7 +74,7 @@ export const ReturnInformationTable = ({ items, selectedItems }: Props) => {
                       {!condition ? null : (
                         <div className="flex">
                           <p className="f6 mt0 mr3 gray b">
-                            <FormattedMessage id="store/return-app.return-information-table.table-row.p-condition" />
+                            <FormattedMessage id={`${isAdmin ? 'admin': 'store'}/return-app.return-information-table.table-row.p-condition`} />
                           </p>
                           <p className="f6 mt0 gray ">
                             {formatMessage(
@@ -85,7 +86,7 @@ export const ReturnInformationTable = ({ items, selectedItems }: Props) => {
                       <div className="flex">
                         <p className="f6 mv0 mr3 gray b">
                           {' '}
-                          <FormattedMessage id="store/return-app.return-information-table.table-row.p-reason" />{' '}
+                          <FormattedMessage id={`${isAdmin ? 'admin': 'store'}/return-app.return-information-table.table-row.p-reason`} />{' '}
                         </p>
                         <p className="f6 mv0 gray ">
                           {returnReason?.otherReason
