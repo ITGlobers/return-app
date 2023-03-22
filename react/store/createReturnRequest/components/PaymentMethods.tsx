@@ -58,7 +58,6 @@ export const PaymentMethods = ({ canRefundCard, isAdmin }: Props) => {
       ...refundPaymentData,
       refundPaymentMethod: value as RefundPaymentMethod,
     }
-    console.log('refundPaymentPayload: ', refundPaymentPayload)
 
     updateReturnRequest({
       type: 'updateRefundPaymentData',

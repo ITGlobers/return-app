@@ -66,7 +66,7 @@ const TableHeaderRenderer = (
     if (!addCondition && value === 'condition') {
       return
     }
-    console.log('value', messages[value].id.replace('store', 'admin'))
+
     return (
       <th className="v-mid pv0 tl bb b--muted-4 normal bg-base bt ph3 z1 pv3-s">
         {formatMessage(isAdmin ? {id: messages[value].id.replace('store', 'admin')} : messages[value])}

@@ -33,7 +33,7 @@ type Props = {
 
 export const ContactDetails = ({ isAdmin }: Props) => {
   const handles = useCssHandles(CSS_HANDLES)
-  console.log('isAdmin', isAdmin)
+  
   const {
     returnRequest: { customerProfileData },
     inputErrors,
