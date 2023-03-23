@@ -28,17 +28,17 @@ const createPageHeaderProps = (page: Page, navigate: any, isAdmin: boolean) => {
   if (page === 'submit-form') {
     return {
       title: (
-        <FormattedMessage id={`${isAdmin ? 'admin': 'store'}/return-app.confirm-and-submit.page-header.title`} />
+        <FormattedMessage id="return-app.confirm-and-submit.page-header.title" />
       ),
     }
   }
 
   return {
     title: (
-      <FormattedMessage id={`${isAdmin ? 'admin': 'store'}/return-app.return-order-details.page-header.title`} />
+      <FormattedMessage id="return-app.return-order-details.page-header.title" />
     ),
     linkLabel: (
-      <FormattedMessage id={`${isAdmin ? 'admin': 'store'}/return-app.return-order-details.page-header.link`} />
+      <FormattedMessage id="return-app.return-order-details.page-header.link" />
     ),
     onLinkClick: () => {
       navigate({

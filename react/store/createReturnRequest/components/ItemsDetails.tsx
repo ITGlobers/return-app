@@ -14,7 +14,6 @@ import { useStoreSettings } from '../../hooks/useStoreSettings'
 interface Props {
   itemToReturn: ItemToReturn
   creationDate?: string
-  isAdmin?: boolean
 }
 
 const CSS_HANDLES = [
@@ -39,7 +38,6 @@ export const ItemsDetails = (props: Props) => {
       localizedName,
     },
     creationDate,
-    isAdmin
   } = props
 
   const {
@@ -183,7 +181,7 @@ export const ItemsDetails = (props: Props) => {
             <CustomMessage
               status="warning"
               message={
-                <FormattedMessage id={`${isAdmin ? 'admin': 'store'}/return-app.return-item-details.excluded-items.warning`} />
+                <FormattedMessage id="return-app.return-item-details.excluded-items.warning" />
               }
             />
           ) : null}
@@ -211,7 +209,7 @@ export const ItemsDetails = (props: Props) => {
           <CustomMessage
             status="error"
             message={
-              <FormattedMessage id={`${isAdmin ? 'admin': 'store'}/return-app.return-item-details.dropdown-reason.error`} />
+              <FormattedMessage id="return-app.return-item-details.dropdown-reason.error" />
             }
           />
         ) : null}
@@ -227,7 +225,7 @@ export const ItemsDetails = (props: Props) => {
             <CustomMessage
               status="error"
               message={
-                <FormattedMessage id={`${isAdmin ? 'admin': 'store'}/return-app.return-item-details.dropdown-condition.error`} />
+                <FormattedMessage id="return-app.return-item-details.dropdown-condition.error" />
               }
             />
           ) : null}

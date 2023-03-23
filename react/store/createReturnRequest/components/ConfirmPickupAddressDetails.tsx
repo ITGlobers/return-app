@@ -6,7 +6,6 @@ import { useRuntime } from 'vtex.render-runtime'
 
 interface Props {
   pickupReturnData: PickupReturnDataInput
-  isAdmin: boolean
 }
 
 const CSS_HANDLES = [
@@ -15,7 +14,7 @@ const CSS_HANDLES = [
   'confirmPickupText',
 ] as const
 
-export const ConfirmPickupAddressDetails = ({ pickupReturnData, isAdmin }: Props) => {
+export const ConfirmPickupAddressDetails = ({ pickupReturnData }: Props) => {
   const handles = useCssHandles(CSS_HANDLES)
   const {
     hints: { phone },
@@ -28,7 +27,7 @@ export const ConfirmPickupAddressDetails = ({ pickupReturnData, isAdmin }: Props
       }`}
     >
       <h2 className={`${handles.confirmPickupTitle} mt0 mb6`}>
-        <FormattedMessage id={`${isAdmin ? 'admin': 'store'}/return-app.confirm-and-submit.pickup-address.title`} />
+        <FormattedMessage id="return-app.confirm-and-submit.pickup-address.title" />
       </h2>
       <p className={`${handles.confirmPickupText}  f6 gray`}>
         {pickupReturnData.address}

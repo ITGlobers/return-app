@@ -9,13 +9,13 @@ import { CustomMessage } from './layout/CustomMessage'
 
 const messages = defineMessages({
   nameInput: {
-    id: 'store/return-app.return-order-details.inputs.name-input',
+    id: 'return-app.return-order-details.inputs.name-input',
   },
   emailInput: {
-    id: 'store/return-app.return-order-details.inputs.email-input',
+    id: 'return-app.return-order-details.inputs.email-input',
   },
   phoneInput: {
-    id: 'store/return-app.return-order-details.inputs.phone-input',
+    id: 'return-app.return-order-details.inputs.phone-input',
   },
 })
 
@@ -27,11 +27,8 @@ const CSS_HANDLES = [
   'contactPhoneInputWrapper',
 ] as const
 
-type Props = {
-  isAdmin: boolean
-}
 
-export const ContactDetails = ({ isAdmin }: Props) => {
+export const ContactDetails = () => {
   const handles = useCssHandles(CSS_HANDLES)
   
   const {
@@ -63,13 +60,13 @@ export const ContactDetails = ({ isAdmin }: Props) => {
       className={`${handles.contactDetailsContainer} flex-ns flex-wrap flex-auto flex-column pa4`}
     >
       <p className={`${handles.contactDetailsContainer}`}>
-        <FormattedMessage id={`${isAdmin ? 'admin': 'store'}/return-app.return-order-details.title.contact-details`} />
+        <FormattedMessage id="return-app.return-order-details.title.contact-details" />
       </p>
       <div className={`${handles.contactNameInputWrapper} mb4`}>
         <Input
           name="name"
           required
-          placeholder={formatMessage(isAdmin ? {id: messages.nameInput.id.replace('store', 'admin')} : messages.nameInput)}
+          placeholder={formatMessage(messages.nameInput)}
           onChange={handleInputChange}
           value={name}
         />
@@ -77,7 +74,7 @@ export const ContactDetails = ({ isAdmin }: Props) => {
           <CustomMessage
             status="error"
             message={
-              <FormattedMessage id={`${isAdmin ? 'admin': 'store'}/return-app.return-contact-details.name-input.error`} />
+              <FormattedMessage id="return-app.return-contact-details.name-input.error" />
             }
           />
         ) : null}
@@ -86,7 +83,7 @@ export const ContactDetails = ({ isAdmin }: Props) => {
         <Input
           readOnly
           name="email"
-          placeholder={formatMessage(isAdmin ? {id: messages.emailInput.id.replace('store', 'admin')} : messages.emailInput)}
+          placeholder={formatMessage(messages.emailInput)}
           onChange={handleInputChange}
           value={email}
         />
@@ -95,7 +92,7 @@ export const ContactDetails = ({ isAdmin }: Props) => {
         <Input
           name="phoneNumber"
           required
-          placeholder={formatMessage(isAdmin ? {id: messages.phoneInput.id.replace('store', 'admin')} : messages.phoneInput)}
+          placeholder={formatMessage(messages.phoneInput)}
           onChange={handleInputChange}
           value={phoneNumber}
           maxLength={50}
@@ -104,7 +101,7 @@ export const ContactDetails = ({ isAdmin }: Props) => {
           <CustomMessage
             status="error"
             message={
-              <FormattedMessage id={`${isAdmin ? 'admin': 'store'}/return-app.return-contact-details.phone-input.error`} />
+              <FormattedMessage id="return-app.return-contact-details.phone-input.error" />
             }
           />
         ) : null}
