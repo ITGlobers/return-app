@@ -6155,9 +6155,9 @@ verror@1.10.0:
   version "8.132.4"
   resolved "http://vtex.vtexassets.com/_v/public/typings/v1/vtex.render-runtime@8.132.4/public/@types/vtex.render-runtime#66bb41bd4d342e37c9d85172aad5f7eefebfb6dc"
 
-"vtex.return-app@https://eurango--obidev.myvtex.com/_v/private/typings/linked/v1/vtex.return-app@3.5.6+build1679506805/public/@types/vtex.return-app":
+"vtex.return-app@https://eurango--obidev.myvtex.com/_v/private/typings/linked/v1/vtex.return-app@3.5.6+build1679581131/public/@types/vtex.return-app":
   version "3.5.6"
-  resolved "https://eurango--obidev.myvtex.com/_v/private/typings/linked/v1/vtex.return-app@3.5.6+build1679506805/public/@types/vtex.return-app#5efea8a7e261e10029e36227ebda3f3de7745329"
+  resolved "https://eurango--obidev.myvtex.com/_v/private/typings/linked/v1/vtex.return-app@3.5.6+build1679581131/public/@types/vtex.return-app#e16d0f3177b90474f737847386c931522bc33aa1"
 
 "vtex.styleguide@http://vtex.vtexassets.com/_v/public/typings/v1/vtex.styleguide@9.146.3/public/@types/vtex.styleguide":
   version "9.146.3"

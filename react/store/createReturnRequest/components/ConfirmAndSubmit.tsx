@@ -112,7 +112,6 @@ export const ConfirmAndSubmit = ({ onPageChange, items, isAdmin }: Props) => {
           <ReturnInformationTable
             items={items}
             selectedItems={returnRequestValidated.items}
-            isAdmin
           />
           <div className="mv8">
             <Card>
@@ -128,11 +127,9 @@ export const ConfirmAndSubmit = ({ onPageChange, items, isAdmin }: Props) => {
                 >
                   <ConfirmContactDetails
                     contactDetails={returnRequestValidated.customerProfileData}
-                    isAdmin
                   />
                   <ConfirmPickupAddressDetails
                     pickupReturnData={returnRequestValidated.pickupReturnData}
-                    isAdmin
                   />
                 </section>
                 <section
@@ -144,11 +141,9 @@ export const ConfirmAndSubmit = ({ onPageChange, items, isAdmin }: Props) => {
                 >
                   <ConfirmPaymentMethods
                     refundPaymentData={returnRequestValidated.refundPaymentData}
-                    isAdmin
                   />
                   <ConfirmComment
                     userComment={returnRequestValidated.userComment}
-                    isAdmin
                   />
                 </section>
               </div>
@@ -162,12 +157,12 @@ export const ConfirmAndSubmit = ({ onPageChange, items, isAdmin }: Props) => {
                 type={confirmationStatus}
                 action={{
                   label: (
-                    <FormattedMessage id={`${isAdmin ? 'admin': 'store'}/return-app.confirm-and-submit.alert.label`} />
+                    <FormattedMessage id="return-app.confirm-and-submit.alert.label" />
                   ),
                   onClick: () => handleAlertRedirect(),
                 }}
               >
-                <FormattedMessage id={`${isAdmin ? 'admin': 'store'}/return-app.confirm-and-submit.alert.success`} />
+                <FormattedMessage id="return-app.confirm-and-submit.alert.success" />
               </Alert>
             )}
             {confirmationStatus !== 'error' ? null : (
@@ -175,12 +170,12 @@ export const ConfirmAndSubmit = ({ onPageChange, items, isAdmin }: Props) => {
                 type={confirmationStatus}
                 action={{
                   label: (
-                    <FormattedMessage id={`${isAdmin ? 'admin': 'store'}/return-app.confirm-and-submit.alert.error.label`} />
+                    <FormattedMessage id="return-app.confirm-and-submit.alert.error.label" />
                   ),
                   onClick: () => handleCreateReturnRequest(),
                 }}
               >
-                <FormattedMessage id={`${isAdmin ? 'admin': 'store'}/return-app.confirm-and-submit.alert.error`} />
+                <FormattedMessage id="return-app.confirm-and-submit.alert.error" />
               </Alert>
             )}
             {confirmationStatus !== 'idle' ? null : (
@@ -200,7 +195,7 @@ export const ConfirmAndSubmit = ({ onPageChange, items, isAdmin }: Props) => {
                     variation="secondary"
                     onClick={() => handlePageChange()}
                   >
-                    <FormattedMessage id={`${isAdmin ? 'admin': 'store'}/return-app.confirm-and-submit.button.back`} />
+                    <FormattedMessage id="return-app.confirm-and-submit.button.back" />
                   </Button>
                 </div>
                 <div
@@ -214,7 +209,7 @@ export const ConfirmAndSubmit = ({ onPageChange, items, isAdmin }: Props) => {
                     onClick={handleCreateReturnRequest}
                     isLoading={creatingReturnRequest}
                   >
-                    <FormattedMessage id={`${isAdmin ? 'admin': 'store'}/return-app.confirm-and-submit.button.submit`} />
+                    <FormattedMessage id="return-app.confirm-and-submit.button.submit" />
                   </Button>
                 </div>
               </div>

@@ -39,7 +39,6 @@ export const ReturnDetails = (
     creationDate,
     canRefundCard,
     shippingData,
-    isAdmin
   } = props
 
   const handles = useCssHandles(CSS_HANDLES)
@@ -63,7 +62,7 @@ export const ReturnDetails = (
       <div className={`${handles.returnDetailsContainer} mb5`}>
         <div className="w-100 mt4">
           <div className="f4 mb5 fw5">
-            <FormattedMessage id={`${isAdmin ? 'admin': 'store'}/return-app.return-order-details.section-products`} />
+            <FormattedMessage id="return-app.return-order-details.section-products" />
           </div>
         </div>
         <div className="w-100 flex flex-row-ns ba br3 b--muted-4 flex-column">
@@ -72,7 +71,7 @@ export const ReturnDetails = (
           >
             <div>
               <div className="c-muted-2 f6">
-                <FormattedMessage id={`${isAdmin ? 'admin': 'store'}/return-app.return-order-details.page-header.order-id`} />
+                <FormattedMessage id="return-app.return-order-details.page-header.order-id" />
               </div>
               <div className="w-100 mt2">
                 <div className="f4 fw5 c-on-base">{orderId}</div>
@@ -84,7 +83,7 @@ export const ReturnDetails = (
           >
             <div>
               <div className="c-muted-2 f6">
-                <FormattedMessage id={`${isAdmin ? 'admin': 'store'}/return-app.return-order-details.page-header.creation-date`} />
+                <FormattedMessage id="return-app.return-order-details.page-header.creation-date" />
               </div>
               <div className="w-100 mt2">
                 <div className="f4 fw5 c-on-base">
@@ -101,37 +100,37 @@ export const ReturnDetails = (
         </div>
       </div>
       <div className="t-body lh-copy c-muted-1 mb3 ml3 w-two-thirds-ns w-100">
-        <FormattedMessage id={`${isAdmin ? 'admin': 'store'}/return-app.return-order-details.page-header.subtitle`} />
+        <FormattedMessage id="return-app.return-order-details.page-header.subtitle" />
       </div>
       <div className="overflow-scroll">
-        <ItemsList items={items} creationDate={creationDate} isAdmin />
+        <ItemsList items={items} creationDate={creationDate} />
       </div>
       <div className="mb8">
         <Divider orientation="horizontal" />
       </div>
       <div className="w-100">
         <div className="f4 fw5">
-          <FormattedMessage id={`${isAdmin ? 'admin': 'store'}/return-app.return-order-details.section-details`} />
+          <FormattedMessage id="return-app.return-order-details.section-details" />
         </div>
       </div>
       <div className="flex-ns flex-wrap flex-row">
-        <ContactDetails isAdmin />
-        <AddressDetails shippingData={shippingData} isAdmin />
-        <UserCommentDetails isAdmin />
+        <ContactDetails />
+        <AddressDetails shippingData={shippingData} />
+        <UserCommentDetails />
       </div>
       <div className="mv8">
         <Divider orientation="horizontal" />
       </div>
       <div className="w-100">
         <div className="f4 fw5">
-          <FormattedMessage id={`${isAdmin ? 'admin': 'store'}/return-app.return-order-details.section-payment`} />
+          <FormattedMessage id="return-app.return-order-details.section-payment" />
         </div>
       </div>
-      <PaymentMethods canRefundCard={canRefundCard} isAdmin />
-      <TermsAndConditions isAdmin />
+      <PaymentMethods canRefundCard={canRefundCard} />
+      <TermsAndConditions />
       <div className="flex justify-center mt6">
         <Button onClick={handleFieldsValidation} block={phone}>
-          <FormattedMessage id={`${isAdmin ? 'admin': 'store'}/return-app.return-order-details.button.next`} />
+          <FormattedMessage id="return-app.return-order-details.button.next" />
         </Button>
       </div>
     </>

@@ -8,7 +8,6 @@ import { defaultPaymentMethodsMessages } from '../../utils/defaultPaymentMethods
 
 interface Props {
   refundPaymentData: RefundPaymentDataInput
-  isAdmin: boolean
 }
 
 const CSS_HANDLES = [
@@ -22,7 +21,7 @@ const CSS_HANDLES = [
   'refundPaymentText',
 ] as const
 
-export const ConfirmPaymentMethods = ({ refundPaymentData, isAdmin }: Props) => {
+export const ConfirmPaymentMethods = ({ refundPaymentData }: Props) => {
   const { formatMessage } = useIntl()
   const handles = useCssHandles(CSS_HANDLES)
   const {
@@ -36,13 +35,13 @@ export const ConfirmPaymentMethods = ({ refundPaymentData, isAdmin }: Props) => 
       }`}
     >
       <h2 className={`${handles.confirmPaymentTitle} mt0 mb6`}>
-        <FormattedMessage id={`${isAdmin ? 'admin': 'store'}/return-app.confirm-and-submit.refund-method.title`} />
+        <FormattedMessage id="return-app.confirm-and-submit.refund-method.title" />
       </h2>
       {refundPaymentData?.refundPaymentMethod === 'bank' ? (
         <>
           <div className={`${handles.accountHolderWrapper} flex`}>
             <p className={`${handles.accountHolderText} f6 mr2 gray b`}>
-              <FormattedMessage id={`${isAdmin ? 'admin': 'store'}/return-app.confirm-payment-methods.refund-method.p-account-holder-name`} />
+              <FormattedMessage id="return-app.confirm-payment-methods.refund-method.p-account-holder-name" />
             </p>
             <p className={`${handles.confirmPaymentValue} f6 gray`}>
               {refundPaymentData.accountHolderName}
@@ -50,7 +49,7 @@ export const ConfirmPaymentMethods = ({ refundPaymentData, isAdmin }: Props) => 
           </div>
           <div className={`${handles.ibanWrapper} flex`}>
             <p className={`${handles.ibanText} f6 mr2 gray b`}>
-              <FormattedMessage id={`${isAdmin ? 'admin': 'store'}/return-app.confirm-payment-methods.refund-method.p-iban`} />
+              <FormattedMessage id="return-app.confirm-payment-methods.refund-method.p-iban" />
             </p>
             <p className={`${handles.confirmPaymentValue} f6 gray `}>
               {refundPaymentData.iban}
@@ -60,7 +59,7 @@ export const ConfirmPaymentMethods = ({ refundPaymentData, isAdmin }: Props) => 
       ) : (
         <p className={`${handles.confirmPaymentValue} f6 gray `}>
           {formatMessage(
-            isAdmin ? {id: defaultPaymentMethodsMessages[refundPaymentData?.refundPaymentMethod].id.replace('store', 'admin')} : defaultPaymentMethodsMessages[refundPaymentData?.refundPaymentMethod]
+            defaultPaymentMethodsMessages[refundPaymentData?.refundPaymentMethod]
           )}
         </p>
       )}
