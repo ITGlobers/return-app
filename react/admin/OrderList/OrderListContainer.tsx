@@ -6,6 +6,7 @@ import type {
 } from 'vtex.return-app'
 import { FormattedMessage } from 'react-intl'
 import { Layout, PageHeader, PageBlock } from 'vtex.styleguide'
+import { useRuntime } from 'vtex.render-runtime'
 
 import ORDERS_AVAILABLE_TO_RETURN from '../../store/createReturnRequest/graphql/getOrdersAvailableToReturn.gql'
 import { OrderList } from '../../common/components/ordersList/ListTable'
@@ -14,6 +15,7 @@ import { AdminLoader } from '../AdminLoader'
 export const OrderListContainer = () => {
   const [ordersToReturn, setOrdersToReturn] = useState<OrdersToReturnList[]>([])
   const [currentPage, setCurrentPage] = useState<number>(1)
+  const { navigate } = useRuntime()
 
   const { data, loading, error, fetchMore, refetch } = useQuery<
     { ordersAvailableToReturn: OrdersToReturnList },
@@ -79,6 +81,14 @@ export const OrderListContainer = () => {
           subtitle={
             <FormattedMessage id="admin/return-app.return-order-list.page-header.subTitle" />
           }
+          linkLabel={
+            <FormattedMessage id="admin/return-app.return-order-list.page-header.linkLabel" />
+          }
+          onLinkClick={() => {
+            navigate({
+              to: '/admin/app/returns/requests',
+            })
+          }}
         />
       }
     >

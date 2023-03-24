@@ -112,13 +112,14 @@ export const createOrdersToReturnSummary = async (
 
   // Associate itemIndex with the correspondent item in the order.item
   for (const [index, quantity] of quantityInvoiced.entries()) {
+    const newIndex = index === -1 ? 0 : index
     const {
       id,
       productId,
       name,
       imageUrl,
       additionalInfo: { categoriesIds },
-    } = items[index]
+    } = items[newIndex]
 
     // Here we can add the fields we want to have in the final item array. TBD the needed ones
     const currentLength = invoicedItems.push({

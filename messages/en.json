@@ -56,6 +56,7 @@
   "store/return-app.request-return.page.header.subtitle": "Select an order to start the return request process",
   "store/return-app.return-order-list.table-header.order-id": "Order ID",
   "admin/return-app.return-order-list.table-header.order-id": "Order ID",
+  "admin/return-app.return-order-list.table-header.linkLabel": "Back to returns",
   "admin/return-app.return-order-list.table-header.seller-name": "Seller Name",
   "store/return-app.return-order-list.table-header.creation-date": "Created Date",
   "admin/return-app.return-order-list.table-header.creation-date": "Created Date",

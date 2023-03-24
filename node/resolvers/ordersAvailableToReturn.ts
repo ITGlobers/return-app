@@ -104,8 +104,8 @@ export const ordersAvailableToReturn = async (
     throw new ResolverError('Return App settings is not configured')
   }
 
-  let { maxDays, excludedCategories } = settings
-  const { email, role } = userProfile ?? {}
+  const { maxDays, excludedCategories } = settings
+  const { email } = userProfile ?? {}
 
   let userEmail = (storeUserEmail ?? email) as string
 
@@ -113,16 +113,11 @@ export const ordersAvailableToReturn = async (
     userEmail = ''
   }
 
-  // if (!userEmail) {
-  //   throw new ResolverError('Missing user email', 400)
-  // }
-
   // Fetch order associated to the user email
   const { list, paging } = await oms.listOrdersWithParams(
     createParams({ maxDays, userEmail, page, filters })
   )
 
-  // console.log({ list, paging })
   const orderListPromises = []
 
   for (const order of list) {
