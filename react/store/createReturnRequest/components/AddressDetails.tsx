@@ -32,7 +32,6 @@ const messages = defineMessages({
 
 interface Props {
   shippingData: ShippingData
-  isAdmin: boolean
 }
 
 const CSS_HANDLES = [
@@ -47,7 +46,7 @@ const CSS_HANDLES = [
   'countryInputContainer',
 ] as const
 
-export const AddressDetails = ({ shippingData, isAdmin }: Props) => {
+export const AddressDetails = ({ shippingData }: Props) => {
   const { formatMessage } = useIntl()
   const { data: settings } = useStoreSettings()
   const handles = useCssHandles(CSS_HANDLES)
@@ -126,11 +125,11 @@ export const AddressDetails = ({ shippingData, isAdmin }: Props) => {
         <div>
           <Tooltip
             label={
-              <FormattedMessage id={`${isAdmin ? 'admin': 'store'}/return-app.return-order-details.title.tooltip.pickup-address`} />
+              <FormattedMessage id="return-app.return-order-details.title.tooltip.pickup-address" />
             }
           >
             <p className={handles.pickupAddressTitle}>
-              <FormattedMessage id={`${isAdmin ? 'admin': 'store'}/return-app.return-order-details.title.pickup-address`} />
+              <FormattedMessage id="return-app.return-order-details.title.pickup-address" />
             </p>
           </Tooltip>
         </div>
@@ -138,7 +137,7 @@ export const AddressDetails = ({ shippingData, isAdmin }: Props) => {
           <div className={`${handles.tooltipToggleWrapper} flex items-center`}>
             <Tooltip
               label={
-                <FormattedMessage id={`${isAdmin ? 'admin': 'store'}/return-app.return-order-details.pickup-address.drop-off-points.tooltip`} />
+                <FormattedMessage id="return-app.return-order-details.pickup-address.drop-off-points.tooltip" />
               }
               position="left"
             >
@@ -147,7 +146,7 @@ export const AddressDetails = ({ shippingData, isAdmin }: Props) => {
                   <IconInfo className=" ml5 o-50" />
                 </span>
                 <p className="ml2 mr3">
-                  <FormattedMessage id={`${isAdmin ? 'admin': 'store'}/return-app.return-order-details.pickup-address.drop-off-points`} />
+                  <FormattedMessage id="return-app.return-order-details.pickup-address.drop-off-points" />
                 </p>
               </div>
             </Tooltip>
@@ -159,14 +158,14 @@ export const AddressDetails = ({ shippingData, isAdmin }: Props) => {
         )}
       </div>
       {isPickupPoint && geoCoordinates ? (
-        <PickupPointSelector geoCoordinates={geoCoordinates} isAdmin />
+        <PickupPointSelector geoCoordinates={geoCoordinates} />
       ) : null}
 
       <div className={`${handles.addressInputContainer} mb4`}>
         <Input
           name="address"
           required
-          placeholder={formatMessage(isAdmin ? {id: messages.addressInput.id.replace('store', 'admin')} : messages.addressInput)}
+          placeholder={formatMessage(messages.addressInput)}
           onChange={handleInputChange}
           value={pickupReturnData.address}
           readOnly={isPickupPoint}
@@ -175,7 +174,7 @@ export const AddressDetails = ({ shippingData, isAdmin }: Props) => {
           <CustomMessage
             status="error"
             message={
-              <FormattedMessage id={`${isAdmin ? 'admin': 'store'}/return-app.return-address-details.address-input.error`} />
+              <FormattedMessage id="return-app.return-address-details.address-input.error" />
             }
           />
         ) : null}
@@ -184,7 +183,7 @@ export const AddressDetails = ({ shippingData, isAdmin }: Props) => {
         <Input
           name="city"
           required
-          placeholder={formatMessage(isAdmin ? {id: messages.cityInput.id.replace('store', 'admin')} : messages.cityInput)}
+          placeholder={formatMessage(messages.cityInput)}
           onChange={handleInputChange}
           value={pickupReturnData.city}
           readOnly={isPickupPoint}
@@ -193,7 +192,7 @@ export const AddressDetails = ({ shippingData, isAdmin }: Props) => {
           <CustomMessage
             status="error"
             message={
-              <FormattedMessage id={`${isAdmin ? 'admin': 'store'}/return-app.return-address-details.city-input.error`} />
+              <FormattedMessage id="return-app.return-address-details.city-input.error" />
             }
           />
         ) : null}
@@ -202,7 +201,7 @@ export const AddressDetails = ({ shippingData, isAdmin }: Props) => {
         <Input
           name="state"
           requiered
-          placeholder={formatMessage(isAdmin ? {id: messages.stateInput.id.replace('store', 'admin')} : messages.stateInput)}
+          placeholder={formatMessage(messages.stateInput)}
           onChange={handleInputChange}
           value={pickupReturnData.state}
           readOnly={isPickupPoint}
@@ -211,7 +210,7 @@ export const AddressDetails = ({ shippingData, isAdmin }: Props) => {
           <CustomMessage
             status="error"
             message={
-              <FormattedMessage id={`${isAdmin ? 'admin': 'store'}/return-app.return-address-details.state-input.error`} />
+              <FormattedMessage id="return-app.return-address-details.state-input.error" />
             }
           />
         ) : null}
@@ -220,7 +219,7 @@ export const AddressDetails = ({ shippingData, isAdmin }: Props) => {
         <Input
           name="zipCode"
           required
-          placeholder={formatMessage(isAdmin ? {id: messages.zipInput.id.replace('store', 'admin')} : messages.zipInput)}
+          placeholder={formatMessage(messages.zipInput)}
           onChange={handleInputChange}
           value={pickupReturnData.zipCode}
           readOnly={isPickupPoint}
@@ -229,7 +228,7 @@ export const AddressDetails = ({ shippingData, isAdmin }: Props) => {
           <CustomMessage
             status="error"
             message={
-              <FormattedMessage id={`${isAdmin ? 'admin': 'store'}/return-app.return-address-details.zip-input.error`} />
+              <FormattedMessage id="return-app.return-address-details.zip-input.error" />
             }
           />
         ) : null}
@@ -238,7 +237,7 @@ export const AddressDetails = ({ shippingData, isAdmin }: Props) => {
         <Input
           name="country"
           required
-          placeholder={formatMessage(isAdmin ? {id: messages.countryInput.id.replace('store', 'admin')} : messages.countryInput)}
+          placeholder={formatMessage(messages.countryInput)}
           onChange={handleInputChange}
           value={pickupReturnData.country}
           readOnly={isPickupPoint}
@@ -247,7 +246,7 @@ export const AddressDetails = ({ shippingData, isAdmin }: Props) => {
           <CustomMessage
             status="error"
             message={
-              <FormattedMessage id={`${isAdmin ? 'admin': 'store'}/return-app.return-address-details.country-input.error`} />
+              <FormattedMessage id="return-app.return-address-details.country-input.error" />
             }
           />
         ) : null}

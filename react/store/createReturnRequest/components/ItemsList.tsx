@@ -12,7 +12,6 @@ import { CustomMessage } from './layout/CustomMessage'
 interface Props {
   items: ItemToReturn[]
   creationDate?: string
-  isAdmin?: boolean
 }
 
 const CSS_HANDLES = ['itemsListContainer', 'itemsListTheadWrapper'] as const
@@ -37,30 +36,29 @@ const mobileOrder = [
 
 export const messages = defineMessages({
   product: {
-    id: 'store/return-app.return-order-details.table-header.product',
+    id: 'return-app.return-order-details.table-header.product',
   },
   quantity: {
-    id: 'store/return-app.return-order-details.table-header.quantity',
+    id: 'return-app.return-order-details.table-header.quantity',
   },
   'available-to-return': {
-    id: 'store/return-app.return-order-details.table-header.available-to-return',
+    id: 'return-app.return-order-details.table-header.available-to-return',
   },
   'quantity-to-return': {
-    id: 'store/return-app.return-order-details.table-header.quantity-to-return',
+    id: 'return-app.return-order-details.table-header.quantity-to-return',
   },
   reason: {
-    id: 'store/return-app.return-order-details.table-header.reason',
+    id: 'return-app.return-order-details.table-header.reason',
   },
   condition: {
-    id: 'store/return-app.return-order-details.table-header.condition',
+    id: 'return-app.return-order-details.table-header.condition',
   },
 })
 
 
 const TableHeaderRenderer = (
   formatMessage: IntlFormatters['formatMessage'],
-  addCondition: boolean,
-  isAdmin: boolean | undefined
+  addCondition: boolean
 ) => {
   return function Header(value: string) {
     if (!addCondition && value === 'condition') {
@@ -69,14 +67,14 @@ const TableHeaderRenderer = (
 
     return (
       <th className="v-mid pv0 tl bb b--muted-4 normal bg-base bt ph3 z1 pv3-s">
-        {formatMessage(isAdmin ? {id: messages[value].id.replace('store', 'admin')} : messages[value])}
+        {formatMessage(messages[value])}
       </th>
     )
   }
 }
 
 export const ItemsList = (props: Props) => {
-  const { items, creationDate, isAdmin } = props
+  const { items, creationDate } = props
 
   const { data: storeSettings } = useStoreSettings()
   const { options } = storeSettings ?? {}
@@ -98,7 +96,6 @@ export const ItemsList = (props: Props) => {
   const TableHeader = TableHeaderRenderer(
     formatMessage,
     Boolean(enableSelectItemCondition),
-    isAdmin
   )
 
   return (
@@ -121,7 +118,6 @@ export const ItemsList = (props: Props) => {
             key={item.id}
             itemToReturn={item}
             creationDate={creationDate}
-            isAdmin
           />
         ))}
       </tbody>
@@ -129,7 +125,7 @@ export const ItemsList = (props: Props) => {
         <CustomMessage
           status="error"
           message={
-            <FormattedMessage id={`${isAdmin ? 'admin': 'store'}/return-app.return-items-list.no-items-selected.error`} />
+            <FormattedMessage id="return-app.return-items-list.no-items-selected.error" />
           }
         />
       ) : null}

@@ -16,8 +16,7 @@ import { defaultPaymentMethodsMessages } from '../../utils/defaultPaymentMethods
 import { isValidIBANNumber } from '../../utils/isValidIBANNumber'
 
 interface Props {
-  canRefundCard: boolean,
-  isAdmin: boolean
+  canRefundCard: boolean
 }
 
 type PaymentMethodsOptions = {
@@ -28,13 +27,13 @@ type PaymentMethodsOptions = {
 const CSS_HANDLES = ['paymentMethodContainer', 'paymentBankWrapper'] as const
 
 const messages = defineMessages({
-  formIBAN: { id: 'store/return-app.return-order-details.payment-method.iban' },
+  formIBAN: { id: 'return-app.return-order-details.payment-method.iban' },
   formAccountHolder: {
-    id: 'store/return-app.return-order-details.payment-method.account-holder',
+    id: 'return-app.return-order-details.payment-method.account-holder',
   },
 })
 
-export const PaymentMethods = ({ canRefundCard, isAdmin }: Props) => {
+export const PaymentMethods = ({ canRefundCard }: Props) => {
   const { formatMessage } = useIntl()
   const handles = useCssHandles(CSS_HANDLES)
 
@@ -79,7 +78,7 @@ export const PaymentMethods = ({ canRefundCard, isAdmin }: Props) => {
     })
   }
 
-  const paymentMethods = (isAdmin: boolean) => {
+  const paymentMethods = () => {
     if (!allowedPaymentTypes) return []
     const { bank, card, giftCard } = allowedPaymentTypes
     const output: PaymentMethodsOptions[] = []
@@ -87,21 +86,21 @@ export const PaymentMethods = ({ canRefundCard, isAdmin }: Props) => {
     if (card && canRefundCard) {
       output.push({
         value: 'card',
-        label: formatMessage(isAdmin ? {id: defaultPaymentMethodsMessages.card.id.replace('store', 'admin')} : defaultPaymentMethodsMessages.card),
+        label: formatMessage(defaultPaymentMethodsMessages.card),
       })
     }
 
     if (giftCard) {
       output.push({
         value: 'giftCard',
-        label: formatMessage(isAdmin ? {id: defaultPaymentMethodsMessages.giftCard.id.replace('store', 'admin')} : defaultPaymentMethodsMessages.giftCard),
+        label: formatMessage(defaultPaymentMethodsMessages.giftCard),
       })
     }
 
     if (bank) {
       output.push({
         value: 'bank',
-        label: formatMessage(isAdmin ? {id: defaultPaymentMethodsMessages.bank.id.replace('store', 'admin')} : defaultPaymentMethodsMessages.bank),
+        label: formatMessage(defaultPaymentMethodsMessages.bank),
       })
     }
 
@@ -119,18 +118,18 @@ export const PaymentMethods = ({ canRefundCard, isAdmin }: Props) => {
       className={`${handles.paymentMethodContainer} flex-ns flex-wrap flex-auto flex-column pa4 mb6`}
     >
       <p>
-        <FormattedMessage id={`${isAdmin ? 'admin': 'store'}/return-app.return-order-details.payment-method.description`} />
+        <FormattedMessage id="return-app.return-order-details.payment-method.description" />
       </p>
       {!enablePaymentMethodSelection ? (
         <p className="i-s">
-          <FormattedMessage id={`${isAdmin ? 'admin': 'store'}/return-app.return-order-details.payment-method.default`} />
+          <FormattedMessage id="return-app.return-order-details.payment-method.default" />
         </p>
       ) : (
         <>
           <RadioGroup
             hideBorder
             name="refundPaymentMethod"
-            options={paymentMethods(isAdmin)}
+            options={paymentMethods()}
             value={refundPaymentData?.refundPaymentMethod ?? ''}
             onChange={handleRefundPaymentChange}
           />
@@ -138,7 +137,7 @@ export const PaymentMethods = ({ canRefundCard, isAdmin }: Props) => {
             <CustomMessage
               status="error"
               message={
-                <FormattedMessage id={`${isAdmin ? 'admin': 'store'}/return-app.return-payment-methods.input-payment-method.error`} />
+                <FormattedMessage id="return-app.return-payment-methods.input-payment-method.error" />
               }
             />
           ) : null}
@@ -149,7 +148,7 @@ export const PaymentMethods = ({ canRefundCard, isAdmin }: Props) => {
           <div className="flex-ns flex-wrap flex-auto flex-column mt6 mw6">
             <Input
               name="accountHolderName"
-              placeholder={formatMessage(isAdmin ? {id: messages.formAccountHolder.id.replace('store', 'admin')}: messages.formAccountHolder)}
+              placeholder={formatMessage(messages.formAccountHolder)}
               onChange={handleBankDetailsChange}
               value={refundPaymentData.accountHolderName ?? ''}
             />
@@ -157,7 +156,7 @@ export const PaymentMethods = ({ canRefundCard, isAdmin }: Props) => {
               <CustomMessage
                 status="error"
                 message={
-                  <FormattedMessage id={`${isAdmin ? 'admin': 'store'}/return-app.return-payment-methods.input-account-holder.error`} />
+                  <FormattedMessage id="return-app.return-payment-methods.input-account-holder.error" />
                 }
               />
             ) : null}
@@ -165,7 +164,7 @@ export const PaymentMethods = ({ canRefundCard, isAdmin }: Props) => {
           <div className="flex-ns flex-wrap flex-auto flex-column mt4 mw6">
             <Input
               name="iban"
-              placeholder={formatMessage(isAdmin ? {id: messages.formIBAN.id.replace('store', 'admin')}: messages.formIBAN)}
+              placeholder={formatMessage(messages.formIBAN)}
               onChange={handleBankDetailsChange}
               value={refundPaymentData.iban ?? ''}
             />
@@ -173,7 +172,7 @@ export const PaymentMethods = ({ canRefundCard, isAdmin }: Props) => {
               <CustomMessage
                 status="error"
                 message={
-                  <FormattedMessage id={`${isAdmin ? 'admin': 'store'}/return-app.return-payment-methods.input-iban.error`} />
+                  <FormattedMessage id="return-app.return-payment-methods.input-iban.error" />
                 }
               />
             ) : null}
@@ -183,7 +182,7 @@ export const PaymentMethods = ({ canRefundCard, isAdmin }: Props) => {
               <CustomMessage
                 status="error"
                 message={
-                  <FormattedMessage id={`${isAdmin ? 'admin': 'store'}/return-app.return-payment-methods.input-iban-invalid.error`} />
+                  <FormattedMessage id="return-app.return-payment-methods.input-iban-invalid.error" />
                 }
               />
             ) : null}
