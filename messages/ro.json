@@ -292,7 +292,7 @@
   "return-app.return-request-list.table-jumpToPage.cta": "ACCESEAZĂ",
   "store/return-app.return-request-list.page-header.title": "Retururile mele",
   "store/return-app.return-request-list.page-header.goBack": "Înapoi",
-  "store/return-app.return-request-list.page-header.cta": "Cerere nouă",
+  "return-app.return-request-list.page-header.cta": "Cerere nouă",
   "return-app.return-request-list.table.status.new": "Nouă",
   "return-app.return-request-list.table.status.processing": "Se procesează",
   "return-app.return-request-list.table.status.pickedup-from-client": "Ridicat de la client",

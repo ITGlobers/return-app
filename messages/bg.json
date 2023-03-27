@@ -293,7 +293,7 @@
   "return-app.return-request-list.table-jumpToPage.cta": "НАПРЕД",
   "store/return-app.return-request-list.page-header.title": "Моите връщания",
   "store/return-app.return-request-list.page-header.goBack": "Назад",
-  "store/return-app.return-request-list.page-header.cta": "Нова заявка",
+  "return-app.return-request-list.page-header.cta": "Нова заявка",
   "return-app.return-request-list.table.status.new": "Нов",
   "return-app.return-request-list.table.status.processing": "Обработка",
   "return-app.return-request-list.table.status.pickedup-from-client": "Взето от клиент",

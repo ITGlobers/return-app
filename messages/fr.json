@@ -293,7 +293,7 @@
   "return-app.return-request-list.table-jumpToPage.cta": "OK",
   "store/return-app.return-request-list.page-header.title": "Mes retours",
   "store/return-app.return-request-list.page-header.goBack": "Retour",
-  "store/return-app.return-request-list.page-header.cta": "Nouvelle demande",
+  "return-app.return-request-list.page-header.cta": "Nouvelle demande",
   "return-app.return-request-list.table.status.new": "Nouveau",
   "return-app.return-request-list.table.status.processing": "En cours",
   "return-app.return-request-list.table.status.pickedup-from-client": "Retrait effectué par le client",

@@ -293,7 +293,7 @@
   "return-app.return-request-list.table-jumpToPage.cta": "VAI",
   "store/return-app.return-request-list.page-header.title": "I miei resi",
   "store/return-app.return-request-list.page-header.goBack": "Torna indietro",
-  "store/return-app.return-request-list.page-header.cta": "Nuova richiesta",
+  "return-app.return-request-list.page-header.cta": "Nuova richiesta",
   "return-app.return-request-list.table.status.new": "Nuovo",
   "return-app.return-request-list.table.status.processing": "In elaborazione",
   "return-app.return-request-list.table.status.pickedup-from-client": "Ritirato dal cliente",

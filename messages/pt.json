@@ -293,7 +293,7 @@
   "return-app.return-request-list.table-jumpToPage.cta": "IR",
   "store/return-app.return-request-list.page-header.title": "Minhas devoluções",
   "store/return-app.return-request-list.page-header.goBack": "Voltar",
-  "store/return-app.return-request-list.page-header.cta": "Nova solicitação",
+  "return-app.return-request-list.page-header.cta": "Nova solicitação",
   "return-app.return-request-list.table.status.new": "Novo",
   "return-app.return-request-list.table.status.processing": "Em processamento",
   "return-app.return-request-list.table.status.pickedup-from-client": "Recebido do cliente",

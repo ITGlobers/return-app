@@ -292,7 +292,7 @@
   "return-app.return-request-list.table-jumpToPage.cta": "GA",
   "store/return-app.return-request-list.page-header.title": "Mijn retourzendingen",
   "store/return-app.return-request-list.page-header.goBack": "Ga terug",
-  "store/return-app.return-request-list.page-header.cta": "Nieuwe aanvraag",
+  "return-app.return-request-list.page-header.cta": "Nieuwe aanvraag",
   "return-app.return-request-list.table.status.new": "Nieuw",
   "return-app.return-request-list.table.status.processing": "Verwerken",
   "return-app.return-request-list.table.status.pickedup-from-client": "Afgehaald bij klant",

@@ -292,7 +292,7 @@
   "return-app.return-request-list.table-jumpToPage.cta": "ไป",
   "store/return-app.return-request-list.page-header.title": "การคืนของฉัน",
   "store/return-app.return-request-list.page-header.goBack": "กลับไป",
-  "store/return-app.return-request-list.page-header.cta": "คำขอใหม่",
+  "return-app.return-request-list.page-header.cta": "คำขอใหม่",
   "return-app.return-request-list.table.status.new": "ใหม่",
   "return-app.return-request-list.table.status.processing": "กำลังประมวลผล",
   "return-app.return-request-list.table.status.pickedup-from-client": "รับของจากลูกค้าแล้ว",
