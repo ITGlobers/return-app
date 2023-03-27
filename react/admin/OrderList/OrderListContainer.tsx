@@ -76,13 +76,13 @@ export const OrderListContainer = () => {
       pageHeader={
         <PageHeader
           title={
-            <FormattedMessage id="admin/return-app.return-order-list.page-header.title" />
+            <FormattedMessage id="return-app.return-order-list.page-header.title" />
           }
           subtitle={
-            <FormattedMessage id="admin/return-app.return-order-list.page-header.subTitle" />
+            <FormattedMessage id="return-app.return-order-list.page-header.subTitle" />
           }
           linkLabel={
-            <FormattedMessage id="admin/return-app.return-order-list.page-header.linkLabel" />
+            <FormattedMessage id="return-app.return-order-list.table-header.linkLabel" />
           }
           onLinkClick={() => {
             navigate({

@@ -23,7 +23,7 @@ export const AdminReturnList = () => {
             // disabled={loading}
             href="orders"
           >
-            <FormattedMessage id="admin/return-app.return-request-list.page-header.cta" />
+            <FormattedMessage id="return-app.return-request-list.page-header.cta" />
           </Button>
         </PageHeader>
       }
