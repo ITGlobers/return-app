@@ -332,6 +332,14 @@ export type ReturnRequestFilters = {
   /** userId: If not passed, resolver will try to get it from cookie session */
   userId?: Maybe<Scalars['String']>;
   userEmail?: Maybe<Scalars['String']>;
+  status?: InputMaybe<Status>;
+  sequenceNumber?: InputMaybe<Scalars['String']>;
+  id?: InputMaybe<Scalars['String']>;
+  sellerName?: InputMaybe<Scalars['String']>;
+  createdIn?: InputMaybe<DateRangeInput>;
+  orderId?: InputMaybe<Scalars['String']>;
+  userId?: InputMaybe<Scalars['String']>;
+  userEmail?: InputMaybe<Scalars['String']>;
 };
 
 export type DateRangeInput = {
