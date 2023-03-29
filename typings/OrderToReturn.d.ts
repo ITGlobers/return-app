@@ -128,6 +128,7 @@ export type OrdersFilters = {
   sellerName?: InputMaybe<Scalars['String']>;
 };
 
+<<<<<<< HEAD
 export type QueryOrdersAvailableToReturnArgs = {
   page: Scalars['Int'];
   storeUserEmail?: Maybe<Scalars['String']>;
@@ -139,3 +140,5 @@ export type QueryOrderToReturnSummaryArgs = {
   orderId: Scalars['ID'];
   storeUserEmail?: Maybe<Scalars['String']>;
 };
+=======
+>>>>>>> a8bdc2bd (preparing types for return-app)

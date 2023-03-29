@@ -152,12 +152,22 @@ export type ReturnReasonInput = {
   otherReason?: InputMaybe<Scalars['String']>;
 };
 
+<<<<<<< HEAD
 export type ItemCondition = 
   | 'unspecified'
   | 'newWithBox'
   | 'newWithoutBox'
   | 'usedWithBox'
   | 'usedWithoutBox';
+=======
+export enum ItemCondition {
+  Unspecified = 'unspecified',
+  NewWithBox = 'newWithBox',
+  NewWithoutBox = 'newWithoutBox',
+  UsedWithBox = 'usedWithBox',
+  UsedWithoutBox = 'usedWithoutBox'
+}
+>>>>>>> a8bdc2bd (preparing types for return-app)
 
 export type CustomerProfileDataInput = {
   name: Scalars['String'];
@@ -175,9 +185,16 @@ export type PickupReturnDataInput = {
   addressType: AddressType;
 };
 
+<<<<<<< HEAD
 export type AddressType = 
   | 'PICKUP_POINT'
   | 'CUSTOMER_ADDRESS';
+=======
+export enum AddressType {
+  PickupPoint = 'PICKUP_POINT',
+  CustomerAddress = 'CUSTOMER_ADDRESS'
+}
+>>>>>>> a8bdc2bd (preparing types for return-app)
 
 export type RefundPaymentDataInput = {
   refundPaymentMethod: RefundPaymentMethod;
@@ -185,11 +202,20 @@ export type RefundPaymentDataInput = {
   accountHolderName?: InputMaybe<Scalars['String']>;
 };
 
+<<<<<<< HEAD
 export type RefundPaymentMethod =
   | 'bank'
   | 'card'
   | 'giftCard'
   | 'sameAsPurchase';
+=======
+export enum RefundPaymentMethod {
+  Bank = 'bank',
+  Card = 'card',
+  GiftCard = 'giftCard',
+  SameAsPurchase = 'sameAsPurchase'
+}
+>>>>>>> a8bdc2bd (preparing types for return-app)
 
 export type ReturnRequestResponse = {
   __typename?: 'ReturnRequestResponse';
@@ -212,6 +238,7 @@ export type ReturnRequestResponse = {
   cultureInfoData: CultureInfoData;
 };
 
+<<<<<<< HEAD
 export type Status = 
   | 'new'
   | 'processing'
@@ -221,6 +248,18 @@ export type Status =
   | 'amountRefunded'
   | 'denied'
   | 'cancelled';
+=======
+export enum Status {
+  New = 'new',
+  Processing = 'processing',
+  PickedUpFromClient = 'pickedUpFromClient',
+  PendingVerification = 'pendingVerification',
+  PackageVerified = 'packageVerified',
+  AmountRefunded = 'amountRefunded',
+  Denied = 'denied',
+  Cancelled = 'cancelled'
+}
+>>>>>>> a8bdc2bd (preparing types for return-app)
 
 export type CustomerProfileData = {
   __typename?: 'CustomerProfileData';
@@ -256,7 +295,10 @@ export type ReturnRequestItem = {
   quantity: Scalars['Int'];
   condition: ItemCondition;
   returnReason: ReturnReason;
+<<<<<<< HEAD
   /** id: SKU id */
+=======
+>>>>>>> a8bdc2bd (preparing types for return-app)
   id: Scalars['String'];
   sellingPrice: Scalars['Int'];
   tax: Scalars['Int'];
@@ -318,6 +360,7 @@ export type RefundStatusComment = {
 };
 
 export type ReturnRequestFilters = {
+<<<<<<< HEAD
   status?: Maybe<Status>;
   sequenceNumber?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['String']>;
@@ -332,6 +375,16 @@ export type ReturnRequestFilters = {
   /** userId: If not passed, resolver will try to get it from cookie session */
   userId?: Maybe<Scalars['String']>;
   userEmail?: Maybe<Scalars['String']>;
+=======
+  status?: InputMaybe<Status>;
+  sequenceNumber?: InputMaybe<Scalars['String']>;
+  id?: InputMaybe<Scalars['String']>;
+  sellerName?: InputMaybe<Scalars['String']>;
+  createdIn?: InputMaybe<DateRangeInput>;
+  orderId?: InputMaybe<Scalars['String']>;
+  userId?: InputMaybe<Scalars['String']>;
+  userEmail?: InputMaybe<Scalars['String']>;
+>>>>>>> a8bdc2bd (preparing types for return-app)
 };
 
 export type DateRangeInput = {
@@ -403,7 +456,10 @@ export type QueryReturnRequestListArgs = {
   filter?: Maybe<ReturnRequestFilters>;
   page: Scalars['Int'];
   perPage?: Maybe<Scalars['Int']>;
+<<<<<<< HEAD
   isAdmin?: Scalars['Boolean'];
+=======
+>>>>>>> a8bdc2bd (preparing types for return-app)
 };
 
 export type MutationUpdateReturnRequestStatusArgs = {
