@@ -129,16 +129,27 @@ export type OrdersFilters = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 60a93aab (changed paths for import types)
 export type QueryOrdersAvailableToReturnArgs = {
   page: Scalars['Int'];
   storeUserEmail?: Maybe<Scalars['String']>;
   isAdmin?: Maybe<Scalars['Boolean']>;
+<<<<<<< HEAD
   filter?: Maybe<OrdersFilters>;
+=======
+  filters?: Maybe<OrdersFilters>;
+>>>>>>> 60a93aab (changed paths for import types)
 };
 
 export type QueryOrderToReturnSummaryArgs = {
   orderId: Scalars['ID'];
   storeUserEmail?: Maybe<Scalars['String']>;
+<<<<<<< HEAD
 };
 =======
 >>>>>>> 14f567b7 (preparing types for return-app)
+=======
+};
+>>>>>>> 60a93aab (changed paths for import types)

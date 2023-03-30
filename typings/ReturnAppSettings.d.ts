@@ -20,11 +20,8 @@ export type ReturnAppSettings = {
   termsUrl: Scalars['String'];
   customReturnReasons?: Maybe<Array<CustomReturnReason>>;
   options?: Maybe<ReturnOption>;
-<<<<<<< HEAD
   orderStatus: Scalars['String'];
   enableStatusSelection: Scalars['Boolean'];
-=======
->>>>>>> 14f567b7 (preparing types for return-app)
 };
 
 export type PaymentOptions = {
@@ -109,7 +106,6 @@ export type MutationSaveReturnAppSettingsArgs = {
 
 export type MutationSaveReturnAppSettingsArgs = {
   settings: ReturnAppSettingsInput;
-<<<<<<< HEAD
 };
 
 export type QueryReturnSettingsListArgs = {
@@ -143,6 +139,4 @@ export type Pagination = {
   pages: Scalars['Int'];
   currentPage: Scalars['Int'];
   perPage: Scalars['Int'];
-=======
->>>>>>> 14f567b7 (preparing types for return-app)
 };
