@@ -3,7 +3,9 @@ import type {
   ReturnOption,
   PaymentOptionsInput,
   CustomReturnReasonInput,
-  ReturnOptionInput
+  ReturnOptionInput,
+  ReturnAppSettings,
+  ReturnAppSettingsInput
 } from './ReturnAppSettings'
 
 export type Maybe<T> = T | null;
@@ -20,33 +22,11 @@ export type Scalars = {
   Float: number;
 };
 
-export interface SellerSetting {
-  sellerId: string;
-  parentAccount?: string;
-  maxDays?: number;
-  excludedCategories?: unknown[];
-  paymentOptions?: {
-    enablePaymentMethodSelection?: boolean;
-    allowedPaymentTypes?: {
-      bank?: boolean;
-      card?: boolean;
-      giftCard?: boolean;
-      [k: string]: unknown;
-    };
-    automaticallyRefundPaymentMethod?: boolean;
-    [k: string]: unknown;
-  };
-  termsUrl?: string;
-  customReturnReasons?: unknown[];
-  options?: {
-    enableOtherOptionSelection?: boolean;
-    enablePickupPoints?: boolean;
-    enableProportionalShippingValue?: boolean;
-    enableSelectItemCondition?: boolean;
-    [k: string]: unknown;
-  };
-  [k: string]: unknown;
-}
+export interface SellerSetting extends ReturnAppSettings {
+  __typename?: 'SellerSetting';
+  id?: Maybe<Scalars['String']>;
+  sellerId?: Scalars['String'];
+};
 
 
 export type SellerSettingResponseList = {
@@ -54,16 +34,9 @@ export type SellerSettingResponseList = {
   sellers?: Maybe<Array<Maybe<SellerSetting>>>;
 };
 
-export type SellerSettingInput = {
+export interface SellerSettingInput extends ReturnAppSettingsInput{
   id?: InputMaybe<Scalars['String']>;
-  sellerId: Scalars['String'];
-  parentAccount?: InputMaybe<Scalars['String']>;
-  maxDays: Scalars['Int'];
-  excludedCategories: Array<Scalars['String']>;
-  paymentOptions: PaymentOptionsInput;
-  termsUrl: Scalars['String'];
-  customReturnReasons?: InputMaybe<Array<CustomReturnReasonInput>>;
-  options?: InputMaybe<ReturnOptionInput>;
+  sellerId?: Scalars['String'];
 };
 
 export type QueryReturnSellerSettingsArgs = {

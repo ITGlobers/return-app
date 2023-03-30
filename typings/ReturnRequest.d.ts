@@ -318,14 +318,20 @@ export type RefundStatusComment = {
 };
 
 export type ReturnRequestFilters = {
-  status?: InputMaybe<Status>;
-  sequenceNumber?: InputMaybe<Scalars['String']>;
-  id?: InputMaybe<Scalars['String']>;
-  sellerName?: InputMaybe<Scalars['String']>;
-  createdIn?: InputMaybe<DateRangeInput>;
-  orderId?: InputMaybe<Scalars['String']>;
-  userId?: InputMaybe<Scalars['String']>;
-  userEmail?: InputMaybe<Scalars['String']>;
+  status?: Maybe<Status>;
+  sequenceNumber?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['String']>;
+  sellerName?: Maybe<Scalars['String']>;
+  /**
+   * createdIn: It uses the field dateSubmitted in the return request schema to search for documents.
+   * The field createdIn is auto generated when the document is created, not
+   * reflecting the real value for documents migrated from older versions.
+   */
+  createdIn?: Maybe<DateRangeInput>;
+  orderId?: Maybe<Scalars['String']>;
+  /** userId: If not passed, resolver will try to get it from cookie session */
+  userId?: Maybe<Scalars['String']>;
+  userEmail?: Maybe<Scalars['String']>;
 };
 
 export type DateRangeInput = {
@@ -397,6 +403,7 @@ export type QueryReturnRequestListArgs = {
   filter?: Maybe<ReturnRequestFilters>;
   page: Scalars['Int'];
   perPage?: Maybe<Scalars['Int']>;
+  isAdmin?: Scalars['Boolean'];
 };
 
 export type MutationUpdateReturnRequestStatusArgs = {
