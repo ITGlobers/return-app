@@ -3,8 +3,8 @@ import type {
   PaymentOptions,
   ReturnAppSettings,
   ReturnOption,
-  SellerSetting,
-} from 'vtex.return-app'
+} from '../../../../typings/ReturnAppSettings'
+import type { SellerSetting } from '../../../../typings/SellerSetting'
 
 export const initialSettingsState: ReturnAppSettings | SellerSetting = {
   maxDays: 0,

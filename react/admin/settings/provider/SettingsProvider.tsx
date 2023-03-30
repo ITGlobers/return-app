@@ -5,10 +5,12 @@ import { useQuery, useMutation } from 'react-apollo'
 import { FormattedMessage } from 'react-intl'
 import type {
   ReturnAppSettings,
-  SellerSetting,
   ReturnAppSettingsInput,
-  SellerSettingInput,
-} from 'vtex.return-app'
+} from '../../../../typings/ReturnAppSettings'
+import type {
+  SellerSetting,
+  SellerSettingInput
+} from '../../../../typings/SellerSetting'
 
 import APP_SETTINGS from '../graphql/getAppSettings.gql'
 import APP_SETTINGS_SELLERS from '../graphql/getSellerSettings.gql'

@@ -103,3 +103,36 @@ export type MutationSaveReturnAppSettingsArgs = {
 export type MutationSaveReturnAppSettingsArgs = {
   settings: ReturnAppSettingsInput;
 };
+
+export type QueryReturnSettingsListArgs = {
+  filter?: Maybe<ReturnSettingsFilters>;
+  page: Scalars['Int'];
+  perPage?: Maybe<Scalars['Int']>;
+};
+
+
+export type ReturnSettingsList = {
+  __typename?: 'ReturnSettingsList';
+  list: Array<ReturnSettingsResponse>;
+  paging: Pagination;
+};
+
+export type ReturnSettingsResponse = {
+  __typename?: 'ReturnSettingsResponse';
+  id: Scalars['ID'];
+  sellerId?: Maybe<Scalars['String']>;
+  maxDays: Scalars['Int'];
+  excludedCategories: Array<Scalars['String']>;
+  paymentOptions: PaymentOptions;
+  termsUrl: Scalars['String'];
+  customReturnReasons?: Maybe<Array<CustomReturnReason>>;
+  options?: Maybe<ReturnOption>;
+};
+
+export type Pagination = {
+  __typename?: 'Pagination';
+  total: Scalars['Int'];
+  pages: Scalars['Int'];
+  currentPage: Scalars['Int'];
+  perPage: Scalars['Int'];
+};

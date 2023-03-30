@@ -6,7 +6,7 @@ import type {
   QueryReturnRequestListArgs,
   ReturnRequestList,
   Status,
-} from 'vtex.return-app'
+} from '../../../../typings/ReturnRequest'
 import type { ApolloQueryResult } from 'apollo-client'
 import { useCssHandles } from 'vtex.css-handles'
 

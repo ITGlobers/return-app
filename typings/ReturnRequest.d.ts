@@ -152,13 +152,12 @@ export type ReturnReasonInput = {
   otherReason?: InputMaybe<Scalars['String']>;
 };
 
-export enum ItemCondition {
-  Unspecified = 'unspecified',
-  NewWithBox = 'newWithBox',
-  NewWithoutBox = 'newWithoutBox',
-  UsedWithBox = 'usedWithBox',
-  UsedWithoutBox = 'usedWithoutBox'
-}
+export type ItemCondition = 
+  | 'unspecified'
+  | 'newWithBox'
+  | 'newWithoutBox'
+  | 'usedWithBox'
+  | 'usedWithoutBox';
 
 export type CustomerProfileDataInput = {
   name: Scalars['String'];
@@ -176,10 +175,9 @@ export type PickupReturnDataInput = {
   addressType: AddressType;
 };
 
-export enum AddressType {
-  PickupPoint = 'PICKUP_POINT',
-  CustomerAddress = 'CUSTOMER_ADDRESS'
-}
+export type AddressType = 
+  | 'PICKUP_POINT'
+  | 'CUSTOMER_ADDRESS';
 
 export type RefundPaymentDataInput = {
   refundPaymentMethod: RefundPaymentMethod;
@@ -187,12 +185,11 @@ export type RefundPaymentDataInput = {
   accountHolderName?: InputMaybe<Scalars['String']>;
 };
 
-export enum RefundPaymentMethod {
-  Bank = 'bank',
-  Card = 'card',
-  GiftCard = 'giftCard',
-  SameAsPurchase = 'sameAsPurchase'
-}
+export type RefundPaymentMethod =
+  | 'bank'
+  | 'card'
+  | 'giftCard'
+  | 'sameAsPurchase';
 
 export type ReturnRequestResponse = {
   __typename?: 'ReturnRequestResponse';
@@ -215,16 +212,15 @@ export type ReturnRequestResponse = {
   cultureInfoData: CultureInfoData;
 };
 
-export enum Status {
-  New = 'new',
-  Processing = 'processing',
-  PickedUpFromClient = 'pickedUpFromClient',
-  PendingVerification = 'pendingVerification',
-  PackageVerified = 'packageVerified',
-  AmountRefunded = 'amountRefunded',
-  Denied = 'denied',
-  Cancelled = 'cancelled'
-}
+export type Status = 
+  | 'new'
+  | 'processing'
+  | 'pickedUpFromClient'
+  | 'pendingVerification'
+  | 'packageVerified'
+  | 'amountRefunded'
+  | 'denied'
+  | 'cancelled';
 
 export type CustomerProfileData = {
   __typename?: 'CustomerProfileData';
@@ -260,6 +256,7 @@ export type ReturnRequestItem = {
   quantity: Scalars['Int'];
   condition: ItemCondition;
   returnReason: ReturnReason;
+  /** id: SKU id */
   id: Scalars['String'];
   sellingPrice: Scalars['Int'];
   tax: Scalars['Int'];
@@ -364,16 +361,15 @@ export type RefundableAmountTotal = {
   value: Scalars['Int'];
 };
 
-export enum RefundableAmountId {
-  Items = 'items',
-  Shipping = 'shipping',
-  Tax = 'tax'
-}
+export type RefundableAmountId =
+  | 'items'
+  | 'shipping'
+  | 'tax';
 
-export enum UserRole {
-  AdminUser = 'adminUser',
-  StoreUser = 'storeUser'
-}
+
+export type UserRole =
+  | 'adminUser'
+  | 'storeUser';
 
 export type CultureInfoData = {
   __typename?: 'CultureInfoData';
