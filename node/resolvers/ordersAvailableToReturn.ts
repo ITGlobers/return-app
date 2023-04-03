@@ -20,6 +20,7 @@ const createParams = ({
   userEmail,
   page = 1,
   filters,
+  orderStatus,
 }: {
   maxDays: number
   userEmail: string
@@ -28,7 +29,8 @@ const createParams = ({
     orderId: string
     sellerName: string
     createdIn: { from: string; to: string }
-  }
+  },
+  orderStatus: string
 }) => {
   const currentDate = getCurrentDate()
 
@@ -54,6 +56,8 @@ const createParams = ({
     orderBy: 'creationDate,desc' as const,
     f_status: 'invoiced' as const,
     f_creationDate: creationDate,
+    f_autorizated: creationDate,
+    f_invoiced: creationDate,
     q: query,
     f_sellerNames: seller,
     page,
@@ -92,8 +96,8 @@ export const ordersAvailableToReturn = async (
   if (!settings) {
     throw new ResolverError('Return App settings is not configured')
   }
-
-  const { maxDays, excludedCategories } = settings
+  console.log('settings: ', settings)
+  const { maxDays, excludedCategories, orderStatus } = settings
   const { email } = userProfile ?? {}
 
   let userEmail = (storeUserEmail ?? email) as string
@@ -104,7 +108,7 @@ export const ordersAvailableToReturn = async (
 
   // Fetch order associated to the user email
   const { list, paging } = await oms.listOrdersWithParams(
-    createParams({ maxDays, userEmail, page, filters })
+    createParams({ maxDays, userEmail, page, filters, orderStatus })
   )
 
   const orderListPromises = []
