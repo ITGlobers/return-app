@@ -20,23 +20,24 @@ const createParams = ({
   userEmail,
   page = 1,
   filters,
-  orderStatus,
+  orderStatus = 'creationDate',
 }: {
   maxDays: number
   userEmail: string
   page: number
+  orderStatus?: any
   filters?: {
     orderId: string
     sellerName: string
     createdIn: { from: string; to: string }
-  },
-  orderStatus: string
+  }
 }) => {
   const currentDate = getCurrentDate()
+  const orderStatusName = orderStatus.replace('f_','')
 
   let query = ''
   let seller = ''
-  let creationDate = `creationDate:[${substractDays(
+  let creationDate = `${orderStatusName}:[${substractDays(
     currentDate,
     maxDays
   )} TO ${currentDate}]`
@@ -47,7 +48,7 @@ const createParams = ({
     query = orderId || ''
     seller = sellerName || ''
     creationDate = createdIn
-      ? `creationDate:[${createdIn.from} TO ${createdIn.to}]`
+      ? `${orderStatusName}:[${createdIn.from} TO ${createdIn.to}]`
       : creationDate
   }
 
@@ -55,9 +56,7 @@ const createParams = ({
     clientEmail: userEmail,
     orderBy: 'creationDate,desc' as const,
     f_status: 'invoiced' as const,
-    f_creationDate: creationDate,
-    f_autorizated: creationDate,
-    f_invoiced: creationDate,
+    [orderStatus]: creationDate,
     q: query,
     f_sellerNames: seller,
     page,
@@ -107,9 +106,9 @@ export const ordersAvailableToReturn = async (
   }
 
   // Fetch order associated to the user email
-  const { list, paging } = await oms.listOrdersWithParams(
-    createParams({ maxDays, userEmail, page, filters, orderStatus })
-  )
+  const params = createParams({ maxDays, userEmail, page, filters, orderStatus })
+  console.log('params: ', params)
+  const { list, paging } = await oms.listOrdersWithParams(params)
 
   const orderListPromises = []
 
