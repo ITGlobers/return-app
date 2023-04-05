@@ -46,7 +46,6 @@ const createParams = ({
 
   if (filter) {
     const { orderId, sellerName, createdIn } = filter
-
     query = orderId || ''
     seller = sellerName || ''
     creationDate = createdIn
