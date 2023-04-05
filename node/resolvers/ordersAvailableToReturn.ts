@@ -1,7 +1,7 @@
 import { ResolverError } from '@vtex/api'
 import type { OrdersToReturnList, OrderToReturnSummary } from '../../typings/OrderToReturn'
 
-import { SETTINGS_PATH } from '../utils/constants'
+import { SETTINGS_PATH, STATUS_INVOICED, STATUS_PAYMENT_APPROVE } from '../utils/constants'
 import { createOrdersToReturnSummary } from '../utils/createOrdersToReturnSummary'
 import { getCurrentDate, substractDays } from '../utils/dateHelpers'
 
@@ -19,7 +19,8 @@ const createParams = ({
   maxDays,
   userEmail,
   page = 1,
-  filter,
+  filters,
+  enableStatusSelection,
 }: {
   maxDays: number
   userEmail: string
@@ -28,7 +29,9 @@ const createParams = ({
     orderId: string
     sellerName: string
     createdIn: { from: string; to: string }
-  }
+  },
+  enableStatusSelection : boolean
+
 }) => {
   const currentDate = getCurrentDate()
 
@@ -39,9 +42,8 @@ const createParams = ({
     maxDays
   )} TO ${currentDate}]`
 
-  if (filter) {
-    const { orderId, sellerName, createdIn } = filter
-
+  if (filters) {
+    const { orderId, sellerName, createdIn } = filters
     query = orderId || ''
     seller = sellerName || ''
     creationDate = createdIn
@@ -52,7 +54,7 @@ const createParams = ({
   return {
     clientEmail: userEmail,
     orderBy: 'creationDate,desc' as const,
-    f_status: 'invoiced' as const,
+    f_status: enableStatusSelection ? STATUS_INVOICED : STATUS_PAYMENT_APPROVE ,
     f_creationDate: creationDate,
     q: query,
     f_sellerNames: seller,
@@ -93,7 +95,7 @@ export const ordersAvailableToReturn = async (
     throw new ResolverError('Return App settings is not configured')
   }
 
-  const { maxDays, excludedCategories } = settings
+  const { maxDays, excludedCategories, enableStatusSelection } = settings
   const { email } = userProfile ?? {}
 
   let userEmail = (storeUserEmail ?? email) as string
@@ -104,7 +106,7 @@ export const ordersAvailableToReturn = async (
 
   // Fetch order associated to the user email
   const { list, paging } = await oms.listOrdersWithParams(
-    createParams({ maxDays, userEmail, page, filter })
+    createParams({ maxDays, userEmail, page, filters , enableStatusSelection })
   )
 
   const orderListPromises = []

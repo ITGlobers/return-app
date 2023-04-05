@@ -9,6 +9,7 @@ export const initialSettingsState: SellerSetting = {
   id: '',
   sellerId: '',
   maxDays: 0,
+  enableStatusSelection: true,
   excludedCategories: [],
   termsUrl: '',
   paymentOptions: {
@@ -49,6 +50,13 @@ export const termsUrlAction = (termsUrl: string) => {
   }
 }
 
+export const statusAction = (enableStatusSelection: boolean) => {
+  return {
+    type: 'updateStatus' as const,
+    payload: enableStatusSelection,
+  }
+}
+
 export const paymentOptionsAction = (paymentOptions: PaymentOptions) => {
   return {
     type: 'updatePaymentOptions' as const,
@@ -72,6 +80,7 @@ export const optionsAction = (options: ReturnOption) => {
   }
 }
 
+
 export const initialStateAction = (
   initialState: SellerSetting
 ) => {
@@ -94,6 +103,7 @@ export type Actions =
   | ReturnType<typeof maxDaysAction>
   | ReturnType<typeof excludedCategoriesAction>
   | ReturnType<typeof termsUrlAction>
+  | ReturnType<typeof statusAction>
   | ReturnType<typeof paymentOptionsAction>
   | ReturnType<typeof customReturnReasonsAction>
   | ReturnType<typeof optionsAction>
@@ -126,6 +136,12 @@ export const settingsReducer = (
       }
     }
 
+    case 'updateStatus': {
+      return {
+        ...state,
+        enableStatusSelection: action.payload,
+      }
+    }
     case 'updatePaymentOptions': {
       return {
         ...state,
