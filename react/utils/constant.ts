@@ -5,11 +5,11 @@ export type OrderStatus = {
 
 export const ORDER_STATUS: OrderStatus[] = [
   {
-    label: 'Creation',
+    label: 'Order accepted',
     value: 'f_creationDate'
   },
   {
-    label: 'Authorized',
+    label: 'Payment approved',
     value: 'f_authorizedDate'
   },
   {
