@@ -19,14 +19,14 @@ const createParams = ({
   maxDays,
   userEmail,
   page = 1,
-  filters,
+  filter,
   orderStatus = 'creationDate',
 }: {
   maxDays: number
   userEmail: string
   page: number
   orderStatus?: any
-  filters?: {
+  filter?: {
     orderId: string
     sellerName: string
     createdIn: { from: string; to: string }
@@ -42,8 +42,8 @@ const createParams = ({
     maxDays
   )} TO ${currentDate}]`
 
-  if (filters) {
-    const { orderId, sellerName, createdIn } = filters
+  if (filter) {
+    const { orderId, sellerName, createdIn } = filter
 
     query = orderId || ''
     seller = sellerName || ''
@@ -70,7 +70,7 @@ export const ordersAvailableToReturn = async (
     page: number
     storeUserEmail?: string
     isAdmin?: boolean
-    filters?: {
+    filter?: {
       orderId: string
       sellerName: string
       createdIn: { from: string; to: string }
@@ -87,8 +87,8 @@ export const ordersAvailableToReturn = async (
       catalogGQL,
     },
   } = ctx
-
-  const { page, storeUserEmail, isAdmin, filters } = args
+  
+  const { page, storeUserEmail, isAdmin, filter } = args
 
   const settings = await appSettings.get(SETTINGS_PATH, true)
 
@@ -106,7 +106,7 @@ export const ordersAvailableToReturn = async (
   }
 
   // Fetch order associated to the user email
-  const params = createParams({ maxDays, userEmail, page, filters, orderStatus })
+  const params = createParams({ maxDays, userEmail, page, filter, orderStatus })
   
   const { list, paging } = await oms.listOrdersWithParams(params)
 
