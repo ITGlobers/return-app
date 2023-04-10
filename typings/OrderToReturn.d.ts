@@ -132,7 +132,7 @@ export type QueryOrdersAvailableToReturnArgs = {
   page: Scalars['Int'];
   storeUserEmail?: Maybe<Scalars['String']>;
   isAdmin?: Maybe<Scalars['Boolean']>;
-  filters?: Maybe<OrdersFilters>;
+  filter?: Maybe<OrdersFilters>;
 };
 
 export type QueryOrderToReturnSummaryArgs = {
