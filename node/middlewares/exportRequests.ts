@@ -3,20 +3,6 @@ import Papa from 'papaparse'
 
 import { returnRequestListService } from '../services/returnRequestListService'
 
-// function flattenObject(obj: any, prefix = ''): any {
-//   return Object.entries(obj).reduce((acc: any, [key, value]) => {
-//     const newKey = prefix ? `${prefix}.${key}` : key
-
-//     if (typeof value === 'object' && value !== null) {
-//       return { ...acc, ...flattenObject(value, newKey) }
-//     }
-
-//     acc[newKey] = value
-
-//     return acc
-//   }, {})
-// }
-
 function generateCSV(data: any[]) {
   const flattenedData = data.map((item: any) => ({
     ['Return Request ID']       :item?.id,
