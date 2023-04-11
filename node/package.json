@@ -5,12 +5,14 @@
     "co-body": "^6.0.0",
     "graphql": "^14.0.0",
     "graphql-tools": "^4.0.0",
-    "html-template-tag": "^4.0.1"
+    "html-template-tag": "^4.0.1",
+    "papaparse": "^5.4.1"
   },
   "devDependencies": {
     "@types/co-body": "^0.0.3",
     "@types/jest": "^24.0.18",
     "@types/node": "^12.0.0",
+    "@types/papaparse": "^5.3.7",
     "@vtex/api": "6.45.15",
     "@vtex/test-tools": "^1.0.0",
     "@vtex/tsconfig": "^0.6.0",
@@ -23,7 +25,8 @@
     "vtex.my-account": "http://vtex.vtexassets.com/_v/public/typings/v1/vtex.my-account@1.25.0/public/@types/vtex.my-account",
     "vtex.my-account-commons": "http://vtex.vtexassets.com/_v/public/typings/v1/vtex.my-account-commons@1.6.0/public/@types/vtex.my-account-commons",
     "vtex.render-runtime": "http://vtex.vtexassets.com/_v/public/typings/v1/vtex.render-runtime@8.132.4/public/@types/vtex.render-runtime",
-    "vtex.return-app": "https://eurango--obidev.myvtex.com/_v/private/typings/linked/v1/vtex.return-app@3.5.6+build1679685728/public/@types/vtex.return-app",
+    "vtex.return-app": "https://jmartinez--obidev.myvtex.com/_v/private/typings/linked/v1/vtex.return-app@3.5.6+build1680617123/public/@types/vtex.return-app",
+    "vtex.sellers-graphql": "http://vtex.vtexassets.com/_v/public/typings/v1/vtex.sellers-graphql@8.5.4/public/@types/vtex.sellers-graphql",
     "vtex.styleguide": "http://vtex.vtexassets.com/_v/public/typings/v1/vtex.styleguide@9.146.3/public/@types/vtex.styleguide",
     "vtex.tenant-graphql": "http://vtex.vtexassets.com/_v/public/typings/v1/vtex.tenant-graphql@0.1.2/public/@types/vtex.tenant-graphql"
   },
