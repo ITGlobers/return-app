@@ -19,12 +19,14 @@ const createParams = ({
   maxDays,
   userEmail,
   page = 1,
-  filters,
   enableStatusSelection,
+  filter,
+  orderStatus = 'creationDate',
 }: {
   maxDays: number
   userEmail: string
   page: number
+  orderStatus?: string
   filter?: {
     orderId: string
     sellerName: string
@@ -34,20 +36,22 @@ const createParams = ({
 
 }) => {
   const currentDate = getCurrentDate()
+  const orderStatusName = orderStatus.replace('f_','')
 
   let query = ''
   let seller = ''
-  let creationDate = `creationDate:[${substractDays(
+  let creationDate = `${orderStatusName}:[${substractDays(
     currentDate,
     maxDays
   )} TO ${currentDate}]`
 
-  if (filters) {
-    const { orderId, sellerName, createdIn } = filters
+  if (filter) {
+    const { orderId, sellerName, createdIn } = filter
+
     query = orderId || ''
     seller = sellerName || ''
     creationDate = createdIn
-      ? `creationDate:[${createdIn.from} TO ${createdIn.to}]`
+      ? `${orderStatusName}:[${createdIn.from} TO ${createdIn.to}]`
       : creationDate
   }
 
@@ -55,7 +59,7 @@ const createParams = ({
     clientEmail: userEmail,
     orderBy: 'creationDate,desc' as const,
     f_status: enableStatusSelection ? STATUS_INVOICED : STATUS_PAYMENT_APPROVE ,
-    f_creationDate: creationDate,
+    [orderStatus]: creationDate,
     q: query,
     f_sellerNames: seller,
     page,
@@ -89,13 +93,14 @@ export const ordersAvailableToReturn = async (
   
   const { page, storeUserEmail, isAdmin, filter } = args
 
+  console.log(filters)
   const settings = await appSettings.get(SETTINGS_PATH, true)
 
   if (!settings) {
     throw new ResolverError('Return App settings is not configured')
   }
 
-  const { maxDays, excludedCategories, enableStatusSelection } = settings
+  const { maxDays, excludedCategories, orderStatus, enableStatusSelection } = settings
   const { email } = userProfile ?? {}
 
   let userEmail = (storeUserEmail ?? email) as string
@@ -106,7 +111,7 @@ export const ordersAvailableToReturn = async (
 
   // Fetch order associated to the user email
   const { list, paging } = await oms.listOrdersWithParams(
-    createParams({ maxDays, userEmail, page, filters , enableStatusSelection })
+    createParams({ maxDays, userEmail, page, filter, orderStatus , enableStatusSelection })
   )
 
   const orderListPromises = []
