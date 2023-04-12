@@ -93,6 +93,7 @@ export const ordersAvailableToReturn = async (
   
   const { page, storeUserEmail, isAdmin, filter } = args
 
+  console.log(filters)
   const settings = await appSettings.get(SETTINGS_PATH, true)
 
   if (!settings) {
@@ -100,7 +101,6 @@ export const ordersAvailableToReturn = async (
   }
 
   const { maxDays, excludedCategories, orderStatus, enableStatusSelection } = settings
-  
   const { email } = userProfile ?? {}
 
   let userEmail = (storeUserEmail ?? email) as string
