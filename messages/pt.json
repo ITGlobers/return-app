@@ -418,5 +418,6 @@
   "return-app.return-order-details.pickup-address.drop-off-points": "Selecione um ponto de entrega",
   "return-app.return-order-details.pickup-address.drop-off-points.tooltip": "Você pode devolver seus itens em um de nossos pontos de entrega selecionados",
   "return-app.return-order-details.pickup-address.drop-off-points.dropdown.placehoder": "Selecione um ponto de entrega",
-  "return-app.return-order-details.pickup-address.drop-off-points.dropdown.error": "Ocorreu um erro ao carregar os pontos de entrega"
+  "return-app.return-order-details.pickup-address.drop-off-points.dropdown.error": "Ocorreu um erro ao carregar os pontos de entrega",
+  "return-app.return-request-list.table-filters.export-returns": "EXPORTAR"
 }

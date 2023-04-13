@@ -417,5 +417,6 @@
   "return-app.return-order-details.pickup-address.drop-off-points": "Selecteer een afleverpunt",
   "return-app.return-order-details.pickup-address.drop-off-points.tooltip": "U kunt uw artikelen retourneren in een van onze geselecteerde inleverpunten",
   "return-app.return-order-details.pickup-address.drop-off-points.dropdown.placehoder": "Selecteer een afleverpunt",
-  "return-app.return-order-details.pickup-address.drop-off-points.dropdown.error": "Er is een fout opgetreden bij het laden van de afleverpunten"
+  "return-app.return-order-details.pickup-address.drop-off-points.dropdown.error": "Er is een fout opgetreden bij het laden van de afleverpunten",
+  "return-app.return-request-list.table-filters.export-returns": "EXPORTEREN"
 }

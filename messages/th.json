@@ -417,5 +417,6 @@
   "return-app.return-order-details.pickup-address.drop-off-points": "เลือกจุดส่ง",
   "return-app.return-order-details.pickup-address.drop-off-points.tooltip": "คุณสามารถคืนสินค้าได้ที่จุดส่งของที่เราเลือกไว้",
   "return-app.return-order-details.pickup-address.drop-off-points.dropdown.placehoder": "เลือกจุดส่ง",
-  "return-app.return-order-details.pickup-address.drop-off-points.dropdown.error": "เกิดข้อผิดพลาดในการโหลดจุดส่ง"
+  "return-app.return-order-details.pickup-address.drop-off-points.dropdown.error": "เกิดข้อผิดพลาดในการโหลดจุดส่ง",
+  "return-app.return-request-list.table-filters.export-returns": "ส่งออก"
 }

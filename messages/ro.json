@@ -417,5 +417,6 @@
   "return-app.return-order-details.pickup-address.drop-off-points": "Selectați un punct de predare",
   "return-app.return-order-details.pickup-address.drop-off-points.tooltip": "Vă puteți returna articolele într-unul dintre punctele noastre de predare selectate",
   "return-app.return-order-details.pickup-address.drop-off-points.dropdown.placehoder": "Selectați un punct de predare",
-  "return-app.return-order-details.pickup-address.drop-off-points.dropdown.error": "A apărut o eroare la încărcarea punctelor de predare"
+  "return-app.return-order-details.pickup-address.drop-off-points.dropdown.error": "A apărut o eroare la încărcarea punctelor de predare",
+  "return-app.return-request-list.table-filters.export-returns": "EXPORTĂ"
 }

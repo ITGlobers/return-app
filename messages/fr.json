@@ -418,5 +418,6 @@
   "return-app.return-order-details.pickup-address.drop-off-points": "Sélectionnez un point de chute",
   "return-app.return-order-details.pickup-address.drop-off-points.tooltip": "Vous pouvez retourner vos articles dans l&#39;un de nos points de dépôt sélectionnés",
   "return-app.return-order-details.pickup-address.drop-off-points.dropdown.placehoder": "Sélectionnez un point de chute",
-  "return-app.return-order-details.pickup-address.drop-off-points.dropdown.error": "Une erreur s&#39;est produite lors du chargement des points de chute"
+  "return-app.return-order-details.pickup-address.drop-off-points.dropdown.error": "Une erreur s&#39;est produite lors du chargement des points de chute",
+  "return-app.return-request-list.table-filters.export-returns": "EXPORTER"
 }

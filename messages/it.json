@@ -417,5 +417,6 @@
   "return-app.return-order-details.pickup-address.drop-off-points": "Seleziona un punto di consegna",
   "return-app.return-order-details.pickup-address.drop-off-points.tooltip": "Puoi restituire i tuoi articoli in uno dei nostri punti di consegna selezionati",
   "return-app.return-order-details.pickup-address.drop-off-points.dropdown.placehoder": "Seleziona un punto di consegna",
-  "return-app.return-order-details.pickup-address.drop-off-points.dropdown.error": "Si è verificato un errore durante il caricamento dei punti di consegna"
+  "return-app.return-order-details.pickup-address.drop-off-points.dropdown.error": "Si è verificato un errore durante il caricamento dei punti di consegna",
+  "return-app.return-request-list.table-filters.export-returns": "ESPORTA"
 }

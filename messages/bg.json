@@ -418,5 +418,6 @@
   "return-app.return-order-details.pickup-address.drop-off-points": "Изберете точка за пускане",
   "return-app.return-order-details.pickup-address.drop-off-points.tooltip": "Можете да върнете артикулите си в един от нашите избрани пунктове за връщане",
   "return-app.return-order-details.pickup-address.drop-off-points.dropdown.placehoder": "Изберете точка за пускане",
-  "return-app.return-order-details.pickup-address.drop-off-points.dropdown.error": "Възникна грешка при зареждането на точките за връщане"
+  "return-app.return-order-details.pickup-address.drop-off-points.dropdown.error": "Възникна грешка при зареждането на точките за връщане",
+  "return-app.return-request-list.table-filters.export-returns": "ЕКСПОРТИРАЙ"
 }
