@@ -48,25 +48,64 @@ export async function exportRequests(ctx: Context, next: () => Promise<void>) {
 
     const getAllFields = Boolean(_allFields)
 
+    const params = {
+      perPage: _perPage ? Number(_perPage) : 100,
+      filter: {
+        status: _status as Status | undefined,
+        sequenceNumber: _sequenceNumber as string | undefined,
+        id: _id as string | undefined,
+        createdIn: _dateSubmitted ? { from, to } : undefined,
+        orderId: _orderId as string | undefined,
+        userEmail: _userEmail as string | undefined,
+        sellerName: _sellerName as string | undefined,
+      },
+    }
+
     const requests = await returnRequestListService(
       ctx,
       {
         page: _page ? Number(_page) : 1,
-        perPage: _perPage ? Number(_perPage) : 25,
-        filter: {
-          status: _status as Status | undefined,
-          sequenceNumber: _sequenceNumber as string | undefined,
-          id: _id as string | undefined,
-          createdIn: _dateSubmitted ? { from, to } : undefined,
-          orderId: _orderId as string | undefined,
-          userEmail: _userEmail as string | undefined,
-          sellerName: _sellerName as string | undefined,
-        },
+        ...params,
       },
       getAllFields
     )
 
-    const file = generateCSV(requests.list)
+    const { paging, list } = requests
+
+    let responseRequests = list
+
+    if (paging.currentPage !== paging.pages) {
+      const arrayRequests = Array.from({ length: paging.pages - 1 })
+
+      const nextRequest = await Promise.all(
+        arrayRequests.map(async (_, index) => {
+          try {
+            const page = index + 2
+
+            const nextRequestResponse = await returnRequestListService(
+              ctx,
+              {
+                page,
+                ...params,
+              },
+              getAllFields
+            )
+
+            return nextRequestResponse.list
+          } catch (error) {
+            console.error(`Error fetching page ${index + 2}:`, error)
+
+            return undefined
+          }
+        })
+      )
+
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      responseRequests = responseRequests.concat(nextRequest.flat())
+    }
+
+    const file = generateCSV(responseRequests)
 
     ctx.status = 200
     ctx.set('Content-Type', 'application/csv')
