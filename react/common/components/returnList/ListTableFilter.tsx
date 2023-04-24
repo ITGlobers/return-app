@@ -58,7 +58,7 @@ const ListTableFilter = (props: Props) => {
 
   const { refetch, loading, isDisabled } = props
 
-  const { route, account, workspace } = useRuntime()
+  const { route } = useRuntime()
   const [isFiltering, setIsFiltering] = useState(false)
   const [filters, setFilters] = useState(initialFilters)
 
@@ -122,10 +122,11 @@ const ListTableFilter = (props: Props) => {
   const downloadCSV = async () => {
     try {
       if ('createdIn' in selectedFilters) {
-        const { from, to } = selectedFilters.createdIn as FilterDates
+        const { createdIn } = selectedFilters
+        const { from, to } = createdIn as FilterDates
 
         const response = await axios.get(
-          `https://${workspace}--${account}.myvtex.com/_v/return-request/export`,
+          `/_v/return-request/export`,
           {
             params: {
               _dateSubmitted: `${from},${to}`,
@@ -137,7 +138,7 @@ const ListTableFilter = (props: Props) => {
         const link = document.createElement('a')
 
         link.href = url
-        link.setAttribute('download', 'requests.csv')
+        link.setAttribute('download', `return-requests-${(new Date().toJSON().slice(0,10))}.csv`)
         document.body.appendChild(link)
         link.click()
 

@@ -3,22 +3,35 @@ import Papa from 'papaparse'
 
 import { returnRequestListService } from '../services/returnRequestListService'
 
-function flattenObject(obj: any, prefix = ''): any {
-  return Object.entries(obj).reduce((acc: any, [key, value]) => {
-    const newKey = prefix ? `${prefix}.${key}` : key
+// function flattenObject(obj: any, prefix = ''): any {
+//   return Object.entries(obj).reduce((acc: any, [key, value]) => {
+//     const newKey = prefix ? `${prefix}.${key}` : key
 
-    if (typeof value === 'object' && value !== null) {
-      return { ...acc, ...flattenObject(value, newKey) }
-    }
+//     if (typeof value === 'object' && value !== null) {
+//       return { ...acc, ...flattenObject(value, newKey) }
+//     }
 
-    acc[newKey] = value
+//     acc[newKey] = value
 
-    return acc
-  }, {})
-}
+//     return acc
+//   }, {})
+// }
 
-function generateCSV(data: any[]): string {
-  const flattenedData = data.map((item) => flattenObject(item))
+function generateCSV(data: any[]) {
+  const flattenedData = data.map((item: any) => ({
+    ['Return Request ID']       :item?.id,
+    ['Order ID']                :item?.orderId,
+    ['Return Request Status']   :item?.status,
+    ['Return Reason']           :item?.items?.map((reason: any) => `${reason?.id}-${reason?.returnReason?.reason}`).join(','),
+    ['Customer Name']           :item?.customerProfileData?.name,
+    ['Customer Email']          :item?.customerProfileData?.email,
+    ['Seller Name']             :item?.sellerName || '',
+    'Currier'                   :item?.logisticsInfo?.currier || '',
+    'SLA'                       :item?.logisticsInfo?.sla || '',
+    ['Sequence Number']         :item?.sequenceNumber,
+    ['Creation date']           :item?.createdIn,
+    ['Creation time']           :item?.dateSubmitted
+  }))
 
   return Papa.unparse(flattenedData)
 }
@@ -109,7 +122,7 @@ export async function exportRequests(ctx: Context, next: () => Promise<void>) {
 
     ctx.status = 200
     ctx.set('Content-Type', 'application/csv')
-    ctx.set('Content-Disposition', `attachment; filename=request.csv`)
+    ctx.set('Content-Disposition', `attachment; filename=return-requests-${(new Date().toJSON().slice(0,10))}.csv`)
     ctx.body = file
   } catch (error) {
     ctx.status = 500
