@@ -334,7 +334,6 @@
   "return-app.return-request-details.cancellation.modal.storeRefuse": "Text message for refusing a cancellation for store users",
   "return-app.return-order-list.page-header.title": "Order List",
   "return-app.return-order-list.page-header.subTitle": "All return orders. Click on an order ID to create a return.",
-  "return-app.return-request-list.table-filters.export-returns": "EXPORT",
   "return-app.sellers-settings-list.table-data.settingId": "Setting ID",
   "admin/return-app.sellers-settings-list.page-header.title": "Sellers Settings List",
   "admin/return-app.sellers-settings-list.page-header.subTitle": "All settings created by sellers return app. Click a settings ID to see more.",

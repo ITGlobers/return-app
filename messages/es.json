@@ -333,7 +333,6 @@
   "return-app.return-order-details.pickup-address.drop-off-points.tooltip": "Puede devolver sus artículos en uno de nuestros puntos de entrega seleccionados",
   "return-app.return-order-details.pickup-address.drop-off-points.dropdown.placehoder": "Seleccione un punto de entrega",
   "return-app.return-order-details.pickup-address.drop-off-points.dropdown.error": "Hubo un error al cargar los puntos de entrega",
-  "return-app.return-request-list.table-filters.export-returns": "EXPORTAR",
   "admin/return-app.return-add.page-header.title": "Nueva devolución",
   "admin/return-app.return-add.page-header.subTitle": "Seleccione un artículo para iniciar el proceso de solicitud de devolución.",
   "store/return-app.return-order-details.error.order-not-invoiced": "El pedido no está facturado",

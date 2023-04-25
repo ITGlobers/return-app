@@ -327,7 +327,6 @@
   "return-app.return-order-details.pickup-address.drop-off-points.tooltip": "Puoi restituire i tuoi articoli in uno dei nostri punti di consegna selezionati",
   "return-app.return-order-details.pickup-address.drop-off-points.dropdown.placehoder": "Seleziona un punto di consegna",
   "return-app.return-order-details.pickup-address.drop-off-points.dropdown.error": "Si è verificato un errore durante il caricamento dei punti di consegna",
-  "return-app.return-request-list.table-filters.export-returns": "ESPORTA",
   "admin/return-app.sellers.settings.navigation.label": "Impostazioni resi venditori",
   "admin/return-app.sellers-settings-list.page-header.title": "Elenco impostazioni venditori",
   "admin/return-app.sellers-settings-list.page-header.subTitle": "Tutte le impostazioni create dai venditori restituiscono l&#39;app. Fai clic su un ID impostazioni per vedere di più.",

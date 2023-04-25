@@ -328,7 +328,6 @@
   "return-app.return-order-details.pickup-address.drop-off-points.tooltip": "Você pode devolver seus itens em um de nossos pontos de entrega selecionados",
   "return-app.return-order-details.pickup-address.drop-off-points.dropdown.placehoder": "Selecione um ponto de entrega",
   "return-app.return-order-details.pickup-address.drop-off-points.dropdown.error": "Ocorreu um erro ao carregar os pontos de entrega",
-  "return-app.return-request-list.table-filters.export-returns": "EXPORTAR",
   "admin/return-app.sellers.settings.navigation.label": "Configurações de devolução de vendedores",
   "admin/return-app.sellers-settings-list.page-header.title": "Lista de configurações de vendedores",
   "admin/return-app.sellers-settings-list.page-header.subTitle": "Todas as configurações criadas pelos vendedores retornam o app. Clique em um ID de configuração para ver mais.",

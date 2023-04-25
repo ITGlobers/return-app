@@ -327,7 +327,6 @@
   "return-app.return-order-details.pickup-address.drop-off-points.tooltip": "คุณสามารถคืนสินค้าได้ที่จุดส่งของที่เราเลือกไว้",
   "return-app.return-order-details.pickup-address.drop-off-points.dropdown.placehoder": "เลือกจุดส่ง",
   "return-app.return-order-details.pickup-address.drop-off-points.dropdown.error": "เกิดข้อผิดพลาดในการโหลดจุดส่ง",
-  "return-app.return-request-list.table-filters.export-returns": "ส่งออก",
   "admin/return-app.sellers.settings.navigation.label": "ผู้ขายส่งคืนการตั้งค่า",
   "admin/return-app.sellers-settings-list.page-header.title": "รายการการตั้งค่าผู้ขาย",
   "admin/return-app.sellers-settings-list.page-header.subTitle": "การตั้งค่าทั้งหมดที่สร้างโดยผู้ขายคืนแอป คลิก ID การตั้งค่าเพื่อดูเพิ่มเติม",

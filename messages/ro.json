@@ -327,7 +327,6 @@
   "return-app.return-order-details.pickup-address.drop-off-points.tooltip": "Vă puteți returna articolele într-unul dintre punctele noastre de predare selectate",
   "return-app.return-order-details.pickup-address.drop-off-points.dropdown.placehoder": "Selectați un punct de predare",
   "return-app.return-order-details.pickup-address.drop-off-points.dropdown.error": "A apărut o eroare la încărcarea punctelor de predare",
-  "return-app.return-request-list.table-filters.export-returns": "EXPORTĂ",
   "admin/return-app.sellers.settings.navigation.label": "Setări pentru returnări ale vânzătorilor",
   "admin/return-app.sellers-settings-list.page-header.title": "Lista de setări ale vânzătorilor",
   "admin/return-app.sellers-settings-list.page-header.subTitle": "Toate setările create de către vânzători returnează aplicația. Faceți clic pe un ID de setări pentru a vedea mai multe.",
