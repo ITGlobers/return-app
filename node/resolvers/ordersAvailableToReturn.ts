@@ -51,11 +51,22 @@ const createParams = ({
       : creationDate
   }
 
+  if(orderStatus === 'partial-invoiced') {
+    return {
+      clientEmail: userEmail,
+      orderBy: 'creationDate,desc' as const,
+      f_status: 'invoiced,payment-approved,handling',
+      q: query,
+      f_sellerNames: seller,
+      page,
+      per_page: 10 as const,  
+    }
+  }
+
   return {
     clientEmail: userEmail,
     orderBy: 'creationDate,desc' as const,
-    // f_status: enableStatusSelection ? STATUS_INVOICED : `${STATUS_INVOICED},${STATUS_PAYMENT_APPROVE}`,
-    f_status: '',
+    f_status: 'invoiced',
     [orderStatus]: creationDate,
     q: query,
     f_sellerNames: seller,
@@ -106,8 +117,10 @@ export const ordersAvailableToReturn = async (
   }
 
   // Fetch order associated to the user email
+  const params = createParams({ maxDays, userEmail, page, filter, orderStatus })
+  console.log('params: ', params)
   const { list, paging } = await oms.listOrdersWithParams(
-    createParams({ maxDays, userEmail, page, filter, orderStatus })
+    params
   )
 
   const orderListPromises = []
@@ -124,19 +137,50 @@ export const ordersAvailableToReturn = async (
 
   const orders = await Promise.all(orderListPromises)
 
+  
   const orderSummaryPromises: Array<Promise<OrderToReturnSummary>> = []
-
+  
   for (const order of orders) {
-    const orderToReturnSummary = createOrdersToReturnSummary(order, userEmail, {
-      excludedCategories,
-      returnRequestClient,
-      catalogGQL,
-    })
+    
+    if(orderStatus === 'partial-invoiced' && order.status !== 'invoiced'){
+      console.log('orderStatus: ', orderStatus)
+      const currentDate = getCurrentDate()
+      const startDate = substractDays(currentDate, maxDays || 0 )
+      const endDate = currentDate
 
-    orderSummaryPromises.push(orderToReturnSummary)
+      const currentOrder = order.packageAttachment.packages.map((item: any) => item.issuanceDate)
+
+      if(currentOrder.length > 0){
+        const haspackage = currentOrder.map((issuanceDate: any) => {
+          if(issuanceDate >= startDate && issuanceDate <= endDate){
+            return issuanceDate
+          }
+        });
+
+        if(haspackage.length > 0){
+          const orderToReturnSummary = createOrdersToReturnSummary(order, userEmail, {
+            excludedCategories,
+            returnRequestClient,
+            catalogGQL,
+          })
+      
+          orderSummaryPromises.push(orderToReturnSummary)    
+        }
+      }
+
+    } else {
+      const orderToReturnSummary = createOrdersToReturnSummary(order, userEmail, {
+        excludedCategories,
+        returnRequestClient,
+        catalogGQL,
+      })
+  
+      orderSummaryPromises.push(orderToReturnSummary)
+    }
+
   }
 
   const orderList = await Promise.all(orderSummaryPromises)
-
+  console.log('orderList: ', orderList.length)
   return { list: orderList, paging }
 }
