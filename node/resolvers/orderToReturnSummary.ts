@@ -31,7 +31,7 @@ export const orderToReturnSummary = async (
     throw new ResolverError('Return App settings is not configured', 500)
   }
 
-  const { maxDays, excludedCategories , enableStatusSelection} = settings
+  const { maxDays, excludedCategories } = settings
 
   // For requests where orderId is an empty string
   if (!orderId) {
@@ -51,9 +51,7 @@ export const orderToReturnSummary = async (
   canOrderBeReturned({
     creationDate,
     maxDays,
-    status,
-    enableStatusSelection
-
+    status
   })
 
   const customerEmail = getCustomerEmail(

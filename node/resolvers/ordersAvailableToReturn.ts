@@ -1,7 +1,7 @@
 import { ResolverError } from '@vtex/api'
 import type { OrdersToReturnList, OrderToReturnSummary } from '../../typings/OrderToReturn'
 
-import { SETTINGS_PATH, STATUS_INVOICED, STATUS_PAYMENT_APPROVE } from '../utils/constants'
+import { SETTINGS_PATH } from '../utils/constants'
 import { createOrdersToReturnSummary } from '../utils/createOrdersToReturnSummary'
 import { getCurrentDate, substractDays } from '../utils/dateHelpers'
 
@@ -19,7 +19,6 @@ const createParams = ({
   maxDays,
   userEmail,
   page = 1,
-  enableStatusSelection,
   filter,
   orderStatus = 'f_creationDate',
 }: {
@@ -32,7 +31,6 @@ const createParams = ({
     sellerName: string
     createdIn: { from: string; to: string }
   },
-  enableStatusSelection : boolean | undefined | null
 }) => {
   const currentDate = getCurrentDate()
   const orderStatusName = orderStatus?.replace('f_','')
@@ -56,7 +54,8 @@ const createParams = ({
   return {
     clientEmail: userEmail,
     orderBy: 'creationDate,desc' as const,
-    f_status: enableStatusSelection ? STATUS_INVOICED : `${STATUS_INVOICED},${STATUS_PAYMENT_APPROVE}`,
+    // f_status: enableStatusSelection ? STATUS_INVOICED : `${STATUS_INVOICED},${STATUS_PAYMENT_APPROVE}`,
+    f_status: '',
     [orderStatus]: creationDate,
     q: query,
     f_sellerNames: seller,
@@ -97,7 +96,7 @@ export const ordersAvailableToReturn = async (
     throw new ResolverError('Return App settings is not configured')
   }
 
-  const { maxDays, excludedCategories, orderStatus, enableStatusSelection } = settings
+  const { maxDays, excludedCategories, orderStatus } = settings
   const { email } = userProfile ?? {}
 
   let userEmail = (storeUserEmail ?? email) as string
@@ -108,7 +107,7 @@ export const ordersAvailableToReturn = async (
 
   // Fetch order associated to the user email
   const { list, paging } = await oms.listOrdersWithParams(
-    createParams({ maxDays, userEmail, page, filter, orderStatus , enableStatusSelection })
+    createParams({ maxDays, userEmail, page, filter, orderStatus })
   )
 
   const orderListPromises = []
