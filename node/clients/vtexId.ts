@@ -72,4 +72,14 @@ export class VtexId extends JanusClient {
   public getAuthToken() {
     return this.context.adminUserAuthToken ?? this.context.authToken
   }
+
+  public searchEmailByUserId(userId: string, token: string | undefined, isCookie: boolean = false) {
+    return this.http.get(`/api/dataentities/CL/search?userId=${userId}&_fields=email`, {
+      metric: 'get-email-by-userId',
+      headers: {
+        [isCookie ? 'cookie' : 'VtexIdClientAutCookie']: token,
+      }
+    })
+  }
+  
 }

@@ -15,14 +15,16 @@ export const orderToReturnSummary = async (
   const { orderId, storeUserEmail } = args
   
   const {
+    header,
     state: { userProfile, appkey },
     clients: {
       appSettings,
       oms,
       returnRequest: returnRequestClient,
       catalogGQL,
+      vtexId
     },
-    vtex: { logger },
+    vtex: { logger, adminUserAuthToken },
   } = ctx
 
   const settings = await appSettings.get(SETTINGS_PATH, true)
@@ -30,8 +32,7 @@ export const orderToReturnSummary = async (
   if (!settings) {
     throw new ResolverError('Return App settings is not configured', 500)
   }
-
-  const { maxDays, excludedCategories } = settings
+  const { maxDays, excludedCategories, orderStatus } = settings
 
   // For requests where orderId is an empty string
   if (!orderId) {
@@ -42,6 +43,10 @@ export const orderToReturnSummary = async (
 
   const { creationDate, clientProfileData, status } = order
 
+  let userEmail = ''
+
+  const authCookie = header.cookie as string | undefined
+
   isUserAllowed({
     requesterUser: userProfile,
     clientProfile: clientProfileData,
@@ -51,15 +56,28 @@ export const orderToReturnSummary = async (
   canOrderBeReturned({
     creationDate,
     maxDays,
-    status
+    status,
+    orderStatus
   })
+
+  if(userProfile?.role === 'admin'){
+    try {
+      if(adminUserAuthToken){
+        const [ { email } ] = await vtexId.searchEmailByUserId(clientProfileData?.userProfileId, adminUserAuthToken)
+        userEmail = email
+      } else {
+        const [ { email } ] = await vtexId.searchEmailByUserId(clientProfileData?.userProfileId, authCookie, true)
+        userEmail = email
+      }
+    } catch (error) {}
+  }
 
   const customerEmail = getCustomerEmail(
     clientProfileData,
     {
       userProfile,
       appkey,
-      inputEmail: storeUserEmail || clientProfileData?.email,
+      inputEmail: storeUserEmail || userEmail || clientProfileData?.email,
     },
     {
       logger,
