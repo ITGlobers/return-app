@@ -117,10 +117,8 @@ export const ordersAvailableToReturn = async (
   }
 
   // Fetch order associated to the user email
-  const params = createParams({ maxDays, userEmail, page, filter, orderStatus })
-  console.log('params: ', params)
   const { list, paging } = await oms.listOrdersWithParams(
-    params
+    createParams({ maxDays, userEmail, page, filter, orderStatus })
   )
 
   const orderListPromises = []
@@ -141,22 +139,23 @@ export const ordersAvailableToReturn = async (
   const orderSummaryPromises: Array<Promise<OrderToReturnSummary>> = []
   
   for (const order of orders) {
-    
     if(orderStatus === 'partial-invoiced' && order.status !== 'invoiced'){
-      console.log('orderStatus: ', orderStatus)
       const currentDate = getCurrentDate()
       const startDate = substractDays(currentDate, maxDays || 0 )
       const endDate = currentDate
 
-      const currentOrder = order.packageAttachment.packages.map((item: any) => item.issuanceDate)
-
-      if(currentOrder.length > 0){
-        const haspackage = currentOrder.map((issuanceDate: any) => {
-          if(issuanceDate >= startDate && issuanceDate <= endDate){
-            return issuanceDate
+      const deliveredDate = order.packageAttachment.packages.filter((item: any) => {
+        if(item?.courierStatus?.deliveredDate){
+          return item.courierStatus.deliveredDate
+        }
+      })
+      if(deliveredDate.length > 0){
+        const haspackage = deliveredDate.map((delivered: any) => {
+          if(delivered.courierStatus.deliveredDate >= startDate && delivered.courierStatus.deliveredDate <= endDate){
+            return delivered
           }
         });
-
+        
         if(haspackage.length > 0){
           const orderToReturnSummary = createOrdersToReturnSummary(order, userEmail, {
             excludedCategories,
@@ -182,5 +181,8 @@ export const ordersAvailableToReturn = async (
 
   const orderList = await Promise.all(orderSummaryPromises)
   console.log('orderList: ', orderList.length)
-  return { list: orderList, paging }
+  return { list: orderList, paging: {
+    ...paging,
+    perPage: orderList.length
+  } }
 }
