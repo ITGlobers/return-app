@@ -72,23 +72,5 @@ export class VtexId extends JanusClient {
   public getAuthToken() {
     return this.context.adminUserAuthToken ?? this.context.authToken
   }
-
-  public searchEmailByUserId(userId: string, token: string | undefined) {
-    return this.http.get(`/api/dataentities/CL/search?userId=${userId}&_fields=email`, {
-      metric: 'get-email-by-userId',
-      headers: {
-        VtexIdClientAutCookie: token,
-      }
-    })
-  }
-
-  public getProfileUnmask(userId: string, token: string | undefined) {
-    return this.http.get(`/api/storage/profile-system/profiles/${userId}/unmask`, {
-      metric: 'get-profile-unmask',
-      headers: {
-        VtexIdClientAutCookie: token,
-      }
-    })
-  }
   
 }

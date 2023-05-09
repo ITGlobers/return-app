@@ -21,7 +21,7 @@ export const orderToReturnSummary = async (
       oms,
       returnRequest: returnRequestClient,
       catalogGQL,
-      vtexId
+      profile
     },
     vtex: { logger, adminUserAuthToken },
   } = ctx
@@ -57,22 +57,57 @@ export const orderToReturnSummary = async (
     orderStatus
   })
   
-  console.log('userProfileId: ', clientProfileData?.userProfileId)
-  console.log('adminUserAuthToken: ', adminUserAuthToken)
   if(userProfile?.role === 'admin'){
     try {
-      const profile = await vtexId.searchEmailByUserId(clientProfileData?.userProfileId, adminUserAuthToken)
-      console.log('profile: ', profile)
-      userEmail = profile?.[0]?.document?.email
+      const profileUnmask = await profile.getProfileUnmask(clientProfileData?.userProfileId, adminUserAuthToken)
 
-      if(!userEmail){
-        const response = await vtexId.getProfileUnmask(clientProfileData?.userProfileId, adminUserAuthToken)
-        userEmail = response?.[0]?.email
+      if(profileUnmask?.[0]?.document?.email){
+        const currenProfile = profileUnmask?.[0]?.document
+        userEmail = currenProfile.email
+
+        order.clientProfileData = {
+          ...order.clientProfileData,
+          email: userEmail,
+          firstName: currenProfile?.firstName,
+          lastName: currenProfile?.lastName,
+          phone: currenProfile?.homePhone,
+        }
+
+      } else {
+        const response = await profile.searchEmailByUserId(clientProfileData?.userProfileId, adminUserAuthToken)
+        
+        if(response.length > 0){
+          const currenProfile = response?.[0]
+          userEmail = currenProfile?.email
+  
+          order.clientProfileData = {
+            ...order.clientProfileData,
+            email: userEmail,
+            firstName: currenProfile?.email?.firstName,
+            lastName: currenProfile?.email?.lastName,
+            phone: currenProfile?.email?.phone,
+          }
+        }
+      }
+    } catch (error) {}
+
+    try {
+      const addressUnmask = await profile.getAddressUnmask(clientProfileData?.userProfileId, adminUserAuthToken)
+      
+      if(addressUnmask?.[0]?.document){
+        const address = addressUnmask?.[0]?.document
+
+        order.shippingData.address = {
+          ...order.shippingData.address,
+          receiverName: address.receiverName,
+          city: address.locality,
+          postalCode: address.postalCode,
+          street: address.route,
+          number: address.streetNumber
+        }
       }
 
-    } catch (error) {
-      console.log('error: ', error)
-    }
+    } catch (error) {}
   }
 
   const customerEmail = getCustomerEmail(
