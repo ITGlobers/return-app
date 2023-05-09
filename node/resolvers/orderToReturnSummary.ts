@@ -15,7 +15,6 @@ export const orderToReturnSummary = async (
   const { orderId, storeUserEmail } = args
   
   const {
-    header,
     state: { userProfile, appkey },
     clients: {
       appSettings,
@@ -45,8 +44,6 @@ export const orderToReturnSummary = async (
 
   let userEmail = ''
 
-  const authCookie = header.cookie as string | undefined
-
   isUserAllowed({
     requesterUser: userProfile,
     clientProfile: clientProfileData,
@@ -59,17 +56,23 @@ export const orderToReturnSummary = async (
     status,
     orderStatus
   })
-
+  
+  console.log('userProfileId: ', clientProfileData?.userProfileId)
+  console.log('adminUserAuthToken: ', adminUserAuthToken)
   if(userProfile?.role === 'admin'){
     try {
-      if(adminUserAuthToken){
-        const [ { email } ] = await vtexId.searchEmailByUserId(clientProfileData?.userProfileId, adminUserAuthToken)
-        userEmail = email
-      } else {
-        const [ { email } ] = await vtexId.searchEmailByUserId(clientProfileData?.userProfileId, authCookie, true)
-        userEmail = email
+      const profile = await vtexId.searchEmailByUserId(clientProfileData?.userProfileId, adminUserAuthToken)
+      console.log('profile: ', profile)
+      userEmail = profile?.[0]?.document?.email
+
+      if(!userEmail){
+        const response = await vtexId.getProfileUnmask(clientProfileData?.userProfileId, adminUserAuthToken)
+        userEmail = response?.[0]?.email
       }
-    } catch (error) {}
+
+    } catch (error) {
+      console.log('error: ', error)
+    }
   }
 
   const customerEmail = getCustomerEmail(

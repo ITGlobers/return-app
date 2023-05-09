@@ -180,9 +180,16 @@ export const ordersAvailableToReturn = async (
   }
 
   const orderList = await Promise.all(orderSummaryPromises)
-  console.log('orderList: ', orderList.length)
+  console.log('orderList: ', orderList?.length)
+  console.log('paging: ', paging)
+
+  if(orderList.length === 0 && paging.currentPage < paging.pages){
+    
+  }
+
   return { list: orderList, paging: {
     ...paging,
-    perPage: orderList.length
+    perPage: orderList?.length || 0
   } }
+
 }
