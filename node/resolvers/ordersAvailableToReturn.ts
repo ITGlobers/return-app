@@ -59,7 +59,7 @@ const createParams = ({
       q: query,
       f_sellerNames: seller,
       page,
-      per_page: 10 as const,  
+      per_page: 20 as const,
     }
   }
 
@@ -180,12 +180,6 @@ export const ordersAvailableToReturn = async (
   }
 
   const orderList = await Promise.all(orderSummaryPromises)
-  console.log('orderList: ', orderList?.length)
-  console.log('paging: ', paging)
-
-  if(orderList.length === 0 && paging.currentPage < paging.pages){
-    
-  }
 
   return { list: orderList, paging: {
     ...paging,
