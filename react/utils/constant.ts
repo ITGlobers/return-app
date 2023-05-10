@@ -9,7 +9,7 @@ export const ORDER_STATUS: OrderStatus[] = [
     value: 'f_creationDate'
   },
   {
-    label: 'Partial invoiced',
+    label: 'Partially invoiced',
     value: 'partial-invoiced'
   },
   {
