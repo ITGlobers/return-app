@@ -145,7 +145,6 @@ export type ReturnRequestItemInput = {
   quantity: Scalars['Int'];
   condition?: InputMaybe<ItemCondition>;
   returnReason: ReturnReasonInput;
-  id: Scalars['String'];
 };
 
 export type ReturnReasonInput = {

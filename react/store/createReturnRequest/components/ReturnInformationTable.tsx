@@ -49,15 +49,15 @@ export const ReturnInformationTable = ({ items, selectedItems }: Props) => {
       </thead>
       <tbody className={`${handles.returnInfoBodyContainer} v-mid`}>
         {selectedItems.map(
-          ({ quantity, condition, returnReason, id}, key) => {
+          ({ quantity, condition, returnReason, orderItemIndex }, key) => {
             const { reason } = returnReason
 
             if (!quantity) {
               return null
             }
-            
-            const currentItem = items.find((item) => item.id === id)
-            const { imageUrl, localizedName, name } = currentItem || {} //items?.[orderItemIndex] || {}
+
+            const currentItem = items.find((item) => item.orderItemIndex === orderItemIndex)
+            const { imageUrl, localizedName, name } = currentItem || {} // items?.[orderItemIndex] || {}
 
             return (
               <tr

@@ -97,10 +97,9 @@ export const CreateReturnRequest = (props: any) => {
         orderId: id,
         customerProfileData: clientProfileData,
         pickupReturnData: initialPickupAddress,
-        items: itemsToReturn.map(({ orderItemIndex, id }) => ({
+        items: itemsToReturn.map(({ orderItemIndex }) => ({
           orderItemIndex,
-          quantity: 0,
-          id
+          quantity: 0
         })),
         refundPaymentData: enablePaymentMethodSelection
           ? undefined
