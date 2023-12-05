@@ -28,6 +28,8 @@ const ApproveRequest = ({ onViewVerifyItems }) => {
     })
   }
 
+  const needToVerifyItems = status === 'new' || status === 'preRefunded'
+
   return (
     <>
       <div className={phone ? 'mt4' : ''}>
@@ -35,9 +37,9 @@ const ApproveRequest = ({ onViewVerifyItems }) => {
           type="button"
           variation="primary"
           size="small"
-          onClick={status === 'new' ? onViewVerifyItems : handleRefund}
+          onClick={needToVerifyItems ? onViewVerifyItems : handleRefund}
         >
-          {status === 'new' ? (
+          {needToVerifyItems ? (
             <FormattedMessage id="admin/return-app.return-request-details.verify-items.button" />
           ) : (
             <FormattedMessage id="admin/return-app.return-request-details.refund-amount.button" />

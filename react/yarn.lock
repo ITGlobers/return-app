@@ -5206,9 +5206,9 @@ verror@1.10.0:
   version "8.134.2"
   resolved "http://vtex.vtexassets.com/_v/public/typings/v1/vtex.render-runtime@8.134.2/public/@types/vtex.render-runtime#ae69e2b2a471291c6c6b155e17510150fbfc2d0e"
 
-"vtex.return-app@https://jmartinez--obidev.myvtex.com/_v/private/typings/linked/v1/vtex.return-app@3.16.1-hkignore+build1696444869/public/@types/vtex.return-app":
+"vtex.return-app@https://jreturn--obidev.myvtex.com/_v/private/typings/linked/v1/vtex.return-app@3.16.1-hkignore+build1700584795/public/@types/vtex.return-app":
   version "3.16.1-hkignore"
-  resolved "https://jmartinez--obidev.myvtex.com/_v/private/typings/linked/v1/vtex.return-app@3.16.1-hkignore+build1696444869/public/@types/vtex.return-app#67cd7f2fdd194d71c8e37b8a28377628c1877e2e"
+  resolved "https://jreturn--obidev.myvtex.com/_v/private/typings/linked/v1/vtex.return-app@3.16.1-hkignore+build1700584795/public/@types/vtex.return-app#4f8fbf7a55baf6e7182af4c09dc4e65959adf104"
 
 "vtex.sellers-graphql@http://vtex.vtexassets.com/_v/public/typings/v1/vtex.sellers-graphql@8.5.4/public/@types/vtex.sellers-graphql":
   version "8.5.4"

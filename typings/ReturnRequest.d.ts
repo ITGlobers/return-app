@@ -24,6 +24,7 @@ export interface ReturnRequest {
   sequenceNumber: string
   status:
     | 'new'
+    | 'preRefunded'
     | 'processing'
     | 'pickedUpFromClient'
     | 'pendingVerification'
@@ -112,6 +113,7 @@ export interface ReturnRequest {
   refundStatusData: Array<{
     status:
       | 'new'
+      | 'preRefunded'
       | 'processing'
       | 'pickedUpFromClient'
       | 'pendingVerification'
@@ -235,6 +237,7 @@ export type ReturnRequestResponse = {
 export type Status =
   | 'new'
   | 'processing'
+  | 'preRefunded'
   | 'pickedUpFromClient'
   | 'pendingVerification'
   | 'packageVerified'

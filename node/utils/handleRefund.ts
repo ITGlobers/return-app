@@ -46,7 +46,7 @@ export const handleRefund = async ({
   // To avoid handling the amountRefunded after it has been already done, we check the previous status.
   // If the current status is already amountRefunded, it means the refund has already been done and we don't need to do it again.
   const shouldHandle =
-    currentStatus === 'amountRefunded' &&
+    (currentStatus === 'amountRefunded' || currentStatus === 'preRefunded') &&
     previousStatus !== 'amountRefunded' &&
     refundInvoice
 
@@ -90,20 +90,30 @@ export const handleRefund = async ({
   const refundPayment =
     refundPaymentMethod === 'card' ||
     (refundPaymentMethod === 'sameAsPurchase' &&
-      automaticallyRefundPaymentMethod)
+      !automaticallyRefundPaymentMethod)
 
   if (refundPayment) {
     try {
+      const invoiceValue =
+        currentStatus === 'amountRefunded'
+          ? 0
+          : (refundInvoice?.invoiceValue as number)
+
       await omsClient.createInvoice(orderId, {
         type: 'Input',
         issuanceDate: createdAt,
         invoiceNumber: refundInvoice?.invoiceNumber as string,
-        invoiceValue: refundInvoice?.invoiceValue as number,
+        invoiceValue,
         items:
           refundInvoice?.items?.map((item) => {
+            const price =
+              currentStatus === 'amountRefunded'
+                ? 0
+                : (item.price as number) - (item.restockFee as number)
+
             return {
               id: item.id as string,
-              price: (item.price as number) - (item.restockFee as number),
+              price,
               quantity: item.quantity as number,
             }
           }) ?? [],

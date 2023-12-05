@@ -6,6 +6,7 @@ export async function errorHandler(ctx: Context, next: () => Promise<void>) {
   try {
     await next()
   } catch (error) {
+    console.error(error.response?.data.errors[0].errors)
     logger.error({
       message: error.message,
       error,

@@ -3,7 +3,15 @@ import { ResolverError, UserInputError } from '@vtex/api'
 import type { Status } from '../../typings/ReturnRequest'
 
 const statusAllowed: Record<Status, Status[]> = {
-  new: ['new', 'processing', 'packageVerified', 'denied', 'canceled'],
+  new: [
+    'new',
+    'preRefunded',
+    'processing',
+    'packageVerified',
+    'denied',
+    'canceled',
+  ],
+  preRefunded: ['preRefunded', 'packageVerified'],
   processing: ['processing', 'pickedUpFromClient', 'denied', 'canceled'],
   pickedUpFromClient: ['pickedUpFromClient', 'pendingVerification', 'denied'],
   pendingVerification: ['pendingVerification', 'packageVerified'],

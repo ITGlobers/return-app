@@ -8,6 +8,7 @@ import type {
 
 const statusSequence: Status[] = [
   'new',
+  'preRefunded',
   // 'processing',
   // 'pickedUpFromClient',
   // 'pendingVerification',
@@ -16,7 +17,8 @@ const statusSequence: Status[] = [
 ]
 
 export const statusAllowed: Record<Status, Status[]> = {
-  new: ['new', 'processing', 'denied', 'canceled'],
+  new: ['new', 'preRefunded', 'processing', 'denied', 'canceled'],
+  preRefunded: ['preRefunded', 'packageVerified'],
   processing: ['processing', 'pickedUpFromClient', 'denied', 'canceled'],
   pickedUpFromClient: ['pickedUpFromClient', 'pendingVerification', 'denied'],
   // In this step, when sending the items to the resolver, it will assign the status denied or packageVerified based on the items sent.
@@ -40,6 +42,7 @@ export const statusMessageIdAdmin = defineMessages({
 
 export const timelineStatusMessageId = defineMessages({
   new: { id: 'return-app-status.timeline.new' },
+  preRefunded: { id: 'return-app-status.timeline.preRefunded' },
   processing: { id: 'return-app-status.timeline.processing' },
   pickedUpFromClient: {
     id: 'return-app-status.timeline.pickedup-from-client',

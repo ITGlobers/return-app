@@ -281,6 +281,9 @@
           "type": "string"
         }
       }
+    },
+    "preRefundData": {
+      "type": "string"
     }
   },
   "$defs": {
@@ -288,6 +291,7 @@
       "type": "string",
       "enum": [
         "new",
+        "preRefunded",
         "processing",
         "pickedUpFromClient",
         "pendingVerification",

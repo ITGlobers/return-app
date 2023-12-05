@@ -13,6 +13,7 @@ import type { Status } from '../../../typings/ReturnRequest'
 
 const status = {
   new: 'new',
+  preRefunded: 'preRefunded',
   processing: 'processing',
   picked: 'pickedUpFromClient',
   pendingVerification: 'pendingVerification',
@@ -84,6 +85,16 @@ export function renderStatus(requestStatus: Status) {
             <IconCheck size={14} />
           </span>
           <FormattedMessage id="return-app.return-request-list.table.status.refunded" />
+        </div>
+      )
+
+    case status.preRefunded:
+      return (
+        <div className="yellow flex items-center">
+          <span className="mr2 flex">
+            <IconCheck size={14} />
+          </span>
+          <FormattedMessage id="return-app.return-request-list.table.status.preRefunded" />
         </div>
       )
 
