@@ -11,6 +11,7 @@ import { sellerValidation } from './sellerValidation'
 import { getOrdersList } from './getOrdersList'
 import { createGiftcard } from './giftcard'
 import { exportRequests } from './exportRequests'
+import getOrderRefundsSummary from './getOrderRefundsSummary'
 
 export const middlewares = {
   saveAppSetting,
@@ -28,4 +29,5 @@ export const middlewares = {
   getOrdersList,
   createGiftcard,
   exportRequests,
+  getOrderRefundsSummary,
 }

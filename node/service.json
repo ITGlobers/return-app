@@ -36,6 +36,10 @@
     "giftcard": {
       "path": "/_v/returns/seller/giftcard",
       "public": true
+    },
+    "orderSummary": {
+      "path": "/_v/return-request/orders/:orderId/summary",
+      "public": true
     }
   }
 }
