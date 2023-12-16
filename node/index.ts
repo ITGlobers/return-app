@@ -88,7 +88,8 @@ export default new Service<Clients, State, ParamsContext>({
       POST: [errorHandler, auth, createGiftcard],
     }),
     orderSummary: method({
-      POST: [errorHandler, auth, getOrderRefundsSummary],
+      // POST: [errorHandler, auth, getOrderRefundsSummary],
+      POST: [getOrderRefundsSummary],
     }),
   },
   graphql: {

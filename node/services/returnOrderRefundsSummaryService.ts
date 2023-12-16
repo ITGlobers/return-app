@@ -1,46 +1,37 @@
-import type { ReturnRequest } from 'vtex.return-app'
-
-import type OrderRefundsSummary from '../typings/orderRefundsSummary'
+import type { OrderRefundsSummary } from '../typings/orderRefundsSummary'
 
 const returnOrderRefundsSumaryService = async (
   ctx: Context
-): Promise<OrderRefundsSummary> => {
+): Promise<OrderRefundsSummary | null> => {
   const {
-    clients: { returnRequest: returnRequestClient, oms: omsClient },
+    clients: { orderRefundsSummaryClient },
     vtex: {
       logger,
       route: { params },
     },
   } = ctx
 
-  const orderId = params.orderId as string
+  try {
+    const orderId = params.orderId as string
 
-  logger.info(`Order Id ${orderId} Summary requested`)
+    logger.info(`Order Id ${orderId} Summary requested`)
 
-  // TODO: ask for entity name
-  const [currentRefunds, orderFound] = await Promise.all([
-    await returnRequestClient.search(
+    const refundsFoundByOrderId = await orderRefundsSummaryClient.search(
       { page: 1, pageSize: 10 },
-      ['_all'],
+      ['orderId,orderValue,refunds,refundable'],
       undefined,
       `orderId=${orderId}`
-    ),
-    await omsClient.order(orderId),
-  ])
+    )
 
-  // TODO: integration tests
-  return {
-    orderId,
-    orderValue: orderFound.value,
-    refundable: {
-      available: 0,
-      shipping: 0,
-    },
-    refunds: currentRefunds.map((refund: ReturnRequest) => ({
-      id: refund.sequenceNumber,
-      type: 'goodwill',
-      value: refund.refundableAmount,
-    })),
+    logger.info(`Refund Summaries found => ${refundsFoundByOrderId}`)
+
+    if (refundsFoundByOrderId.length === 0) return null
+
+    return refundsFoundByOrderId[0]
+  } catch (e) {
+    logger.info(`Refund Summaries error => ${e}`)
+
+    return null
   }
 }
 

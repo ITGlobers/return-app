@@ -11,6 +11,7 @@ import Checkout from './checkout'
 import { VtexId } from './vtexId'
 import { CatalogGQL } from './catalogGQL'
 import ReturnRequestClient from './returnRequest'
+import OrderRefundsSummaryClient from './orderRefundsSummary'
 
 const ReturnAppSettingsClient = vbaseFor<string, ReturnAppSettings>(
   'appSettings'
@@ -38,6 +39,10 @@ export class Clients extends IOClients {
 
   public get returnRequest() {
     return this.getOrSet('returnRequest', ReturnRequestClient)
+  }
+
+  public get orderRefundsSummaryClient() {
+    return this.getOrSet('orderRefundsSummaryClient', OrderRefundsSummaryClient)
   }
 
   public get sellerSetting() {

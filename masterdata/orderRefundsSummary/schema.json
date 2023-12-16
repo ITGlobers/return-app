@@ -1,0 +1,46 @@
+{
+  "properties": {
+    "orderId": {
+      "type": "string"
+    },
+    "value": {
+      "type": "integer"
+    },
+    "refundable": {
+      "type": "object",
+      "properties": {
+        "available": {
+          "type": "integer"
+        },
+        "shipping": {
+          "type": "integer"
+        }
+      },
+      "required": ["id", "value"]
+    },
+    "refunds": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["goodwill", "prerefund", "refund"]
+          },
+          "value": {
+            "type": "integer"
+          }
+        },
+        "required": ["id", "type", "value"]
+      }
+    }
+  },
+  "required": ["orderId", "value", "refundable", "refunds"],
+  "v-cache": false,
+  "v-default-fields": ["id", "createdIn"],
+  "v-indexed": ["id", "orderId"],
+  "v-immediate-indexing": true
+}
