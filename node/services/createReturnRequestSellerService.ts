@@ -1,7 +1,7 @@
-import type { ReturnRequestCreated } from '../../typings/ReturnRequest'
 import { UserInputError, ResolverError } from '@vtex/api'
 import type { DocumentResponse } from '@vtex/clients'
 
+import type { ReturnRequestCreated } from '../../typings/ReturnRequest'
 import {
   SETTINGS_PATH,
   OMS_RETURN_REQUEST_CONFIRMATION,
@@ -16,15 +16,13 @@ export const createReturnRequestSellerService = async (
   args: any
 ): Promise<ReturnRequestCreated> => {
   const {
-    clients: {
-      oms,
-      returnRequest: returnRequestClient,
-      appSettings,
-      mail,
-    },
+    header,
+    clients: { oms, returnRequest: returnRequestClient, appSettings, mail },
     state: { userProfile, appkey },
     vtex: { logger },
   } = ctx
+
+  let { sellerId } = ctx.state
 
   const {
     orderId,
@@ -42,11 +40,8 @@ export const createReturnRequestSellerService = async (
     refundStatusData,
     cultureInfoData,
     logisticInfo,
+    locale,
   } = args
-
-  if (!appkey && !userProfile) {
-    throw new ResolverError('Missing appkey or userProfile')
-  }
 
   const { firstName, lastName, email } = userProfile ?? {}
 
@@ -55,14 +50,14 @@ export const createReturnRequestSellerService = async (
 
   // If request was validated using appkey and apptoken, we assign the appkey as a sender
   // Otherwise, we try to use requester name. Email is the last resort.
-  const submittedBy = appkey ?? submittedByNameOrEmail
+  sellerId = sellerId ?? (header['x-vtex-caller'] as string | undefined)
+  const submittedBy = appkey ?? submittedByNameOrEmail ?? sellerId
 
   if (!submittedBy) {
     throw new ResolverError(
       'Unable to get submittedBy from context. The request is missing the userProfile info or the appkey'
     )
   }
-
 
   // Check items since a request via endpoint might not have it.
   // Graphql validation doesn't prevent user to send empty items
@@ -77,35 +72,49 @@ export const createReturnRequestSellerService = async (
 
   const orderPromise = oms.order(orderId, 'AUTH_TOKEN')
 
+  const searchRMAPromise = returnRequestClient.searchRaw(
+    { page: 1, pageSize: 1 },
+    ['id'],
+    undefined,
+    `orderId=${orderId}`
+  )
+
   const settingsPromise = appSettings.get(SETTINGS_PATH, true)
 
   // If order doesn't exist, it throws an error and stop the process.
   // If there is no request created for that order, request searchRMA will be an empty array.
-  const [order, settings] = await Promise.all([
+  const [order, settings, searchRMA] = await Promise.all([
     orderPromise,
     settingsPromise,
+    searchRMAPromise,
   ])
 
   if (!settings) {
     throw new ResolverError('Return App settings is not configured', 500)
   }
 
-
   const {
     clientProfileData,
     // @ts-expect-error itemMetadata is not typed in the OMS client project
     itemMetadata,
     shippingData,
+    sellers,
+    sequence,
+    storePreferencesData: { currencyCode },
   } = order
 
+  const {
+    pagination: { total },
+  } = searchRMA
 
   isUserAllowed({
     requesterUser: userProfile,
     clientProfile: clientProfileData,
     appkey,
+    sellerId,
   })
 
-
+  const currentSequenceNumber = `${sequence}-${total + 1}`
 
   // customerProfileData can be undefined when coming from a endpoint request
   const { email: inputEmail } = customerProfileData ?? {}
@@ -116,6 +125,7 @@ export const createReturnRequestSellerService = async (
       userProfile,
       appkey,
       inputEmail,
+      sellerId,
     },
     {
       logger,
@@ -127,10 +137,10 @@ export const createReturnRequestSellerService = async (
   try {
     rmaDocument = await returnRequestClient.save({
       orderId,
-      sellerName,
+      sellerName: sellers?.[0]?.id || sellerName || undefined,
       refundableAmount,
-      sequenceNumber,
-      status,
+      sequenceNumber: sequenceNumber || currentSequenceNumber,
+      status: status || 'new',
       refundableAmountTotals,
       customerProfileData: {
         userId: clientProfileData.userProfileId,
@@ -141,11 +151,12 @@ export const createReturnRequestSellerService = async (
       pickupReturnData,
       refundPaymentData,
       items,
-      dateSubmitted,
+      dateSubmitted: dateSubmitted || new Date(),
       refundData,
       refundStatusData,
-      cultureInfoData,
-      logisticInfo
+      cultureInfoData: cultureInfoData || { locale, currencyCode },
+      logisticInfo,
+      createdIn: dateSubmitted || new Date(),
     })
   } catch (error) {
     const mdValidationErrors = error?.response?.data?.errors[0]?.errors
@@ -201,7 +212,7 @@ export const createReturnRequestSellerService = async (
           paymentMethod: refundPaymentData.refundPaymentMethod,
         },
         products: [...items],
-        refundStatusData
+        refundStatusData,
       },
     }
 

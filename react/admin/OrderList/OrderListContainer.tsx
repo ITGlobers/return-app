@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import { useQuery } from 'react-apollo'
-import type {
-  OrdersToReturnList,
-  QueryOrdersAvailableToReturnArgs,
-} from '../../../typings/OrderToReturn'
 import { FormattedMessage } from 'react-intl'
 import { Layout, PageHeader, PageBlock } from 'vtex.styleguide'
 import { useRuntime } from 'vtex.render-runtime'
 
+import type {
+  OrdersToReturnList,
+  QueryOrdersAvailableToReturnArgs,
+} from '../../../typings/OrderToReturn'
 import ORDERS_AVAILABLE_TO_RETURN from '../../store/createReturnRequest/graphql/getOrdersAvailableToReturn.gql'
 import { OrderList } from '../../common/components/ordersList/ListTable'
 import { AdminLoader } from '../AdminLoader'
@@ -39,7 +39,7 @@ export const OrderListContainer = () => {
     operation: 'next' | 'previous'
   ): Promise<void> => {
     const alreadyFetched = ordersToReturn.find((ordersItem) => {
-      return ordersItem.paging?.currentPage === page
+      return ordersItem?.paging?.currentPage === page
     })
 
     if (!alreadyFetched) {
@@ -56,7 +56,7 @@ export const OrderListContainer = () => {
           ])
 
           setCurrentPage(
-            Number(fetchMoreResult.ordersAvailableToReturn.paging?.currentPage)
+            Number(fetchMoreResult.ordersAvailableToReturn?.paging?.currentPage)
           )
 
           return prevResult

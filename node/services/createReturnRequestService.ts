@@ -1,7 +1,10 @@
-import type { ReturnRequestCreated, ReturnRequestInput } from '../../typings/ReturnRequest'
 import { UserInputError, ResolverError } from '@vtex/api'
 import type { DocumentResponse } from '@vtex/clients'
 
+import type {
+  ReturnRequestCreated,
+  ReturnRequestInput,
+} from '../../typings/ReturnRequest'
 import {
   SETTINGS_PATH,
   OMS_RETURN_REQUEST_CONFIRMATION,
@@ -18,12 +21,14 @@ import { OMS_RETURN_REQUEST_CONFIRMATION_TEMPLATE } from '../utils/templates'
 import type { ConfirmationMailData } from '../typings/mailClient'
 import { getCustomerEmail } from '../utils/getCostumerEmail'
 import { validateItemCondition } from '../utils/validateItemCondition'
+import { calculateAvailableAmountsService } from './calculateAvailableAmountsService'
 
 export const createReturnRequestService = async (
   ctx: Context,
   args: ReturnRequestInput
 ): Promise<ReturnRequestCreated> => {
   const {
+    header,
     clients: {
       oms,
       returnRequest: returnRequestClient,
@@ -35,6 +40,7 @@ export const createReturnRequestService = async (
     vtex: { logger },
   } = ctx
 
+  let { sellerId } = ctx.state
   const {
     orderId,
     sellerName,
@@ -46,10 +52,6 @@ export const createReturnRequestService = async (
     locale,
   } = args
 
-  if (!appkey && !userProfile) {
-    throw new ResolverError('Missing appkey or userProfile')
-  }
-
   const { firstName, lastName, email } = userProfile ?? {}
 
   const submittedByNameOrEmail =
@@ -57,7 +59,8 @@ export const createReturnRequestService = async (
 
   // If request was validated using appkey and apptoken, we assign the appkey as a sender
   // Otherwise, we try to use requester name. Email is the last resort.
-  const submittedBy = appkey ?? submittedByNameOrEmail
+  sellerId = sellerId ?? (header['x-vtex-caller'] as string | undefined)
+  const submittedBy = appkey ?? submittedByNameOrEmail ?? sellerId
 
   if (!submittedBy) {
     throw new ResolverError(
@@ -117,6 +120,7 @@ export const createReturnRequestService = async (
     itemMetadata,
     shippingData,
     storePreferencesData: { currencyCode },
+    sellerOrderId,
   } = order
 
   const {
@@ -125,20 +129,21 @@ export const createReturnRequestService = async (
     customReturnReasons,
     paymentOptions,
     options: settingsOptions,
-    enableStatusSelection
+    orderStatus,
   } = settings
 
   isUserAllowed({
     requesterUser: userProfile,
     clientProfile: clientProfileData,
     appkey,
+    sellerId,
   })
 
   canOrderBeReturned({
     creationDate,
     maxDays,
     status,
-    enableStatusSelection
+    orderStatus,
   })
 
   // Validate if all items are available to be returned
@@ -209,6 +214,7 @@ export const createReturnRequestService = async (
       userProfile,
       appkey,
       inputEmail,
+      sellerId,
     },
     {
       logger,
@@ -235,8 +241,22 @@ export const createReturnRequestService = async (
   let rmaDocument: DocumentResponse
 
   try {
+    const amountToBeRefund = refundableAmountTotals.find(
+      (item) => item.id === 'items'
+    )?.value
+
+    await calculateAvailableAmountsService(
+      ctx,
+      {
+        order,
+        amountToBeRefund,
+      },
+      'CREATE'
+    )
+
     rmaDocument = await returnRequestClient.save({
       orderId,
+      sellerOrderId,
       sellerName: sellerName || sellers?.[0]?.id || undefined,
       refundableAmount,
       sequenceNumber,
@@ -269,9 +289,13 @@ export const createReturnRequestService = async (
         locale,
       },
       logisticsInfo: {
-        currier: shippingData?.logisticsInfo.map((logisticInfo: any) => logisticInfo?.deliveryCompany)?.join(','),
-        sla: shippingData?.logisticsInfo.map((logisticInfo: any) => logisticInfo?.selectedSla)?.join(',')
-      }
+        currier: shippingData?.logisticsInfo
+          .map((logisticInfo: any) => logisticInfo?.deliveryCompany)
+          ?.join(','),
+        sla: shippingData?.logisticsInfo
+          .map((logisticInfo: any) => logisticInfo?.selectedSla)
+          ?.join(','),
+      },
     })
   } catch (error) {
     const mdValidationErrors = error?.response?.data?.errors[0]?.errors

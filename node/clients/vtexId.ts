@@ -46,7 +46,7 @@ export class VtexId extends JanusClient {
   public getAuthenticatedUser(
     authToken: string
   ): Promise<AuthenticatedUser | null> {
-    return this.http.get('/api/vtexid/pub/authenticated/user/', {
+    return this.http.get('/api/vtexid/pub/authenticated/user', {
       metric: 'vtexid-get-authenticated-user',
       params: {
         authToken,

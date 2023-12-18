@@ -1,5 +1,4 @@
 import React, { useRef, useState } from 'react'
-import axios from 'axios'
 import { FormattedMessage } from 'react-intl'
 import { Input, DatePicker, Button, AutocompleteInput } from 'vtex.styleguide'
 import { useRuntime } from 'vtex.render-runtime'
@@ -7,12 +6,12 @@ import { useCssHandles } from 'vtex.css-handles'
 import type { FormEvent } from 'react'
 import { useQuery } from 'react-apollo'
 import type { ApolloQueryResult } from 'apollo-client'
+
 import type {
   QueryReturnRequestListArgs,
   ReturnRequestList,
   Status,
 } from '../../../../typings/ReturnRequest'
-
 import { StatusActionMenu } from './StatusActionMenu'
 import GET_SELLER from '../../graphql/getSeller.gql'
 
@@ -80,6 +79,19 @@ const ListTableFilter = (props: Props) => {
   const handleSubmitFilters = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setIsFiltering(true)
+    for (const prop in selectedFilters) {
+      // eslint-disable-next-line no-prototype-builtins
+      if (selectedFilters.hasOwnProperty(prop)) {
+        if (
+          typeof selectedFilters?.[prop] === 'string' &&
+          selectedFilters?.[prop]?.trim() === ''
+        ) {
+          delete selectedFilters[prop]
+        }
+      }
+    }
+
+    setFilters({ ...initialFilters, ...selectedFilters })
     refetch({ filter: selectedFilters, page: 1 })
   }
 
@@ -119,38 +131,6 @@ const ListTableFilter = (props: Props) => {
     })
   }
 
-  const downloadCSV = async () => {
-    try {
-      if ('createdIn' in selectedFilters) {
-        const { createdIn } = selectedFilters
-        const { from, to } = createdIn as FilterDates
-
-        const response = await axios.get(
-          `/_v/return-request/export`,
-          {
-            params: {
-              _dateSubmitted: `${from},${to}`,
-            },
-          }
-        )
-
-        const url = window.URL.createObjectURL(new Blob([response.data]))
-        const link = document.createElement('a')
-
-        link.href = url
-        link.setAttribute('download', `return-requests-${(new Date().toJSON().slice(0,10))}.csv`)
-        document.body.appendChild(link)
-        link.click()
-
-        if (link.parentNode) {
-          link.parentNode.removeChild(link)
-        }
-      }
-    } catch (error) {
-      console.error('Error al descargar el archivo CSV:', error)
-    }
-  }
-
   const UsersAutocomplete = ({ placeholder, readOnly }: any) => {
     const [term, setTerm] = useState('')
     const [isLoading, setLoading] = useState(false)
@@ -158,7 +138,7 @@ const ListTableFilter = (props: Props) => {
 
     const { data } = useQuery(GET_SELLER)
 
-    const sellers = data?.sellers?.items.map((seller) => seller.name) || []
+    const sellers = data?.sellers?.items.map((seller) => seller.id) || []
 
     const options = {
       onSelect: (...args) => handleOnChange('sellerName', args[0]),
@@ -184,7 +164,7 @@ const ListTableFilter = (props: Props) => {
             setLoading(false)
             setTerm(term)
             timeoutRef.current = null
-          }, 1000)
+          }, 100)
         } else {
           setTerm(term)
         }
@@ -322,7 +302,7 @@ const ListTableFilter = (props: Props) => {
           <Button
             id="custom-excel-button"
             size="small"
-            onClick={downloadCSV}
+            href={`/_v/return-request/export/?_dateSubmitted=${createdIn?.from},${createdIn?.to}`}
             disabled={!createdIn || loading}
             variation="primary"
           >

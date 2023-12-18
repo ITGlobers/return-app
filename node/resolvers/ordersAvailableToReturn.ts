@@ -1,7 +1,11 @@
+/* eslint-disable array-callback-return */
 import { ResolverError } from '@vtex/api'
-import type { OrdersToReturnList, OrderToReturnSummary } from '../../typings/OrderToReturn'
 
-import { SETTINGS_PATH, STATUS_INVOICED, STATUS_PAYMENT_APPROVE } from '../utils/constants'
+import type {
+  OrdersToReturnList,
+  OrderToReturnSummary,
+} from '../../typings/OrderToReturn'
+import { SETTINGS_PATH } from '../utils/constants'
 import { createOrdersToReturnSummary } from '../utils/createOrdersToReturnSummary'
 import { getCurrentDate, substractDays } from '../utils/dateHelpers'
 
@@ -19,7 +23,6 @@ const createParams = ({
   maxDays,
   userEmail,
   page = 1,
-  enableStatusSelection,
   filter,
   orderStatus = 'f_creationDate',
 }: {
@@ -31,21 +34,21 @@ const createParams = ({
     orderId: string
     sellerName: string
     createdIn: { from: string; to: string }
-  },
-  enableStatusSelection : boolean | undefined | null
+  }
 }) => {
   const currentDate = getCurrentDate()
-  const orderStatusName = orderStatus?.replace('f_','')
+  const orderStatusName = orderStatus?.replace('f_', '')
 
   let query = ''
   let seller = ''
   let creationDate = `${orderStatusName}:[${substractDays(
     currentDate,
-    maxDays
+    maxDays || 0
   )} TO ${currentDate}]`
 
   if (filter) {
     const { orderId, sellerName, createdIn } = filter
+
     query = orderId || ''
     seller = sellerName || ''
     creationDate = createdIn
@@ -53,10 +56,22 @@ const createParams = ({
       : creationDate
   }
 
+  if (orderStatus === 'partial-invoiced') {
+    return {
+      clientEmail: userEmail,
+      orderBy: 'creationDate,desc' as const,
+      f_status: 'invoiced,payment-approved,handling,payment-pending',
+      q: query,
+      f_sellerNames: seller,
+      page,
+      per_page: 20 as const,
+    }
+  }
+
   return {
     clientEmail: userEmail,
     orderBy: 'creationDate,desc' as const,
-    f_status: enableStatusSelection ? STATUS_INVOICED : STATUS_PAYMENT_APPROVE ,
+    f_status: 'invoiced',
     [orderStatus]: creationDate,
     q: query,
     f_sellerNames: seller,
@@ -88,7 +103,7 @@ export const ordersAvailableToReturn = async (
       catalogGQL,
     },
   } = ctx
-  
+
   const { page, storeUserEmail, isAdmin, filter } = args
 
   const settings = await appSettings.get(SETTINGS_PATH, true)
@@ -97,7 +112,7 @@ export const ordersAvailableToReturn = async (
     throw new ResolverError('Return App settings is not configured')
   }
 
-  const { maxDays, excludedCategories, orderStatus, enableStatusSelection } = settings
+  const { maxDays, excludedCategories, orderStatus } = settings
   const { email } = userProfile ?? {}
 
   let userEmail = (storeUserEmail ?? email) as string
@@ -108,10 +123,12 @@ export const ordersAvailableToReturn = async (
 
   // Fetch order associated to the user email
   const { list, paging } = await oms.listOrdersWithParams(
-    createParams({ maxDays, userEmail, page, filter, orderStatus , enableStatusSelection })
+    createParams({ maxDays, userEmail, page, filter, orderStatus })
   )
 
   const orderListPromises = []
+  let orders: any = []
+  let orderError = false
 
   for (const order of list) {
     // Fetch order details to get items and packages
@@ -123,21 +140,89 @@ export const ordersAvailableToReturn = async (
     await pacer(2000)
   }
 
-  const orders = await Promise.all(orderListPromises)
+  try {
+    orders = await Promise.all(orderListPromises)
+  } catch (error) {
+    orderError = true
+  }
+
+  if (orderError) {
+    for (const order of list) {
+      // Fetch order details to get items and packages
+      oms.order(order.orderId).then((data) => orders.push(data))
+
+      // eslint-disable-next-line no-await-in-loop
+      await pacer(2000)
+    }
+  }
 
   const orderSummaryPromises: Array<Promise<OrderToReturnSummary>> = []
 
   for (const order of orders) {
-    const orderToReturnSummary = createOrdersToReturnSummary(order, userEmail, {
-      excludedCategories,
-      returnRequestClient,
-      catalogGQL,
-    })
+    if (orderStatus === 'partial-invoiced' && order.status !== 'invoiced') {
+      const currentDate = getCurrentDate()
+      const startDate = substractDays(currentDate, maxDays || 0)
+      const endDate = currentDate
 
-    orderSummaryPromises.push(orderToReturnSummary)
+      const deliveredDate = order.packageAttachment.packages.filter(
+        (item: any) => {
+          if (item?.courierStatus?.deliveredDate || item?.issuanceDate) {
+            return item
+          }
+        }
+      )
+
+      if (deliveredDate.length > 0) {
+        const haspackage = deliveredDate.map((delivered: any) => {
+          const currentDeliveredDate =
+            delivered?.courierStatus?.deliveredDate || delivered?.issuanceDate
+
+          if (
+            currentDeliveredDate &&
+            currentDeliveredDate >= startDate &&
+            currentDeliveredDate <= endDate
+          ) {
+            return delivered
+          }
+        })
+
+        if (haspackage.length > 0) {
+          const orderToReturnSummary = createOrdersToReturnSummary(
+            order,
+            userEmail,
+            {
+              excludedCategories,
+              returnRequestClient,
+              catalogGQL,
+            }
+          )
+
+          orderSummaryPromises.push(orderToReturnSummary)
+        }
+      }
+    } else {
+      const orderToReturnSummary = createOrdersToReturnSummary(
+        order,
+        userEmail,
+        {
+          excludedCategories,
+          returnRequestClient,
+          catalogGQL,
+        }
+      )
+
+      orderSummaryPromises.push(orderToReturnSummary)
+    }
   }
 
   const orderList = await Promise.all(orderSummaryPromises)
 
-  return { list: orderList, paging }
+  return {
+    list: orderList,
+    paging: {
+      ...paging,
+      perPage: orderList?.length || 0,
+      total: paging.total <= 20 ? orderList.length : paging.total,
+    },
+  }
 }

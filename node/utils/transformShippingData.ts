@@ -1,4 +1,5 @@
 import type { ShippingDetail } from '@vtex/clients'
+
 import type { ShippingData } from '../../typings/OrderToReturn'
 
 export const transformShippingData = (
@@ -21,7 +22,7 @@ export const transformShippingData = (
     country: address.country,
     city: address.city,
     address: `${address.street}, ${address.number ?? ''} ${complement}`.trim(),
-    state: address.state,
+    state: address.state || '',
     zipCode: address.postalCode,
     addressType,
     // @ts-expect-error geoCoordinates is not typed in the OMS client project

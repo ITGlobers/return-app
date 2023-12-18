@@ -12,9 +12,13 @@ import { mutations, queries, resolvers } from './resolvers'
 import { schemaDirectives } from './directives'
 import { middlewares } from './middlewares'
 import { exportRequests } from './middlewares/exportRequests'
+import { ping } from './middlewares/ping'
+import setupScheduler from './events/keepAlive'
+import { createGoodwill } from './middlewares/goodwill/createGoodwill'
+import { getGoodwills } from './middlewares/goodwill/getGoodwills'
+import { setSchemaVersion } from './middlewares/setSchema'
 
 const {
-  auth,
   authSelf,
   createReturn,
   getRequest,
@@ -28,9 +32,12 @@ const {
   getOrdersList,
   createGiftcard,
   getOrderRefundsSummary,
+  createPrerefund,
+  invoice,
 } = middlewares
 
 const TIMEOUT_MS = 5000
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const catalogMemoryCache = new LRUCache<string, any>({ max: 5000 })
 
 const clients: ClientsConfig<Clients> = {
@@ -54,41 +61,80 @@ declare global {
     userProfile?: UserProfile
     // Added in the state via auth middleware when request has appkey and apptoken.
     appkey?: string
+    sellerId?: string
   }
 }
 
 export default new Service<Clients, State, ParamsContext>({
   clients,
+  events: {
+    keepALive: setupScheduler,
+  },
   routes: {
     returnRequests: method({
-      POST: [errorHandler, auth, sellerValidation, createReturn],
-      GET: [errorHandler, auth, getRequestList],
+      POST: [setSchemaVersion, errorHandler, sellerValidation, createReturn],
+      GET: [setSchemaVersion, errorHandler, sellerValidation, getRequestList],
     }),
     returnRequest: method({
-      GET: [errorHandler, auth, getRequest],
-      PUT: [errorHandler, auth, updateRequestStatus],
+      GET: [setSchemaVersion, errorHandler, getRequest],
+      PUT: [setSchemaVersion, errorHandler, updateRequestStatus],
     }),
     exportRequests: method({
-      GET: [errorHandler, authSelf, exportRequests],
+      GET: [setSchemaVersion, errorHandler, authSelf, exportRequests],
+    }),
+    goodwill: method({
+      POST: [
+        setSchemaVersion,
+        setSchemaVersion,
+        errorHandler,
+        sellerValidation,
+        createGoodwill,
+      ],
+      GET: [
+        setSchemaVersion,
+        setSchemaVersion,
+        errorHandler,
+        sellerValidation,
+        getGoodwills,
+      ],
+    }),
+    preRefund: method({
+      GET: [setSchemaVersion, errorHandler, createPrerefund],
     }),
     settings: method({
-      POST: [errorHandler, auth, saveAppSetting],
-      GET: [errorHandler, auth, returnAppSetting],
+      POST: [setSchemaVersion, errorHandler, saveAppSetting],
+      PUT: [setSchemaVersion, errorHandler, saveAppSetting],
+      GET: [setSchemaVersion, errorHandler, returnAppSetting],
     }),
     sellerSetting: method({
-      POST: [errorHandler, auth, sellerValidation, saveSellerSetting],
+      POST: [
+        setSchemaVersion,
+        errorHandler,
+        sellerValidation,
+        saveSellerSetting,
+      ],
     }),
     sellerSettings: method({
-      GET: [errorHandler, auth, sellerValidation, returnSellerSetting],
+      GET: [
+        setSchemaVersion,
+        errorHandler,
+        sellerValidation,
+        returnSellerSetting,
+      ],
     }),
-    orders: method({
-      POST: [errorHandler, auth, getOrdersList],
+    orderList: method({
+      POST: [setSchemaVersion, errorHandler, sellerValidation, getOrdersList],
     }),
     giftcard: method({
-      POST: [errorHandler, auth, createGiftcard],
+      POST: [errorHandler, createGiftcard],
+    }),
+    ping: method({
+      POST: [ping],
+    }),
+    invoice: method({
+      POST: [invoice],
     }),
     orderSummary: method({
-      // POST: [errorHandler, auth, getOrderRefundsSummary],
       POST: [getOrderRefundsSummary],
     }),
   },

@@ -1,7 +1,6 @@
 input ReturnSettingsFilters {
   id: String
   sellerName: String
-
 }
 
 type ReturnSettingsList {
@@ -9,12 +8,10 @@ type ReturnSettingsList {
   paging: Pagination!
 }
 
-
 type ReturnSettingsResponse {
   id: ID!
   sellerId: String
   maxDays: Int!
-  enableStatusSelection: Boolean
   excludedCategories: [String!]!
   paymentOptions: PaymentOptions!
   termsUrl: String!

@@ -1,10 +1,10 @@
 import React from 'react'
-import { FormattedDate, FormattedMessage } from 'react-intl'
-import type { ShippingData } from '../../../../typings/OrderToReturn'
+import { FormattedDate, FormattedMessage, FormattedNumber } from 'react-intl'
 import { useCssHandles } from 'vtex.css-handles'
 import { Divider, Button } from 'vtex.styleguide'
 import { useRuntime } from 'vtex.render-runtime'
 
+import type { ShippingData } from '../../../../typings/OrderToReturn'
 import { ContactDetails } from './ContactDetails'
 import { AddressDetails } from './AddressDetails'
 import { UserCommentDetails } from './UserCommentDetails'
@@ -18,6 +18,7 @@ const CSS_HANDLES = [
   'returnDetailsContainer',
   'orderIdDetailsWrapper',
   'creationDateDetailsWrapper',
+  'returnValuesContainer',
 ] as const
 
 interface Props {
@@ -28,9 +29,7 @@ interface Props {
   shippingData: ShippingData
 }
 
-export const ReturnDetails = (
-  props: any & Props
-) => {
+export const ReturnDetails = (props: any & Props) => {
   const orderId = props?.match?.params?.orderId || props?.params?.orderId
 
   const {
@@ -39,7 +38,10 @@ export const ReturnDetails = (
     creationDate,
     canRefundCard,
     shippingData,
+    availableAmountsToRefund,
   } = props
+
+  const [isChecked, setIsChecked] = React.useState(false)
 
   const handles = useCssHandles(CSS_HANDLES)
   const {
@@ -48,6 +50,7 @@ export const ReturnDetails = (
 
   const {
     hints: { phone },
+    culture: { currency },
   } = useRuntime()
 
   const handleFieldsValidation = () => {
@@ -98,6 +101,102 @@ export const ReturnDetails = (
             </div>
           </div>
         </div>
+        <div className="w-100 mt4">
+          <div className="f4 mb5 fw5">
+            <FormattedMessage id="return-app.return-request-details.available-amounts.header" />
+          </div>
+        </div>
+        <div className="w-100 flex flex-row-ns ba br3 b--muted-4 flex-column">
+          <div
+            className={`${handles.orderIdDetailsWrapper} flex flex-column pa4 b--muted-4 flex-auto bb bb-0-ns br-ns`}
+          >
+            <div>
+              <div className="c-muted-2 f6">
+                <FormattedMessage id="return-app.return-request-details.available-amounts.total-order" />
+              </div>
+              <div className="w-100 mt2">
+                <div className="f4 fw5 c-on-base">
+                  <FormattedNumber
+                    value={
+                      (availableAmountsToRefund.initialInvoicedAmount || 0) /
+                      100
+                    }
+                    style="currency"
+                    currency={currency}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            className={`${handles.creationDateDetailsWrapper} flex flex-column pa4 b--muted-4 flex-auto bb bb-0-ns br-ns`}
+          >
+            <div>
+              <div className="c-muted-2 f6">
+                <FormattedMessage id="return-app.return-request-details.available-amounts.remaining-amount" />
+              </div>
+              <div className="w-100 mt2">
+                <div className="f4 fw5 c-on-base">
+                  <div className="f4 fw5 c-on-base">
+                    <FormattedNumber
+                      value={
+                        (availableAmountsToRefund.remainingRefundableAmount ||
+                          0) / 100
+                      }
+                      style="currency"
+                      currency={currency}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            className={`${handles.creationDateDetailsWrapper} flex flex-column pa4 b--muted-4 flex-auto bb bb-0-ns br-ns`}
+          >
+            <div>
+              <div className="c-muted-2 f6">
+                <FormattedMessage id="return-app.return-request-details.available-amounts.amount-to-refund" />
+              </div>
+              <div className="w-100 mt2">
+                <div className="f4 fw5 c-on-base">
+                  <div className="f4 fw5 c-on-base">
+                    <FormattedNumber
+                      value={
+                        (availableAmountsToRefund.amountToBeRefundedInProcess ||
+                          0) / 100
+                      }
+                      style="currency"
+                      currency={currency}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            className={`${handles.creationDateDetailsWrapper} flex flex-column pa4 b--muted-4 flex-auto bb bb-0-ns br-ns`}
+          >
+            <div>
+              <div className="c-muted-2 f6">
+                <FormattedMessage id="return-app.return-request-details.available-amounts.total-refunded" />
+              </div>
+              <div className="w-100 mt2">
+                <div className="f4 fw5 c-on-base">
+                  <div className="f4 fw5 c-on-base">
+                    <FormattedNumber
+                      value={
+                        (availableAmountsToRefund.totalRefunded || 0) / 100
+                      }
+                      style="currency"
+                      currency={currency}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
       <div className="t-body lh-copy c-muted-1 mb3 ml3 w-two-thirds-ns w-100">
         <FormattedMessage id="return-app.return-order-details.page-header.subtitle" />
@@ -127,9 +226,13 @@ export const ReturnDetails = (
         </div>
       </div>
       <PaymentMethods canRefundCard={canRefundCard} />
-      <TermsAndConditions />
+      <TermsAndConditions setIsChecked={setIsChecked} />
       <div className="flex justify-center mt6">
-        <Button onClick={handleFieldsValidation} block={phone}>
+        <Button
+          onClick={handleFieldsValidation}
+          block={phone}
+          disabled={!isChecked}
+        >
           <FormattedMessage id="return-app.return-order-details.button.next" />
         </Button>
       </div>

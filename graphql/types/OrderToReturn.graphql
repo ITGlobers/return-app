@@ -24,6 +24,7 @@ type OrderToReturnSummary {
   clientProfileData: ClientProfileData!
   shippingData: ShippingData!
   paymentData: PaymentData!
+  availableAmountsToRefund: AvailableAmountsToRefund
 }
 
 type Pagination {
@@ -80,7 +81,7 @@ type ShippingData {
   addressId: String!
   address: String!
   city: String!
-  state: String!
+  state: String
   country: String!
   zipCode: String!
   addressType: AddressType!

@@ -12,13 +12,21 @@ import { VtexId } from './vtexId'
 import { CatalogGQL } from './catalogGQL'
 import ReturnRequestClient from './returnRequest'
 import OrderRefundsSummaryClient from './orderRefundsSummary'
+import { ProfileClient } from './profile'
+import { Marketplace } from './marketplace'
+import Scheduler from './scheduler'
+
+const SellerSetting = masterDataFor<SellerSetting>('sellerSetting')
 
 const ReturnAppSettingsClient = vbaseFor<string, ReturnAppSettings>(
   'appSettings'
 )
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const GoodwillClient = masterDataFor<Goodwill | any>('goodwill')
 const SellerSettingClient = masterDataFor<SellerSetting>('sellerSetting')
-const SellerSetting = masterDataFor<SellerSetting>('sellerSetting')
+const OrderRefundDetails =
+  masterDataFor<OrderRefundDetails>('orderRefundDetails')
 
 export class Clients extends IOClients {
   public get oms() {
@@ -45,6 +53,14 @@ export class Clients extends IOClients {
     return this.getOrSet('orderRefundsSummaryClient', OrderRefundsSummaryClient)
   }
 
+  public get goodwill() {
+    return this.getOrSet('goodwill', GoodwillClient)
+  }
+
+  public get orderRefundDetails() {
+    return this.getOrSet('orderRefundDetails', OrderRefundDetails)
+  }
+
   public get sellerSetting() {
     return this.getOrSet('sellerSetting', SellerSettingClient)
   }
@@ -67,5 +83,17 @@ export class Clients extends IOClients {
 
   public get sphinx() {
     return this.getOrSet('sphinx', Sphinx)
+  }
+
+  public get profile() {
+    return this.getOrSet('profile', ProfileClient)
+  }
+
+  public get marketplace() {
+    return this.getOrSet('marketplace', Marketplace)
+  }
+
+  public get scheduler() {
+    return this.getOrSet('scheduler', Scheduler)
   }
 }

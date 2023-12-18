@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import type { RouteComponentProps } from 'react-router'
 import { useQuery } from 'react-apollo'
-import type {
-  OrderToReturnSummary,
-  QueryOrderToReturnSummaryArgs,
-} from '../../../typings/OrderToReturn'
 import { PageHeader, PageBlock } from 'vtex.styleguide'
 import { FormattedMessage } from 'react-intl'
 import { useRuntime } from 'vtex.render-runtime'
 
+import type {
+  OrderToReturnSummary,
+  QueryOrderToReturnSummaryArgs,
+} from '../../../typings/OrderToReturn'
 import { StoreSettingsPovider } from '../provider/StoreSettingsProvider'
 import { OrderToReturnProvider } from '../provider/OrderToReturnProvider'
 import { ReturnDetails } from './components/ReturnDetails'
@@ -50,9 +50,9 @@ const createPageHeaderProps = (page: Page, navigate: any, isAdmin: boolean) => {
 
 export const CreateReturnRequest = (props: any) => {
   const orderId = props?.match?.params?.orderId || props?.params?.orderId
-  
-  const isAdmin = props?.page ? true : false
-  
+
+  const isAdmin = !!props?.page
+
   const [page, setPage] = useState<Page>('form-details')
   const [items, setItemsToReturn] = useState<ItemToReturn[]>([])
 
@@ -61,8 +61,9 @@ export const CreateReturnRequest = (props: any) => {
   } = useReturnRequest()
 
   const { data: storeSettings } = useStoreSettings()
-  const { paymentOptions } = storeSettings ?? {}
+  const { paymentOptions, options } = storeSettings ?? {}
   const { enablePaymentMethodSelection } = paymentOptions ?? {}
+  const { enableHighlightFormMessage } = options ?? {}
 
   const { navigate } = useRuntime()
 
@@ -130,12 +131,20 @@ export const CreateReturnRequest = (props: any) => {
                   data?.orderToReturnSummary.paymentData.canRefundCard
                 }
                 shippingData={data.orderToReturnSummary.shippingData}
+                showHighlightedMessage={enableHighlightFormMessage ?? false}
                 isAdmin
+                availableAmountsToRefund={
+                  data.orderToReturnSummary.availableAmountsToRefund
+                }
               />
             </>
           ) : null}
           {page === 'submit-form' ? (
-            <ConfirmAndSubmit onPageChange={handlePageChange} items={items} isAdmin />
+            <ConfirmAndSubmit
+              onPageChange={handlePageChange}
+              items={items}
+              isAdmin={isAdmin}
+            />
           ) : null}
         </OrderDetailsLoader>
       </PageBlock>

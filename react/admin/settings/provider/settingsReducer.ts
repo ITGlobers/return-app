@@ -9,7 +9,6 @@ export const initialSettingsState: SellerSetting = {
   id: '',
   sellerId: '',
   maxDays: 0,
-  enableStatusSelection: true,
   excludedCategories: [],
   termsUrl: '',
   orderStatus: 'Select Option',
@@ -27,6 +26,8 @@ export const initialSettingsState: SellerSetting = {
     enablePickupPoints: false,
     enableProportionalShippingValue: false,
     enableSelectItemCondition: false,
+    enableHighlightFormMessage: false,
+    enableGoodwill: false,
   },
 }
 
@@ -58,13 +59,6 @@ export const termsUrlAction = (termsUrl: string) => {
   }
 }
 
-export const statusAction = (enableStatusSelection: boolean) => {
-  return {
-    type: 'updateStatus' as const,
-    payload: enableStatusSelection,
-  }
-}
-
 export const paymentOptionsAction = (paymentOptions: PaymentOptions) => {
   return {
     type: 'updatePaymentOptions' as const,
@@ -88,19 +82,14 @@ export const optionsAction = (options: ReturnOption) => {
   }
 }
 
-
-export const initialStateAction = (
-  initialState: SellerSetting
-) => {
+export const initialStateAction = (initialState: SellerSetting) => {
   return {
     type: 'updateInitialState' as const,
     payload: initialState,
   }
 }
 
-export const initialStateActionSeller = (
-  initialStateSeller: SellerSetting
-) => {
+export const initialStateActionSeller = (initialStateSeller: SellerSetting) => {
   return {
     type: 'updateInitialStateSeller' as const,
     payload: initialStateSeller,
@@ -112,17 +101,13 @@ export type Actions =
   | ReturnType<typeof orderStatusAction>
   | ReturnType<typeof excludedCategoriesAction>
   | ReturnType<typeof termsUrlAction>
-  | ReturnType<typeof statusAction>
   | ReturnType<typeof paymentOptionsAction>
   | ReturnType<typeof customReturnReasonsAction>
   | ReturnType<typeof optionsAction>
   | ReturnType<typeof initialStateAction>
   | ReturnType<typeof initialStateActionSeller>
 
-export const settingsReducer = (
-  state: SellerSetting,
-  action: Actions
-) => {
+export const settingsReducer = (state: SellerSetting, action: Actions) => {
   switch (action.type) {
     case 'updateMaxDays': {
       return {
@@ -152,12 +137,6 @@ export const settingsReducer = (
       }
     }
 
-    case 'updateStatus': {
-      return {
-        ...state,
-        enableStatusSelection: action.payload,
-      }
-    }
     case 'updatePaymentOptions': {
       return {
         ...state,

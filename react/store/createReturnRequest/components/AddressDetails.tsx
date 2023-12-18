@@ -2,10 +2,10 @@ import React, { useState } from 'react'
 import type { ChangeEvent } from 'react'
 import { useIntl, defineMessages, FormattedMessage } from 'react-intl'
 import { Input, Tooltip, Toggle, IconInfo } from 'vtex.styleguide'
-import type { ShippingData } from '../../../../typings/OrderToReturn'
-import type { AddressType } from '../../../../typings/ReturnRequest'
 import { useCssHandles } from 'vtex.css-handles'
 
+import type { ShippingData } from '../../../../typings/OrderToReturn'
+import type { AddressType } from '../../../../typings/ReturnRequest'
 import { useReturnRequest } from '../../hooks/useReturnRequest'
 import { useStoreSettings } from '../../hooks/useStoreSettings'
 import { CustomMessage } from './layout/CustomMessage'
@@ -201,7 +201,6 @@ export const AddressDetails = ({ shippingData }: Props) => {
       <div className={`${handles.stateInputContainer} mb4`}>
         <Input
           name="state"
-          requiered
           placeholder={formatMessage(messages.stateInput)}
           onChange={handleInputChange}
           value={pickupReturnData.state}

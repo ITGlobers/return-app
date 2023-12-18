@@ -1,16 +1,11 @@
+import { ResolverError, NotFoundError, UserInputError } from '@vtex/api'
+
 import type {
   MutationUpdateReturnRequestStatusArgs,
   ReturnRequest,
   Status,
   RefundItemInput,
 } from '../../typings/ReturnRequest'
-import {
-  ResolverError,
-  ForbiddenError,
-  NotFoundError,
-  UserInputError,
-} from '@vtex/api'
-
 import { validateStatusUpdate } from '../utils/validateStatusUpdate'
 import { createOrUpdateStatusPayload } from '../utils/createOrUpdateStatusPayload'
 import { createRefundData } from '../utils/createRefundData'
@@ -18,6 +13,7 @@ import { handleRefund } from '../utils/handleRefund'
 import { OMS_RETURN_REQUEST_STATUS_UPDATE } from '../utils/constants'
 import { OMS_RETURN_REQUEST_STATUS_UPDATE_TEMPLATE } from '../utils/templates'
 import type { StatusUpdateMailData } from '../typings/mailClient'
+import { calculateAvailableAmountsService } from './calculateAvailableAmountsService'
 
 // A partial update on MD requires all required field to be sent. https://vtex.slack.com/archives/C8EE14F1C/p1644422359807929
 // And the request to update fails when we pass the auto generated ones.
@@ -91,6 +87,7 @@ export const updateRequestStatusService = async (
   args: MutationUpdateReturnRequestStatusArgs
 ): Promise<ReturnRequest> => {
   const {
+    header,
     state: { userProfile, appkey },
     clients: {
       returnRequest: returnRequestClient,
@@ -101,15 +98,17 @@ export const updateRequestStatusService = async (
     vtex: { logger },
   } = ctx
 
-  const { status, requestId, comment, refundData, sellerName } = args
+  let { sellerId } = ctx.state
+  const { status, comment, refundData, requestId, sellerName } = args
 
-  const { role, firstName, lastName, email, userId } = userProfile ?? {}
+  const { firstName, lastName, email } = userProfile ?? {}
 
   const requestDate = new Date().toISOString()
   const submittedByNameOrEmail =
     firstName || lastName ? `${firstName} ${lastName}` : email
 
-  const submittedBy = appkey ?? submittedByNameOrEmail
+  sellerId = sellerId ?? (header['x-vtex-caller'] as string | undefined)
+  const submittedBy = appkey ?? submittedByNameOrEmail ?? sellerId
 
   if (!submittedBy) {
     throw new ResolverError(
@@ -123,16 +122,6 @@ export const updateRequestStatusService = async (
 
   if (!returnRequest) {
     throw new NotFoundError(`Request ${requestId} not found`)
-  }
-
-  const userIsAdmin = Boolean(appkey) || role === 'admin'
-
-  const belongsToStoreUser =
-    returnRequest.customerProfileData.userId === userId &&
-    returnRequest.status === 'new'
-
-  if (!userIsAdmin && !belongsToStoreUser) {
-    throw new ForbiddenError('Not authorized')
   }
 
   validateStatusUpdate(status, returnRequest.status as Status)
@@ -183,35 +172,38 @@ export const updateRequestStatusService = async (
         })
       : returnRequest.refundData
 
-  const refundReturn = await handleRefund({
-    currentStatus: requestStatus,
-    previousStatus: returnRequest.status,
-    refundPaymentData: returnRequest.refundPaymentData ?? {},
-    orderId: returnRequest.orderId as string,
-    createdAt: requestDate,
-    refundInvoice,
-    userEmail: returnRequest.customerProfileData?.email as string,
-    clients: {
-      omsClient: oms,
-      giftCardClient,
-    },
-  })
-
-  const giftCard = refundReturn?.giftCard
-
-  const updatedRequest = {
-    ...formatRequestToPartialUpdate(returnRequest),
-    sellerName: sellerName || undefined,
-    status: requestStatus,
-    refundStatusData,
-    refundData: refundInvoice
-      ? { ...refundInvoice, ...(giftCard ? { giftCard } : null) }
-      : null,
-  }
+  let availableAmountsToRefund
+  let updatedRequest
 
   try {
+    const refundReturn = await handleRefund({
+      currentStatus: requestStatus,
+      previousStatus: returnRequest.status,
+      refundPaymentData: returnRequest.refundPaymentData ?? {},
+      orderId: returnRequest.orderId as string,
+      createdAt: requestDate,
+      refundInvoice,
+      userEmail: returnRequest.customerProfileData?.email as string,
+      clients: {
+        omsClient: oms,
+        giftCardClient,
+      },
+    })
+
+    const giftCard = refundReturn?.giftCard
+
+    updatedRequest = {
+      ...formatRequestToPartialUpdate(returnRequest),
+      sellerName: sellerName ?? undefined,
+      status: requestStatus,
+      refundStatusData,
+      refundData: refundInvoice
+        ? { ...refundInvoice, ...(giftCard ? { giftCard } : null) }
+        : null,
+    }
     await returnRequestClient.update(requestId, updatedRequest)
   } catch (error) {
+    console.error('error: ', error)
     const mdValidationErrors = error?.response?.data?.errors[0]?.errors
 
     const errorMessageString = mdValidationErrors
@@ -228,6 +220,43 @@ export const updateRequestStatusService = async (
     throw new ResolverError(errorMessageString, error.response?.status || 500)
   }
 
+  try {
+    if (requestStatus === 'amountRefunded' && refundInvoice) {
+      availableAmountsToRefund = await calculateAvailableAmountsService(
+        ctx,
+        {
+          order: { orderId: returnRequest.orderId },
+          amountRefunded: refundInvoice.refundedItemsValue,
+        },
+        'UPDATE'
+      )
+
+      refundInvoice.invoiceValue = availableAmountsToRefund.amountRefunded
+    } else if (requestStatus === 'packageVerified' && refundInvoice) {
+      availableAmountsToRefund = await calculateAvailableAmountsService(
+        ctx,
+        {
+          order: { orderId: returnRequest.orderId },
+          shippingCostRefunded: refundInvoice.refundedShippingValue,
+        },
+        'UPDATE'
+      )
+    } else {
+      availableAmountsToRefund = await calculateAvailableAmountsService(
+        ctx,
+        {
+          order: { orderId: returnRequest.orderId },
+        },
+        'GET'
+      )
+    }
+  } catch (error) {
+    console.error('error: ', error)
+    throw new Error("Can't calculate available amounts to refund")
+  }
+
+  // eslint-disable-next-line no-console
+  console.log('availableAmountsToRefund', availableAmountsToRefund)
   const { cultureInfoData } = updatedRequest
 
   // We add a try/catch here so we avoid sending an error to the browser only if the email fails.
@@ -278,5 +307,5 @@ export const updateRequestStatusService = async (
     })
   }
 
-  return { id: requestId, ...updatedRequest }
+  return { id: requestId, ...updatedRequest, availableAmountsToRefund }
 }

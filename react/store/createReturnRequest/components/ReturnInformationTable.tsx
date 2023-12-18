@@ -1,9 +1,9 @@
 import React from 'react'
 import { FormattedMessage, useIntl } from 'react-intl'
-import type { ReturnRequestItemInput } from '../../../../typings/ReturnRequest'
 import { useCssHandles } from 'vtex.css-handles'
 import { useRuntime } from 'vtex.render-runtime'
 
+import type { ReturnRequestItemInput } from '../../../../typings/ReturnRequest'
 import { defaultReturnConditionsMessages } from '../../../common/utils/defaultReturnConditionsMessages'
 
 interface Props {
@@ -49,14 +49,18 @@ export const ReturnInformationTable = ({ items, selectedItems }: Props) => {
       </thead>
       <tbody className={`${handles.returnInfoBodyContainer} v-mid`}>
         {selectedItems.map(
-          ({ quantity, orderItemIndex, condition, returnReason }, key) => {
+          ({ quantity, condition, returnReason, orderItemIndex }, key) => {
             const { reason } = returnReason
 
             if (!quantity) {
               return null
             }
 
-            const { imageUrl, localizedName, name } = items[orderItemIndex]
+            const currentItem = items.find(
+              (item) => item.orderItemIndex === orderItemIndex
+            )
+
+            const { imageUrl, localizedName, name } = currentItem || {} // items?.[orderItemIndex] || {}
 
             return (
               <tr

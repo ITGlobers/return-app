@@ -1,6 +1,12 @@
 {
+  "$schema": "http://json-schema.org/schema#",
+  "title": "returnRequest",
+  "type": "object",
   "properties": {
     "orderId": {
+      "type": "string"
+    },
+    "orderSellerId": {
       "type": "string"
     },
     "sellerName": {
@@ -288,7 +294,7 @@
         "packageVerified",
         "amountRefunded",
         "denied",
-        "cancelled"
+        "canceled"
       ]
     }
   },

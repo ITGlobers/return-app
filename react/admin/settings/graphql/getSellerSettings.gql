@@ -1,11 +1,9 @@
-
 query getSellerSettings($sellerId: String!) {
   returnSellerSettings(sellerId: $sellerId)
     @context(provider: "vtex.return-app") {
     id
     sellerId
     maxDays
-    enableStatusSelection
     excludedCategories
     paymentOptions {
       enablePaymentMethodSelection

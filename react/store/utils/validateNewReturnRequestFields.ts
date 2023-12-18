@@ -2,7 +2,6 @@ import type {
   ReturnRequestItemInput,
   ReturnRequestInput,
 } from '../../../typings/ReturnRequest'
-
 import type { OrderDetailsState } from '../provider/OrderToReturnReducer'
 import { isValidIBANNumber } from './isValidIBANNumber'
 
@@ -89,7 +88,7 @@ export const validateNewReturnRequestFields = (
   }
 
   for (const field of Object.keys(pickupReturnData)) {
-    if (!pickupReturnData[field]) {
+    if (!pickupReturnData[field] && field !== 'state') {
       errors.push('pickup-data')
     }
   }

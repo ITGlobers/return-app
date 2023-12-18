@@ -1,13 +1,13 @@
 import type { OrderDetailResponse, MasterDataEntity } from '@vtex/clients'
+
 import type {
   OrderToReturnSummary,
   InvoicedItem,
   ExcludedItem,
-  ProcessedItem
+  ProcessedItem,
 } from '../../typings/OrderToReturn'
 import type { ReturnAppSettings } from '../../typings/ReturnAppSettings'
 import type { ReturnRequest } from '../../typings/ReturnRequest'
-
 import { getInvoicedItems } from './getInvoicedItems'
 import { mapItemIndexAndQuantity } from './mapItemIndexAndQuantity'
 import { transformOrderClientProfileData } from './transformOrderClientProfileData'
@@ -37,7 +37,7 @@ export const createOrdersToReturnSummary = async (
     { page: 1, pageSize: 100 },
     ['items', 'refundData', 'refundPaymentData'],
     undefined,
-    `orderId=${orderId} AND status <> cancelled`
+    `orderId=${orderId} AND status <> canceled`
   )
 
   const invoicesCreatedByReturnApp: string[] = []
@@ -172,7 +172,7 @@ export const createOrdersToReturnSummary = async (
     excludedItems,
     clientProfileData: transformOrderClientProfileData(
       order.clientProfileData,
-      email
+      email || order.clientProfileData.email
     ),
     shippingData: transformShippingData(order.shippingData),
     paymentData: {

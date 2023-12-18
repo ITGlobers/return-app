@@ -1,25 +1,32 @@
-import type { Status } from '../../typings/ReturnRequest'
-import Papa from 'papaparse'
+import XLSX from 'xlsx'
 
+import type { Status } from '../../typings/ReturnRequest'
 import { returnRequestListService } from '../services/returnRequestListService'
 
-function generateCSV(data: any[]) {
+const createXLSBuffer = (data: any[]) => {
   const flattenedData = data.map((item: any) => ({
-    ['Return Request ID']       :item?.id,
-    ['Order ID']                :item?.orderId,
-    ['Return Request Status']   :item?.status,
-    ['Return Reason']           :item?.items?.map((reason: any) => `${reason?.id}-${reason?.returnReason?.reason}`).join(','),
-    ['Customer Name']           :item?.customerProfileData?.name,
-    ['Customer Email']          :item?.customerProfileData?.email,
-    ['Seller Name']             :item?.sellerName || '',
-    'Currier'                   :item?.logisticsInfo?.currier || '',
-    'SLA'                       :item?.logisticsInfo?.sla || '',
-    ['Sequence Number']         :item?.sequenceNumber,
-    ['Creation date']           :item?.createdIn,
-    ['Creation time']           :item?.dateSubmitted
+    'Return Request ID': item?.id,
+    'Order ID': item?.orderId,
+    'Return Request Status': item?.status,
+    'Return Reason': item?.items
+      ?.map((reason: any) => `${reason?.id}-${reason?.returnReason?.reason}`)
+      .join(','),
+    'Customer Name': item?.customerProfileData?.name,
+    'Customer Email': item?.customerProfileData?.email,
+    'Seller Name': item?.sellerName || '',
+    Carrier: item?.logisticsInfo?.currier || '',
+    'Shipping method': item?.logisticsInfo?.sla || '',
+    'Sequence Number': item?.sequenceNumber,
+    'Creation date': item?.createdIn,
+    'Creation time': item?.dateSubmitted,
   }))
 
-  return Papa.unparse(flattenedData)
+  const workbook = XLSX.utils.book_new()
+  const worksheet = XLSX.utils.json_to_sheet(flattenedData)
+
+  XLSX.utils.book_append_sheet(workbook, worksheet, 'return-requests')
+
+  return XLSX.write(workbook, { bookType: 'xls', type: 'buffer' })
 }
 
 export async function exportRequests(ctx: Context, next: () => Promise<void>) {
@@ -36,6 +43,7 @@ export async function exportRequests(ctx: Context, next: () => Promise<void>) {
     _userEmail,
     _allFields,
     _sellerName,
+    _onlyData = false,
   } = query
 
   try {
@@ -104,12 +112,25 @@ export async function exportRequests(ctx: Context, next: () => Promise<void>) {
       responseRequests = responseRequests.concat(nextRequest.flat())
     }
 
-    const file = generateCSV(responseRequests)
+    if (_onlyData) {
+      ctx.status = 200
+      ctx.body = responseRequests
+    } else {
+      const file = createXLSBuffer(responseRequests)
 
-    ctx.status = 200
-    ctx.set('Content-Type', 'application/csv')
-    ctx.set('Content-Disposition', `attachment; filename=return-requests-${(new Date().toJSON().slice(0,10))}.csv`)
-    ctx.body = file
+      ctx.status = 200
+      ctx.set(
+        'Content-Type',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      )
+      ctx.set(
+        'Content-Disposition',
+        `attachment; filename=return-requests-${new Date()
+          .toJSON()
+          .slice(0, 10)}.xls`
+      )
+      ctx.body = file
+    }
   } catch (error) {
     ctx.status = 500
     ctx.body = { error: error.message }
