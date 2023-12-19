@@ -66,7 +66,7 @@ export const createOrdersToReturnSummary = async (
     for (const item of rmaItems ?? []) {
       const { orderItemIndex, quantity } = item
 
-      if (orderItemIndex === undefined || quantity === undefined) continue
+      if (orderItemIndex === undefined ?? quantity === undefined) continue
 
       const committedItem = {
         itemIndex: orderItemIndex,

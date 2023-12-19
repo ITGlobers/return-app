@@ -1,20 +1,6 @@
-export type Maybe<T> = T | null
-export type InputMaybe<T> = Maybe<T>
-export type Exact<T extends { [key: string]: unknown }> = {
-  [K in keyof T]: T[K]
-}
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> &
-  { [SubKey in K]?: Maybe<T[SubKey]> }
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> &
-  { [SubKey in K]: Maybe<T[SubKey]> }
-/** All built-in and custom scalars, mapped to their actual values */
-export type Scalars = {
-  ID: string
-  String: string
-  Boolean: boolean
-  Int: number
-  Float: number
-}
+import type { InputMaybe, Maybe, Scalars } from './Shared'
+
+export { InputMaybe, Maybe, Scalars }
 
 export interface ReturnRequest {
   orderId: string
@@ -338,20 +324,20 @@ export type RefundStatusComment = {
 }
 
 export type ReturnRequestFilters = {
-  status?: Maybe<Status>
-  sequenceNumber?: Maybe<Scalars['String']>
-  id?: Maybe<Scalars['String']>
-  sellerName?: Maybe<Scalars['String']>
-  /**
-   * createdIn: It uses the field dateSubmitted in the return request schema to search for documents.
-   * The field createdIn is auto generated when the document is created, not
-   * reflecting the real value for documents migrated from older versions.
-   */
-  createdIn?: Maybe<DateRangeInput>
-  orderId?: Maybe<Scalars['String']>
-  /** userId: If not passed, resolver will try to get it from cookie session */
-  userId?: Maybe<Scalars['String']>
-  userEmail?: Maybe<Scalars['String']>
+  // status?: Maybe<Status>
+  // sequenceNumber?: Maybe<Scalars['String']>
+  // id?: Maybe<Scalars['String']>
+  // sellerName?: Maybe<Scalars['String']>
+  // /**
+  //  * createdIn: It uses the field dateSubmitted in the return request schema to search for documents.
+  //  * The field createdIn is auto generated when the document is created, not
+  //  * reflecting the real value for documents migrated from older versions.
+  //  */
+  // createdIn?: Maybe<DateRangeInput>
+  // orderId?: Maybe<Scalars['String']>
+  // /** userId: If not passed, resolver will try to get it from cookie session */
+  // userId?: Maybe<Scalars['String']>
+  // userEmail?: Maybe<Scalars['String']>
   status?: InputMaybe<Status>
   sequenceNumber?: InputMaybe<Scalars['String']>
   id?: InputMaybe<Scalars['String']>

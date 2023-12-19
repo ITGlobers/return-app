@@ -57,7 +57,7 @@ type RefundPaymentData = {
   refundPaymentMethod: 'bank' | 'card' | 'giftCard' | 'sameAsPurchase'
 }
 
-interface Goodwill {
+type Goodwill = {
   orderId: string
   creditnoteID: string
   sellerId: string

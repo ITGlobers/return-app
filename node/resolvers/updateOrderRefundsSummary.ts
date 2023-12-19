@@ -1,4 +1,4 @@
-import type { OrderRefundsSummary } from '../typings/orderRefundsSummary'
+import type { OrderRefundsSummary } from '../../typings/OrderRefundsSummary'
 
 const updateOrderRefundsSumary = async (
   ctx: Context
@@ -7,7 +7,7 @@ const updateOrderRefundsSumary = async (
     clients: {
       oms: omsClient,
       orderRefundsSummaryClient,
-      // returnRequest: returnRequestClient,
+      // returnRequestClient,
     },
     vtex: {
       logger,
@@ -15,6 +15,7 @@ const updateOrderRefundsSumary = async (
     },
   } = ctx
 
+  // FIXME: only update the request
   try {
     const orderId = params.orderId as string
 

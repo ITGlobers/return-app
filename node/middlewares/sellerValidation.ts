@@ -22,7 +22,7 @@ export async function sellerValidation(
   let seller = ''
   const sellerNameSettintgs = settings?.sellerId
 
-  seller = sellerNameSettintgs || sellerName
+  seller = sellerNameSettintgs ?? sellerName
   const { sellerId } = params as { sellerId: string }
 
   if (_sellerName || _sellerId || seller || sellerId || body.sellerId) {

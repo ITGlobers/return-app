@@ -45,12 +45,12 @@ export class Clients extends IOClients {
     return this.getOrSet('catalogGQL', CatalogGQL)
   }
 
-  public get returnRequest() {
-    return this.getOrSet('returnRequest', ReturnRequestClient)
+  public get returnRequestClient() {
+    return this.getOrSet('ReturnRequestClient', ReturnRequestClient)
   }
 
   public get orderRefundsSummaryClient() {
-    return this.getOrSet('orderRefundsSummaryClient', OrderRefundsSummaryClient)
+    return this.getOrSet('OrderRefundsSummaryClient', OrderRefundsSummaryClient)
   }
 
   public get goodwill() {

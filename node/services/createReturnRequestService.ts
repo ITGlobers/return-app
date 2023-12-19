@@ -29,13 +29,7 @@ export const createReturnRequestService = async (
 ): Promise<ReturnRequestCreated> => {
   const {
     header,
-    clients: {
-      oms,
-      returnRequest: returnRequestClient,
-      appSettings,
-      mail,
-      catalogGQL,
-    },
+    clients: { oms, returnRequestClient, appSettings, mail, catalogGQL },
     state: { userProfile, appkey },
     vtex: { logger },
   } = ctx
@@ -55,7 +49,7 @@ export const createReturnRequestService = async (
   const { firstName, lastName, email } = userProfile ?? {}
 
   const submittedByNameOrEmail =
-    firstName || lastName ? `${firstName} ${lastName}` : email
+    firstName ?? lastName ? `${firstName} ${lastName}` : email
 
   // If request was validated using appkey and apptoken, we assign the appkey as a sender
   // Otherwise, we try to use requester name. Email is the last resort.
@@ -171,7 +165,7 @@ export const createReturnRequestService = async (
 
   // Possible bug here: If someone deletes a request, it can lead to a duplicated sequence number.
   // Possible alternative: Save a key value pair in to VBase where key is the orderId and value is either the latest sequence (as number) or an array with all Ids, so we can use the length to calcualate the next seuqence number.
-  const sequenceNumber = `${sequence}-${total + 1}`
+  const sequenceNumber = `${sequence}-${Number(total) + 1}`
 
   const itemsToReturn = await createItemsToReturn({
     itemsToReturn: items,
@@ -311,7 +305,7 @@ export const createReturnRequestService = async (
         )
       : error.message
 
-    throw new ResolverError(errorMessageString, error.response?.status || 500)
+    throw new ResolverError(errorMessageString, error.response?.status ?? 500)
   }
 
   // We add a try/catch here so we avoid sending an error to the browser only if the email fails.

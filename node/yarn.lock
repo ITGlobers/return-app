@@ -1440,6 +1440,13 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-12.20.18.tgz#37a0aab0560d1186da54ee5d62ff6a78cacb8c75"
   integrity sha512-YoTiIwdKxM3VLiY2sM05x4iGuTveYiCcDaUVmo1L5ndrXxPGW/NEoZu+pGcBirziomizcZsnsQoemikKcB2fRA==
 
+"@types/papaparse@^5.3.7":
+  version "5.3.14"
+  resolved "https://registry.yarnpkg.com/@types/papaparse/-/papaparse-5.3.14.tgz#345cc2a675a90106ff1dc33b95500dfb30748031"
+  integrity sha512-LxJ4iEFcpqc6METwp9f6BV6VVc43m6MfH0VqFosHvrUgfXiFe6ww7R3itkOQ+TCK6Y+Iv/+RnnvtRZnkc5Kc9g==
+  dependencies:
+    "@types/node" "*"
+
 "@types/prop-types@*", "@types/prop-types@^15.7.0":
   version "15.7.4"
   resolved "https://registry.yarnpkg.com/@types/prop-types/-/prop-types-15.7.4.tgz#fcf7205c25dff795ee79af1e30da2c9790808f11"
@@ -1529,6 +1536,11 @@
     "@types/react-dom" "*"
     "@types/testing-library__dom" "*"
     pretty-format "^25.1.0"
+
+"@types/uuid@^9.0.5":
+  version "9.0.7"
+  resolved "https://registry.yarnpkg.com/@types/uuid/-/uuid-9.0.7.tgz#b14cebc75455eeeb160d5fe23c2fcc0c64f724d8"
+  integrity sha512-WUtIVRUZ9i5dYXefDEAI7sh9/O7jGvHg7Df/5O/gtH3Yabe5odI3UWopVR1qbPXQtvOxWu3mM4XxlYeZtMWF4g==
 
 "@types/xlsx@^0.0.36":
   version "0.0.36"
@@ -5701,7 +5713,7 @@ static-extend@^0.1.1:
     define-property "^0.2.5"
     object-copy "^0.1.0"
 
-"stats-lite@github:vtex/node-stats-lite#dist":
+stats-lite@vtex/node-stats-lite#dist:
   version "2.2.0"
   resolved "https://codeload.github.com/vtex/node-stats-lite/tar.gz/1b0d39cc41ef7aaecfd541191f877887a2044797"
   dependencies:
@@ -6251,9 +6263,9 @@ verror@1.10.0:
   version "8.134.2"
   resolved "http://vtex.vtexassets.com/_v/public/typings/v1/vtex.render-runtime@8.134.2/public/@types/vtex.render-runtime#ae69e2b2a471291c6c6b155e17510150fbfc2d0e"
 
-"vtex.return-app@https://jmartinez--obidev.myvtex.com/_v/private/typings/linked/v1/vtex.return-app@3.16.1-hkignore+build1696444869/public/@types/vtex.return-app":
+"vtex.return-app@https://deybydjimenez--obidev.myvtex.com/_v/private/typings/linked/v1/vtex.return-app@3.16.1-hkignore+build1702986622/public/@types/vtex.return-app":
   version "3.16.1-hkignore"
-  resolved "https://jmartinez--obidev.myvtex.com/_v/private/typings/linked/v1/vtex.return-app@3.16.1-hkignore+build1696444869/public/@types/vtex.return-app#67cd7f2fdd194d71c8e37b8a28377628c1877e2e"
+  resolved "https://deybydjimenez--obidev.myvtex.com/_v/private/typings/linked/v1/vtex.return-app@3.16.1-hkignore+build1702986622/public/@types/vtex.return-app#1491f60cd73b9dcb343b26c5fe4083769a4b4664"
 
 "vtex.sellers-graphql@http://vtex.vtexassets.com/_v/public/typings/v1/vtex.sellers-graphql@8.5.4/public/@types/vtex.sellers-graphql":
   version "8.5.4"

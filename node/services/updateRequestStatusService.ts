@@ -89,12 +89,7 @@ export const updateRequestStatusService = async (
   const {
     header,
     state: { userProfile, appkey },
-    clients: {
-      returnRequest: returnRequestClient,
-      oms,
-      giftCard: giftCardClient,
-      mail,
-    },
+    clients: { returnRequestClient, oms, giftCard: giftCardClient, mail },
     vtex: { logger },
   } = ctx
 
@@ -105,7 +100,7 @@ export const updateRequestStatusService = async (
 
   const requestDate = new Date().toISOString()
   const submittedByNameOrEmail =
-    firstName || lastName ? `${firstName} ${lastName}` : email
+    firstName ?? lastName ? `${firstName} ${lastName}` : email
 
   sellerId = sellerId ?? (header['x-vtex-caller'] as string | undefined)
   const submittedBy = appkey ?? submittedByNameOrEmail ?? sellerId
@@ -217,7 +212,7 @@ export const updateRequestStatusService = async (
         )
       : error.message
 
-    throw new ResolverError(errorMessageString, error.response?.status || 500)
+    throw new ResolverError(errorMessageString, error.response?.status ?? 500)
   }
 
   try {

@@ -33,7 +33,7 @@ export async function saveSellerSettingService(
 
   const response = await sellerSetting.saveOrUpdate({
     ...currentSettings,
-    id: currentSettings.id || undefined,
+    id: currentSettings.id ?? undefined,
   })
 
   return response
@@ -66,5 +66,5 @@ export async function returnSellerSettingService(
     `sellerId=${sellerId}`
   )
 
-  return settings?.[0] || null
+  return settings?.[0] ?? null
 }

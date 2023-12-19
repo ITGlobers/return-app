@@ -2,7 +2,33 @@ import returnOrderRefundsSumaryService from '../services/returnOrderRefundsSumma
 
 async function getOrderRefundsSummary(ctx: Context) {
   try {
-    const response = await returnOrderRefundsSumaryService(ctx)
+    const {
+      vtex: {
+        logger,
+        route: { params },
+      },
+      clients: {
+        returnRequestClient,
+        oms,
+        goodwill,
+        orderRefundsSummaryClient,
+      },
+    } = ctx
+
+    const orderId = params.orderId as string
+
+    const response = await returnOrderRefundsSumaryService({
+      clients: {
+        goodwillClient: goodwill,
+        logger,
+        omsClient: oms,
+        orderRefundsSummaryClient,
+        returnRequestClient,
+      },
+      orderId,
+    })
+
+    if (response === null) throw new Error('Internal error')
 
     ctx.body = {
       data: response,

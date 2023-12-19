@@ -11,7 +11,9 @@
       "type": "string",
       "description": "Unique identifier for the seller."
     },
-    "status": { "$ref": "#/$defs/status" },
+    "status": {
+      "$ref": "#/$defs/status"
+    },
     "creditAmount": {
       "type": "number",
       "description": "Amount to be credited.",
@@ -40,11 +42,5 @@
       "default": "new"
     }
   },
-  "required": [
-    "orderId",
-    "creditAmount",
-    "reason",
-    "sellerId",
-    "refundPaymentData"
-  ]
+  "required": ["creditAmount", "reason", "sellerId", "refundPaymentData"]
 }

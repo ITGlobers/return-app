@@ -40,5 +40,5 @@ export async function returnSellerSettingsService(
   // }else{
   //   return null
   // }
-  return settings?.[0] || null
+  return settings?.[0] ?? null
 }

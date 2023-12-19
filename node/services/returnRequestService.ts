@@ -8,7 +8,7 @@ export const returnRequestService = async (
   fields = ['_all']
 ) => {
   const {
-    clients: { returnRequest: returnRequestClient },
+    clients: { returnRequestClient },
   } = ctx
 
   const returnRequestResult = await returnRequestClient.get(requestId, fields)
