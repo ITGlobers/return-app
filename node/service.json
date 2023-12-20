@@ -19,6 +19,10 @@
         }
       ]
     },
+    "_returnRequests": {
+      "path": "/_v/return-request",
+      "public": true
+    },
     "returnRequest": {
       "path": "/_v/return-request/:requestId",
       "public": false,
@@ -33,6 +37,10 @@
         }
       ]
     },
+    "_returnRequest": {
+      "path": "/_v/return-request/:requestId",
+      "public": true
+    },
     "preRefund": {
       "path": "/_v/return-request/prerefund",
       "public": false,
@@ -46,6 +54,10 @@
           ]
         }
       ]
+    },
+    "_preRefund": {
+      "path": "/_v/return-request/prerefund",
+      "public": true
     },
     "exportRequests": {
       "path": "/_v/return-request/export",
@@ -65,6 +77,10 @@
         }
       ]
     },
+    "_goodwill": {
+      "path": "/_v/goodwill/*id",
+      "public": true
+    },
     "settings": {
       "path": "/_v/returns/settings",
       "public": false,
@@ -78,6 +94,10 @@
           ]
         }
       ]
+    },
+    "_settings": {
+      "path": "/_v/returns/settings",
+      "public": true
     },
     "sellerSetting": {
       "path": "/_v/returns/seller/settings",
@@ -93,6 +113,10 @@
         }
       ]
     },
+    "_sellerSetting": {
+      "path": "/_v/returns/seller/settings",
+      "public": true
+    },
     "sellerSettings": {
       "path": "/_v/returns/seller/settings/:sellerId",
       "public": false,
@@ -106,6 +130,10 @@
           ]
         }
       ]
+    },
+    "_sellerSettings": {
+      "path": "/_v/returns/seller/settings/:sellerId",
+      "public": true
     },
     "orderList": {
       "path": "/_v/returns/seller/orderList",
@@ -121,6 +149,10 @@
         }
       ]
     },
+    "_orderList": {
+      "path": "/_v/returns/seller/orderList",
+      "public": true
+    },
     "giftcard": {
       "path": "/_v/returns/seller/giftcard",
       "public": false,
@@ -134,6 +166,10 @@
           ]
         }
       ]
+    },
+    "_giftcard": {
+      "path": "/_v/returns/seller/giftcard",
+      "public": true
     },
     "ping": {
       "path": "/_v/return-app/ping",
