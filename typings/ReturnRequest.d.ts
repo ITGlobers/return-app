@@ -2,21 +2,22 @@ import type { InputMaybe, Maybe, Scalars } from './Shared'
 
 export { InputMaybe, Maybe, Scalars }
 
+export type ReturnRequestStatus = | 'new'
+| 'processing'
+| 'pickedUpFromClient'
+| 'pendingVerification'
+| 'packageVerified'
+| 'amountRefunded'
+| 'denied'
+| 'canceled'
+
 export interface ReturnRequest {
   orderId: string
   sellerOrderId?: string
   sellerName?: string
   refundableAmount: number
   sequenceNumber: string
-  status:
-    | 'new'
-    | 'processing'
-    | 'pickedUpFromClient'
-    | 'pendingVerification'
-    | 'packageVerified'
-    | 'amountRefunded'
-    | 'denied'
-    | 'canceled'
+  status: ReturnRequestStatus
   refundableAmountTotals: Array<{
     id: 'items' | 'shipping' | 'tax'
     value: number
@@ -96,15 +97,7 @@ export interface ReturnRequest {
     [k: string]: unknown
   } | null
   refundStatusData: Array<{
-    status:
-      | 'new'
-      | 'processing'
-      | 'pickedUpFromClient'
-      | 'pendingVerification'
-      | 'packageVerified'
-      | 'amountRefunded'
-      | 'denied'
-      | 'canceled'
+    status:ReturnRequestStatus
     submittedBy: string
     createdAt: string
     comments: Array<{
@@ -218,15 +211,7 @@ export type ReturnRequestResponse = {
   availableAmountsToRefund: AvailableAmountsToRefund
 }
 
-export type Status =
-  | 'new'
-  | 'processing'
-  | 'pickedUpFromClient'
-  | 'pendingVerification'
-  | 'packageVerified'
-  | 'amountRefunded'
-  | 'denied'
-  | 'canceled'
+export type Status = ReturnRequestStatus
 
 export type CustomerProfileData = {
   __typename?: 'CustomerProfileData'

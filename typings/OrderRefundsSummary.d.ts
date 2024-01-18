@@ -1,8 +1,13 @@
 export type OrderRefundsSummaryRefundsStatus =
   | 'pending'
-  | 'applied'
-  | 'rejected'
-export type OrderRefundsSummaryRefundsType = 'goodwill' | 'prerefund' | 'refund'
+  | 'accepted'
+  | 'denied'
+
+export type OrderRefundsSummaryRefundsType = 
+  | 'goodwill' 
+  | 'prerefund' 
+  | 'refund' 
+  | 'invoice'
 
 export type OrderRefundsSummaryRefunds = {
   id: string
@@ -13,7 +18,7 @@ export type OrderRefundsSummaryRefunds = {
 
 export type OrderRefundsSummaryRefundable = {
   shipping: number
-  available: number
+  items: number
 }
 
 export type OrderRefundsSummary = {
