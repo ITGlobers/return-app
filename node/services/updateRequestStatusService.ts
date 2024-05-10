@@ -1,16 +1,11 @@
+import { ResolverError, NotFoundError, UserInputError } from '@vtex/api'
+
 import type {
   MutationUpdateReturnRequestStatusArgs,
   ReturnRequest,
   Status,
   RefundItemInput,
-} from 'vtex.return-app'
-import {
-  ResolverError,
-  ForbiddenError,
-  NotFoundError,
-  UserInputError,
-} from '@vtex/api'
-
+} from '../../typings/ReturnRequest'
 import { validateStatusUpdate } from '../utils/validateStatusUpdate'
 import { createOrUpdateStatusPayload } from '../utils/createOrUpdateStatusPayload'
 import { createRefundData } from '../utils/createRefundData'
@@ -18,6 +13,7 @@ import { handleRefund } from '../utils/handleRefund'
 import { OMS_RETURN_REQUEST_STATUS_UPDATE } from '../utils/constants'
 import { OMS_RETURN_REQUEST_STATUS_UPDATE_TEMPLATE } from '../utils/templates'
 import type { StatusUpdateMailData } from '../typings/mailClient'
+import returnOrderRefundsSummaryService from './returnOrderRefundsSummaryService'
 
 // A partial update on MD requires all required field to be sent. https://vtex.slack.com/archives/C8EE14F1C/p1644422359807929
 // And the request to update fails when we pass the auto generated ones.
@@ -91,25 +87,23 @@ export const updateRequestStatusService = async (
   args: MutationUpdateReturnRequestStatusArgs
 ): Promise<ReturnRequest> => {
   const {
+    header,
     state: { userProfile, appkey },
-    clients: {
-      returnRequest: returnRequestClient,
-      oms,
-      giftCard: giftCardClient,
-      mail,
-    },
+    clients: { returnRequestClient, oms, giftCard: giftCardClient, mail },
     vtex: { logger },
   } = ctx
-  
-  const { status, requestId, comment, refundData, sellerName } = args
 
-  const { role, firstName, lastName, email, userId } = userProfile ?? {}
+  let { sellerId } = ctx.state
+  const { status, comment, refundData, requestId, sellerName } = args
+
+  const { firstName, lastName, email } = userProfile ?? {}
 
   const requestDate = new Date().toISOString()
   const submittedByNameOrEmail =
-    firstName || lastName ? `${firstName} ${lastName}` : email
+    firstName ?? lastName ? `${firstName} ${lastName}` : email
 
-  const submittedBy = appkey ?? submittedByNameOrEmail
+  sellerId = sellerId ?? (header['x-vtex-caller'] as string | undefined)
+  const submittedBy = appkey ?? submittedByNameOrEmail ?? sellerId
 
   if (!submittedBy) {
     throw new ResolverError(
@@ -123,16 +117,6 @@ export const updateRequestStatusService = async (
 
   if (!returnRequest) {
     throw new NotFoundError(`Request ${requestId} not found`)
-  }
-
-  const userIsAdmin = Boolean(appkey) || role === 'admin'
-
-  const belongsToStoreUser =
-    returnRequest.customerProfileData.userId === userId &&
-    returnRequest.status === 'new'
-
-  if (!userIsAdmin && !belongsToStoreUser) {
-    throw new ForbiddenError('Not authorized')
   }
 
   validateStatusUpdate(status, returnRequest.status as Status)
@@ -183,33 +167,47 @@ export const updateRequestStatusService = async (
         })
       : returnRequest.refundData
 
-  const refundReturn = await handleRefund({
-    currentStatus: requestStatus,
-    previousStatus: returnRequest.status,
-    refundPaymentData: returnRequest.refundPaymentData ?? {},
-    orderId: returnRequest.orderId as string,
-    createdAt: requestDate,
-    refundInvoice,
-    userEmail: returnRequest.customerProfileData?.email as string,
-    clients: {
-      omsClient: oms,
-      giftCardClient,
-    },
-  })
-
-  const giftCard = refundReturn?.giftCard
-
-  const updatedRequest = {
-    ...formatRequestToPartialUpdate(returnRequest),
-    sellerName: sellerName || undefined,
-    status: requestStatus,
-    refundStatusData,
-    refundData: refundInvoice
-      ? { ...refundInvoice, ...(giftCard ? { giftCard } : null) }
-      : null,
-  }
+  let updatedRequest
 
   try {
+    requestStatus === 'amountRefunded' &&
+      refundInvoice &&
+      (await returnOrderRefundsSummaryService(
+        ctx,
+        {
+          ...returnRequest,
+          type: 'RETURN_REQUEST',
+          statusTx: 'accepted',
+          locale: returnRequest.cultureInfoData?.locale,
+        },
+        'update'
+      ))
+
+    const refundReturn = await handleRefund({
+      currentStatus: requestStatus,
+      previousStatus: returnRequest.status,
+      refundPaymentData: returnRequest.refundPaymentData ?? {},
+      orderId: returnRequest.orderId as string,
+      createdAt: requestDate,
+      refundInvoice,
+      userEmail: returnRequest.customerProfileData?.email as string,
+      clients: {
+        omsClient: oms,
+        giftCardClient,
+      },
+    })
+
+    const giftCard = refundReturn?.giftCard
+
+    updatedRequest = {
+      ...formatRequestToPartialUpdate(returnRequest),
+      sellerName: sellerName ?? undefined,
+      status: requestStatus,
+      refundStatusData,
+      refundData: refundInvoice
+        ? { ...refundInvoice, ...(giftCard ? { giftCard } : null) }
+        : null,
+    }
     await returnRequestClient.update(requestId, updatedRequest)
   } catch (error) {
     const mdValidationErrors = error?.response?.data?.errors[0]?.errors
@@ -225,9 +223,10 @@ export const updateRequestStatusService = async (
         )
       : error.message
 
-    throw new ResolverError(errorMessageString, error.response?.status || 500)
+    throw new ResolverError(errorMessageString, error.response?.status ?? 500)
   }
 
+  // eslint-disable-next-line no-console
   const { cultureInfoData } = updatedRequest
 
   // We add a try/catch here so we avoid sending an error to the browser only if the email fails.

@@ -5,6 +5,7 @@ type OrdersToReturnList {
 
 type OrderToReturnSummary {
   orderId: String!
+  sellerName: String!
   creationDate: String!
   """
   Items invoiced / sent to costumer with items details.
@@ -79,7 +80,7 @@ type ShippingData {
   addressId: String!
   address: String!
   city: String!
-  state: String!
+  state: String
   country: String!
   zipCode: String!
   addressType: AddressType!
@@ -88,4 +89,15 @@ type ShippingData {
 
 type PaymentData {
   canRefundCard: Boolean!
+}
+
+input CreatedInInput {
+  from: String!
+  to: String!
+}
+
+input OrdersFilters {
+  createdIn: CreatedInInput
+  orderId: String
+  sellerName: String
 }

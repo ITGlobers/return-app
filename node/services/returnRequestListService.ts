@@ -2,8 +2,7 @@ import type {
   QueryReturnRequestListArgs,
   ReturnRequestFilters,
   Maybe,
-} from 'vtex.return-app'
-import { ForbiddenError } from '@vtex/api'
+} from '../../typings/ReturnRequest'
 
 const filterDate = (date: string): string => {
   const newDate = new Date(date)
@@ -23,6 +22,11 @@ const buildWhereClause = (filter: Maybe<ReturnRequestFilters> | undefined) => {
   const whereFilter = returnFilters.reduce((where, [key, value]) => {
     if (!value) return where
 
+    if (typeof value === 'string' && value.trim() === '') {
+      //  throw new Error(`Fields cannot be empty: ${key}`)
+      return where
+    }
+
     if (where.length) {
       where += ` AND `
     }
@@ -41,7 +45,7 @@ const buildWhereClause = (filter: Maybe<ReturnRequestFilters> | undefined) => {
 
     if (key === 'sellerName') {
       where += `sellerName = "${value}"`
-      
+
       return where
     }
 
@@ -67,7 +71,7 @@ export const returnRequestListService = async (
   getAllFields = false
 ) => {
   const {
-    clients: { returnRequest: returnRequestClient },
+    clients: { returnRequestClient },
     request: { header },
     state: { userProfile, appkey },
   } = ctx
@@ -81,14 +85,14 @@ export const returnRequestListService = async (
 
   const { userId: userIdArg, userEmail: userEmailArg } = filter ?? {}
 
-  const userIsAdmin = Boolean(appkey) || role === 'admin'
+  const userIsAdmin = role === 'admin' ?? Boolean(appkey)
 
   // only admin users can pass userId or userEmail in the request.
   // For non admin users, the userId or userEmail must be gotten from cookie session.
   // Otherwise, a non admin user could search for another user's return requests
-  const userId = userIsAdmin ? userIdArg || userIdProfile : userIdProfile
+  const userId = userIsAdmin ? userIdArg ?? userIdProfile : userIdProfile
   const userEmail = userIsAdmin
-    ? userEmailArg || userEmailProfile
+    ? userEmailArg ?? userEmailProfile
     : userEmailProfile
 
   // vtexProduct is undefined when coming from GraphQL IDE or from a external request
@@ -98,15 +102,23 @@ export const returnRequestListService = async (
   const requireFilterByUser =
     !userIsAdmin || vtexProduct === 'store' || role === 'store-user'
 
-  const hasUserIdOrEmail = Boolean(userId || userEmail)
+  const removeBlankSpace = (object: any) => {
+    if (typeof object === 'string') {
+      return object.trim()
+    }
 
-  if (requireFilterByUser && !hasUserIdOrEmail) {
-    throw new ForbiddenError('Missing params to filter by store user')
+    if (typeof object === 'object' && object !== null) {
+      for (const key in object) {
+        object[key] = removeBlankSpace(object[key])
+      }
+    }
+
+    return object
   }
 
   const adjustedFilter = requireFilterByUser
-    ? { ...filter, userId, userEmail }
-    : filter
+    ? removeBlankSpace({ ...filter, userId, userEmail })
+    : removeBlankSpace(filter)
 
   const resultFields = getAllFields
     ? ['_all']
@@ -117,16 +129,34 @@ export const returnRequestListService = async (
         'createdIn',
         'status',
         'dateSubmitted',
-        'sellerName'
+        'sellerName',
+        'customerProfileData',
+        'items',
+        'logisticsInfo',
+        'refundableAmount',
       ]
-  
+
+  try {
+    await returnRequestClient.searchRaw(
+      {
+        page,
+        pageSize: perPage && perPage <= 100 ? perPage : 25,
+      },
+      resultFields,
+      'createdIn DESC',
+      buildWhereClause(adjustedFilter)
+    )
+  } catch (error) {
+    console.info('🚀 ~ error:', error)
+  }
+
   const rmaSearchResult = await returnRequestClient.searchRaw(
     {
       page,
       pageSize: perPage && perPage <= 100 ? perPage : 25,
     },
     resultFields,
-    'dateSubmitted DESC',
+    'createdIn DESC',
     buildWhereClause(adjustedFilter)
   )
 

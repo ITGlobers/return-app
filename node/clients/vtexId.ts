@@ -1,5 +1,5 @@
-import { IOContext, InstanceOptions, AuthenticationError } from '@vtex/api'
-import { JanusClient } from '@vtex/api'
+import type { IOContext, InstanceOptions } from '@vtex/api'
+import { AuthenticationError, JanusClient } from '@vtex/api'
 
 interface VtexIdLoginResponse {
   authStatus: string
@@ -46,7 +46,7 @@ export class VtexId extends JanusClient {
   public getAuthenticatedUser(
     authToken: string
   ): Promise<AuthenticatedUser | null> {
-    return this.http.get('/api/vtexid/pub/authenticated/user/', {
+    return this.http.get('/api/vtexid/pub/authenticated/user', {
       metric: 'vtexid-get-authenticated-user',
       params: {
         authToken,
@@ -59,13 +59,17 @@ export class VtexId extends JanusClient {
       const response = await this.http.get(`/api/vlm/account?an=${account}`, {
         metric: 'vtexid-get-account',
         headers: {
-          VtexIdClientAutCookie: token || '',
+          VtexIdClientAutCookie: token ?? '',
         },
       })
+
       return response
     } catch (error) {
       throw new AuthenticationError('Request failed with status code 401')
-
     }
+  }
+
+  public getAuthToken() {
+    return this.context.adminUserAuthToken ?? this.context.authToken
   }
 }

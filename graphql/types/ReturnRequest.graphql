@@ -42,7 +42,7 @@ input PickupReturnDataInput {
   addressId: String!
   address: String!
   city: String!
-  state: String!
+  state: String
   country: String!
   zipCode: String!
   addressType: AddressType!
@@ -64,6 +64,17 @@ enum RefundPaymentMethod {
   card
   giftCard
   sameAsPurchase
+}
+
+type AvailableAmountsToRefund {
+  initialInvoicedAmount: Int
+  amountToBeRefundedInProcess: Int
+  totalRefunded: Int
+  remainingRefundableAmount: Int
+  initialShippingCost: Int
+  shippingCostToBeRefundedInProcess: Int
+  totalShippingCostRefunded: Int
+  remainingRefundableShippingCost: Int
 }
 
 type ReturnRequestResponse {
@@ -94,7 +105,7 @@ enum Status {
   packageVerified
   amountRefunded
   denied
-  cancelled
+  canceled
 }
 
 type CustomerProfileData {
@@ -108,7 +119,7 @@ type PickupReturnData {
   addressId: String!
   address: String!
   city: String!
-  state: String!
+  state: String
   country: String!
   zipCode: String!
   addressType: AddressType!

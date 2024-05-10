@@ -1,0 +1,116 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "orderRefundsSummary",
+  "properties": {
+    "orderId": {
+      "type": "string"
+    },
+    "orderValue": {
+      "type": "integer"
+    },
+    "shippingValue": {
+      "type": "integer"
+    },
+    "amountsAvailable": {
+      "type": "object",
+      "properties": {
+        "order": {
+          "type": "integer"
+        },
+        "shipping": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "order",
+        "shipping"
+      ]
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "unitCost": {
+            "type": "integer"
+          },
+          "amount": {
+            "type": "integer"
+          },
+          "quantity": {
+            "type": "integer"
+          },
+          "amountAvailablePerItem": {
+            "type": "object",
+            "properties": {
+              "amount": {
+                "type": "integer"
+              },
+              "quantity": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "amount",
+              "quantity"
+            ]
+          }
+        },
+        "minItems": 1
+      }
+    },
+    "transactions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "integer"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "goodwill",
+              "prerefund",
+              "refund",
+              "invoice"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "accepted",
+              "denied"
+            ]
+          },
+          "metadata": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "amount",
+          "type",
+          "status",
+          "metadata"
+        ]
+      }
+    }
+  },
+  "required": [
+    "orderId",
+    "orderValue",
+    "shippingValue",
+    "amountsAvailable",
+    "items"
+  ],
+  "v-cache": false,
+  "v-indexed": [
+    "orderId"
+  ],
+  "v-immediate-indexing": true
+}

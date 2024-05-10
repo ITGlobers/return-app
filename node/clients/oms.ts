@@ -3,10 +3,12 @@ import type { NotificationResponse, NotificationInput } from '@vtex/clients'
 import { OMS } from '@vtex/clients'
 
 const baseURL = '/api/oms'
+const baseURLInvoice = 'http://portal.vtexcommercestable.com.br/api/oms/pvt/orders/'
 
 const routes = {
   orders: `${baseURL}/pvt/orders`,
   invoice: (orderId: string) => `${baseURL}/pvt/orders/${orderId}/invoice`,
+  invoiceSeller: (orderId: string, seller: string) => `${baseURLInvoice}${orderId}/invoice?an=${seller}`,
 }
 
 interface OrderList {
@@ -26,12 +28,15 @@ type InputInvoiceFields = Omit<
 >
 
 interface OrderListParams {
+  q: string
   clientEmail: string
   orderBy: 'creationDate,desc'
-  f_status: 'invoiced'
-  f_creationDate: string
+  f_status: string
+  f_creationDate?: string
+  f_authorizedDate?: string
+  f_invoicedDate?: string
   page: number
-  per_page: 10
+  per_page: number
 }
 
 export class OMSCustom extends OMS {
@@ -41,14 +46,19 @@ export class OMSCustom extends OMS {
     })
   }
 
-  public listOrdersWithParams(params?: OrderListParams) {
-    return this.http.get<OrderList>(routes.orders, {
+  public listOrdersWithParams({ q, ...params }: OrderListParams) {
+    const requets = this.http.get<OrderList>(routes.orders, {
       headers: {
         VtexIdClientAutCookie: this.context.authToken,
       },
       metric: 'oms-list-order-with-params',
-      ...(params ? { params } : {}),
+      params: {
+        q,
+        ...params,
+      },
     })
+
+    return requets
   }
 
   public createInvoice(orderId: string, invoice: InputInvoiceFields) {
@@ -57,10 +67,14 @@ export class OMSCustom extends OMS {
       invoice,
       {
         headers: {
-          VtexIdClientAutCookie: this.context.adminUserAuthToken || '',
+          VtexIdClientAutCookie:
+            this.context.adminUserAuthToken ?? this.context.authToken ?? '',
+          'X-Vtex-Use-Https': 'true',
         },
         metric: 'oms-create-invoice',
       }
     )
   }
+
+
 }

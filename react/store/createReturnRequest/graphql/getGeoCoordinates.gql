@@ -1,6 +1,5 @@
 query getGeoCoordinates($orderId: ID!) {
-  orderToReturnSummary(orderId: $orderId)
-    @context(provider: "vtex.return-app") {
+  orderToReturnSummary(orderId: $orderId) @context(provider: "obi.return-app") {
     shippingData {
       geoCoordinates
     }

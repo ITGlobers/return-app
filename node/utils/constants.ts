@@ -1,11 +1,13 @@
-import type { OrderToReturnValidation } from 'vtex.return-app'
-
+import type { OrderToReturnValidation } from '../../typings/OrderToReturn'
 import type {
   ReturnRequestConfirmation,
   ReturnRequestStatusUpdate,
 } from '../typings/mailClient'
 
 export const SETTINGS_PATH = 'app-settings'
+export const STATUS_INVOICED = 'invoiced'
+export const STATUS_PAYMENT_APPROVE = 'payment-approved'
+
 
 export const ORDER_TO_RETURN_VALIDATON: Record<
   OrderToReturnValidation,
@@ -28,3 +30,11 @@ export const OMS_RETURN_REQUEST_STATUS_UPDATE = (
 export const OMS_RETURN_REQUEST_STATUS_UPDATE_FRIENDLY_NAME = (
   locale = 'en-GB'
 ) => `[OMS] Return Request Status Update_${locale}`
+
+export const SCHEMAS = {
+  DEFAULT: '3.16.1-hkignore',
+  GOODWILL: '3.16.8-hkignore',
+  ORDER_REFUNDS_SUMMARY: '3.16.9-hkignore',
+  RETURN_REQUEST: '3.16.4-hkignore',
+  SELLER_SETTING: '3.16.4-hkignore',
+}

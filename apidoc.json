@@ -1,0 +1,9 @@
+{
+  "name": "return-app (OBI)",
+  "version": "3.16.35-hkignore",
+  "description": "App to returns",
+  "apidoc": {
+    "title": "Return App Documentation (OBI)",
+    "url": ""
+  }
+}

@@ -1,4 +1,5 @@
 import { AuthenticationError } from '@vtex/api'
+import { getErrorLog } from '../utils/handleError'
 
 export async function auth(ctx: Context, next: () => Promise<void>) {
   const {
@@ -44,7 +45,8 @@ export async function auth(ctx: Context, next: () => Promise<void>) {
 
   // Either userProfile or appKeyState must be on state to continue
   if (!userProfile && !appKeyState) {
-    throw new AuthenticationError('Request failed with status code 401')
+    ctx.status = 401
+    throw new AuthenticationError(getErrorLog('Request failed with status code 401','AUT000'))
   }
 
   await next()

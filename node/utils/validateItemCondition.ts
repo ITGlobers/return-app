@@ -1,5 +1,6 @@
-import type { ReturnRequestItemInput } from 'vtex.return-app'
 import { UserInputError } from '@vtex/api'
+
+import type { ReturnRequestItemInput } from '../../typings/ReturnRequest'
 
 export const validateItemCondition = (
   itemsToReturn: ReturnRequestItemInput[],
@@ -7,7 +8,7 @@ export const validateItemCondition = (
 ) => {
   considerCondition &&
     itemsToReturn.forEach(({ condition }, orderItemIndex) => {
-      if (!condition || condition === 'unspecified') {
+      if (!condition ?? condition === 'unspecified') {
         throw new UserInputError(
           `Item index ${orderItemIndex} has no Item condition. Account settings state that Item condition cannot be unspecified.`
         )

@@ -1,14 +1,12 @@
 input ReturnSettingsFilters {
   id: String
   sellerName: String
-
 }
 
 type ReturnSettingsList {
   list: [ReturnSettingsResponse!]!
   paging: Pagination!
 }
-
 
 type ReturnSettingsResponse {
   id: ID!
@@ -19,5 +17,5 @@ type ReturnSettingsResponse {
   termsUrl: String!
   customReturnReasons: [CustomReturnReason!]
   options: ReturnOption
-
+  orderStatus: String
 }

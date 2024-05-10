@@ -4,7 +4,9 @@
   "license": "UNLICENSED",
   "scripts": {
     "lint": "eslint --ext js,jsx,ts,tsx .",
-    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json}\""
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json}\"",
+    "doc": "apidoc -i node\\middlewares -o public",
+    "docmark": "apidoc-markdown -i node\\middlewares -o docs\\README-APIDOC.md"
   },
   "husky": {
     "hooks": {
@@ -29,7 +31,9 @@
     "husky": "^4.2.5",
     "lint-staged": "^10.2.2",
     "prettier": "^2.0.5",
-    "typescript": "^3.9.6"
+    "typescript": "^3.9.6",
+    "apidoc": "^1.2.0",
+    "apidoc-markdown": "^7.2.5"
   },
   "dependencies": {
     "@typescript-eslint/eslint-plugin": "^4.14.1",

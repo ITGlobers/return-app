@@ -1,0 +1,113 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "goodwill",
+  "properties": {
+    "orderId": {
+      "type": "string",
+      "description": "Unique identifier for the order."
+    },
+    "sellerId": {
+      "type": "string",
+      "description": "Unique identifier for the seller."
+    },
+    "status": {
+      "$ref": "#/$defs/status"
+    },
+    "refundPaymentData": {
+      "type": "object",
+      "properties": {
+        "refundPaymentMethod": {
+          "type": "string",
+          "enum": [
+            "bank",
+            "card",
+            "giftCard",
+            "sameAsPurchase"
+          ],
+          "description": "Method of refund payment."
+        }
+      },
+      "required": [
+        "refundPaymentMethod"
+      ]
+    },
+    "goodwillCreditId": {
+      "type": "string",
+      "description": "Amount to be credited.",
+      "minimum": 0
+    },
+    "goodwillCreditAmount": {
+      "type": "number",
+      "description": "Amount to be credited.",
+      "minimum": 0
+    },
+    "shippingCost": {
+      "type": "number",
+      "description": "The shipping cost amount must not exceed the remaining refundable shipping costs",
+      "minimum": 0
+    },
+    "items": {
+      "type": "array",
+      "item": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Id of the item."
+          },
+          "amount": {
+            "type": "string",
+            "description": "Reason of the goodwill."
+          },
+          "description": {
+            "type": "number",
+            "minimum": 0,
+            "description": "amount of the goodwill for this item."
+          }
+        }
+      }
+    },
+    "reason": {
+      "type": "string",
+      "description": "Reason for the credit."
+    },
+    "logs": {
+      "type": "array",
+      "item": {
+        "type": "object",
+        "properties": {
+          "detail": {
+            "type": "string",
+            "description": "Detail of the log."
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "failed",
+        "amountRefunded"
+      ],
+      "default": "new"
+    }
+  },
+  "required": [
+    "orderId",
+    "sellerId",
+    "status",
+    "goodwillCreditId",
+    "goodwillCreditAmount",
+    "shippingCost",
+    "reason"
+  ],
+  "v-indexed": [
+    "orderId"
+  ],
+  "v-immediate-indexing": true,
+  "v-cache": false
+}

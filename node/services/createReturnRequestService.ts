@@ -1,7 +1,10 @@
-import type { ReturnRequestCreated, ReturnRequestInput } from 'vtex.return-app'
 import { UserInputError, ResolverError } from '@vtex/api'
 import type { DocumentResponse } from '@vtex/clients'
 
+import type {
+  ReturnRequestCreated,
+  ReturnRequestInput,
+} from '../../typings/ReturnRequest'
 import {
   SETTINGS_PATH,
   OMS_RETURN_REQUEST_CONFIRMATION,
@@ -18,23 +21,20 @@ import { OMS_RETURN_REQUEST_CONFIRMATION_TEMPLATE } from '../utils/templates'
 import type { ConfirmationMailData } from '../typings/mailClient'
 import { getCustomerEmail } from '../utils/getCostumerEmail'
 import { validateItemCondition } from '../utils/validateItemCondition'
+import returnOrderRefundsSummaryService from './returnOrderRefundsSummaryService'
 
 export const createReturnRequestService = async (
   ctx: Context,
   args: ReturnRequestInput
 ): Promise<ReturnRequestCreated> => {
   const {
-    clients: {
-      oms,
-      returnRequest: returnRequestClient,
-      appSettings,
-      mail,
-      catalogGQL,
-    },
+    header,
+    clients: { oms, returnRequestClient, appSettings, mail, catalogGQL },
     state: { userProfile, appkey },
     vtex: { logger },
   } = ctx
 
+  let { sellerId } = ctx.state
   const {
     orderId,
     sellerName,
@@ -46,18 +46,15 @@ export const createReturnRequestService = async (
     locale,
   } = args
 
-  if (!appkey && !userProfile) {
-    throw new ResolverError('Missing appkey or userProfile')
-  }
-
   const { firstName, lastName, email } = userProfile ?? {}
 
   const submittedByNameOrEmail =
-    firstName || lastName ? `${firstName} ${lastName}` : email
+    firstName ?? lastName ? `${firstName} ${lastName}` : email
 
   // If request was validated using appkey and apptoken, we assign the appkey as a sender
   // Otherwise, we try to use requester name. Email is the last resort.
-  const submittedBy = appkey ?? submittedByNameOrEmail
+  sellerId = sellerId ?? (header['x-vtex-caller'] as string | undefined)
+  const submittedBy = appkey ?? submittedByNameOrEmail ?? sellerId
 
   if (!submittedBy) {
     throw new ResolverError(
@@ -117,6 +114,7 @@ export const createReturnRequestService = async (
     itemMetadata,
     shippingData,
     storePreferencesData: { currencyCode },
+    sellerOrderId,
   } = order
 
   const {
@@ -125,18 +123,21 @@ export const createReturnRequestService = async (
     customReturnReasons,
     paymentOptions,
     options: settingsOptions,
+    orderStatus,
   } = settings
 
   isUserAllowed({
     requesterUser: userProfile,
     clientProfile: clientProfileData,
     appkey,
+    sellerId,
   })
 
   canOrderBeReturned({
     creationDate,
     maxDays,
     status,
+    orderStatus,
   })
 
   // Validate if all items are available to be returned
@@ -164,7 +165,7 @@ export const createReturnRequestService = async (
 
   // Possible bug here: If someone deletes a request, it can lead to a duplicated sequence number.
   // Possible alternative: Save a key value pair in to VBase where key is the orderId and value is either the latest sequence (as number) or an array with all Ids, so we can use the length to calcualate the next seuqence number.
-  const sequenceNumber = `${sequence}-${total + 1}`
+  const sequenceNumber = `${sequence}-${Number(total) + 1}`
 
   const itemsToReturn = await createItemsToReturn({
     itemsToReturn: items,
@@ -207,6 +208,7 @@ export const createReturnRequestService = async (
       userProfile,
       appkey,
       inputEmail,
+      sellerId,
     },
     {
       logger,
@@ -233,8 +235,19 @@ export const createReturnRequestService = async (
   let rmaDocument: DocumentResponse
 
   try {
+    await returnOrderRefundsSummaryService(
+      ctx,
+      {
+        ...args,
+        statusTx: 'pending',
+        type: 'RETURN_REQUEST',
+      },
+      'update'
+    )
+
     rmaDocument = await returnRequestClient.save({
       orderId,
+      sellerOrderId,
       sellerName: sellerName || sellers?.[0]?.id || undefined,
       refundableAmount,
       sequenceNumber,
@@ -266,6 +279,14 @@ export const createReturnRequestService = async (
         currencyCode,
         locale,
       },
+      logisticsInfo: {
+        currier: shippingData?.logisticsInfo
+          .map((logisticInfo: any) => logisticInfo?.deliveryCompany)
+          ?.join(','),
+        sla: shippingData?.logisticsInfo
+          .map((logisticInfo: any) => logisticInfo?.selectedSla)
+          ?.join(','),
+      },
     })
   } catch (error) {
     const mdValidationErrors = error?.response?.data?.errors[0]?.errors
@@ -281,7 +302,7 @@ export const createReturnRequestService = async (
         )
       : error.message
 
-    throw new ResolverError(errorMessageString, error.response?.status || 500)
+    throw new ResolverError(errorMessageString, error.response?.status ?? 500)
   }
 
   // We add a try/catch here so we avoid sending an error to the browser only if the email fails.
