@@ -7,7 +7,6 @@ jest.mock('../../services/returnRequestService', () => ({
 
 describe('getRequest', () => {
   let ctx: any
-  let next: jest.Mock
 
   beforeEach(() => {
     ctx = {
@@ -21,7 +20,6 @@ describe('getRequest', () => {
       set: jest.fn(),
       body: null,
     }
-    next = jest.fn()
 
     jest.clearAllMocks()
   })

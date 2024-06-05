@@ -7,7 +7,6 @@ jest.mock('../../services/getSummary', () => ({
 
 describe('getOrderRefundsSummaryComplete', () => {
   let ctx: any
-  let next: jest.Mock
 
   beforeEach(() => {
     ctx = {
@@ -22,7 +21,6 @@ describe('getOrderRefundsSummaryComplete', () => {
       status: null,
       set: jest.fn(),
     }
-    next = jest.fn()
 
     jest.clearAllMocks()
   })

@@ -3,7 +3,6 @@ import { ResolverError, NotFoundError, UserInputError } from '@vtex/api'
 import type {
   MutationUpdateReturnRequestStatusArgs,
   ReturnRequest,
-  Status,
   RefundItemInput,
 } from '../../typings/ReturnRequest'
 import { validateStatusUpdate } from '../utils/validateStatusUpdate'
@@ -119,7 +118,7 @@ export const updateRequestStatusService = async (
     throw new NotFoundError(`Request ${requestId} not found`)
   }
 
-  validateStatusUpdate(status, returnRequest.status as Status)
+  validateStatusUpdate(status, returnRequest.status)
 
   // when a request is made for the same status, it means admin user is adding a new comment
   if (status === returnRequest.status && !comment) {
@@ -187,10 +186,10 @@ export const updateRequestStatusService = async (
       currentStatus: requestStatus,
       previousStatus: returnRequest.status,
       refundPaymentData: returnRequest.refundPaymentData ?? {},
-      orderId: returnRequest.orderId as string,
+      orderId: returnRequest.orderId,
       createdAt: requestDate,
       refundInvoice,
-      userEmail: returnRequest.customerProfileData?.email as string,
+      userEmail: returnRequest.customerProfileData?.email,
       clients: {
         omsClient: oms,
         giftCardClient,

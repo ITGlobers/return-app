@@ -203,7 +203,6 @@ export const ItemsDetails = (props: Props) => {
           otherReason={currentItem?.returnReason?.otherReason ?? ''}
           onReasonChange={handleReasonChange}
           creationDate={creationDate}
-          isAdmin
         />
         {reasonError && reasonErrorEmptyValue ? (
           <CustomMessage

@@ -29,22 +29,20 @@ const ApproveRequest = ({ onViewVerifyItems }) => {
   }
 
   return (
-    <>
-      <div className={phone ? 'mt4' : ''}>
-        <Button
-          type="button"
-          variation="primary"
-          size="small"
-          onClick={status === 'new' ? onViewVerifyItems : handleRefund}
-        >
-          {status === 'new' ? (
-            <FormattedMessage id="admin/return-app.return-request-details.verify-items.button" />
-          ) : (
-            <FormattedMessage id="admin/return-app.return-request-details.refund-amount.button" />
-          )}
-        </Button>
-      </div>
-    </>
+    <div className={phone ? 'mt4' : ''}>
+      <Button
+        type="button"
+        variation="primary"
+        size="small"
+        onClick={status === 'new' ? onViewVerifyItems : handleRefund}
+      >
+        {status === 'new' ? (
+          <FormattedMessage id="admin/return-app.return-request-details.verify-items.button" />
+        ) : (
+          <FormattedMessage id="admin/return-app.return-request-details.refund-amount.button" />
+        )}
+      </Button>
+    </div>
   )
 }
 

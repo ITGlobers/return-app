@@ -62,7 +62,7 @@ export const handleRefund = async ({
   if (refundPaymentMethod === 'giftCard') {
     try {
       const { id, redemptionCode } = await giftCardClient.createGiftCard({
-        relationName: refundInvoice?.invoiceNumber as string,
+        relationName: String(refundInvoice?.invoiceNumber),
         caption: 'Gift Card from Return Request',
         expiringDate: getOneYearLaterDate(createdAt),
         balance: 0,
@@ -76,7 +76,7 @@ export const handleRefund = async ({
 
       await giftCardClient.updateGiftCard(giftCardId, {
         description: 'Initial Charge',
-        value: refundInvoice?.invoiceValue as number,
+        value: Number(refundInvoice?.invoiceValue),
       })
 
       return {
@@ -97,14 +97,14 @@ export const handleRefund = async ({
       await omsClient.createInvoice(orderId, {
         type: 'Input',
         issuanceDate: createdAt,
-        invoiceNumber: refundInvoice?.invoiceNumber as string,
-        invoiceValue: refundInvoice?.invoiceValue as number,
+        invoiceNumber: String(refundInvoice?.invoiceNumber),
+        invoiceValue: Number(refundInvoice?.invoiceValue),
         items:
           refundInvoice?.items?.map((item) => {
             return {
-              id: item.id as string,
-              price: (item.price as number) - (item.restockFee as number),
-              quantity: item.quantity as number,
+              id: item.id,
+              price: item.price - item.restockFee,
+              quantity: item.quantity,
             }
           }) ?? [],
       })

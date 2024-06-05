@@ -20,7 +20,7 @@ export const createRefundData = ({
   const requestItemsMap = new Map<number, ReturnRequest['items'][number]>()
 
   for (const requestedItem of requestItems ?? []) {
-    requestItemsMap.set(requestedItem.orderItemIndex as number, requestedItem)
+    requestItemsMap.set(requestedItem.orderItemIndex, requestedItem)
   }
 
   const items = []

@@ -133,7 +133,7 @@ const ListTableFilter = (props: Props) => {
 
   const UsersAutocomplete = ({ placeholder, readOnly }: any) => {
     const [term, setTerm] = useState('')
-    const [isLoading, setLoading] = useState(false)
+    const [isLoading, setIsLoading] = useState(false)
     const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
     const { data } = useQuery(GET_SELLER)
@@ -155,13 +155,13 @@ const ListTableFilter = (props: Props) => {
       // eslint-disable-next-line @typescript-eslint/no-shadow
       onChange: (term) => {
         if (term) {
-          setLoading(true)
+          setIsLoading(true)
           if (timeoutRef.current) {
             clearTimeout(timeoutRef.current)
           }
 
           timeoutRef.current = setTimeout(() => {
-            setLoading(false)
+            setIsLoading(false)
             setTerm(term)
             timeoutRef.current = null
           }, 100)

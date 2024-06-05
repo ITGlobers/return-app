@@ -18,16 +18,16 @@ const JumpToPage = (props: Props) => {
   const { handleJumpToPage, currentPage, maxPage } = props
 
   const [desiredPage, setDesiredPage] = useState(currentPage)
-  const [canSubmit, setEnableSubmit] = useState(true)
+  const [canSubmit, setCanSubmit] = useState(true)
 
   useEffect(() => {
     if (desiredPage > maxPage || desiredPage <= 0) {
-      setEnableSubmit(false)
+      setCanSubmit(false)
 
       return
     }
 
-    setEnableSubmit(true)
+    setCanSubmit(true)
   }, [desiredPage, maxPage])
 
   const handleOnChange = (page: number) => {

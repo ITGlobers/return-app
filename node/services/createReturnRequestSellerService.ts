@@ -61,7 +61,7 @@ export const createReturnRequestSellerService = async (
 
   // Check items since a request via endpoint might not have it.
   // Graphql validation doesn't prevent user to send empty items
-  if (!items ?? items.length === 0) {
+  if (!(items && items.length === 0)) {
     throw new UserInputError('There are no items in the request')
   }
 
@@ -95,8 +95,6 @@ export const createReturnRequestSellerService = async (
 
   const {
     clientProfileData,
-    // @ts-expect-error itemMetadata is not typed in the OMS client project
-    itemMetadata,
     shippingData,
     sellers,
     sequence,

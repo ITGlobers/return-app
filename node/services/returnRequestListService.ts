@@ -85,7 +85,7 @@ export const returnRequestListService = async (
 
   const { userId: userIdArg, userEmail: userEmailArg } = filter ?? {}
 
-  const userIsAdmin = role === 'admin' ?? Boolean(appkey)
+  const userIsAdmin = role === 'admin' || Boolean(appkey)
 
   // only admin users can pass userId or userEmail in the request.
   // For non admin users, the userId or userEmail must be gotten from cookie session.

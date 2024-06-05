@@ -8,14 +8,12 @@ export async function getOrderRefundsSummaryList(ctx: Context) {
 
   for (const order of body) {
     const response = await getSummary(ctx, order.orderId)
+    const hasTransactions =
+      response.transactions && response.transactions.length > 0
     const hasQuantityGreaterThanZero = response.items
       .map((item) => item.amountAvailablePerItem.quantity)
       .some((quantity) => quantity > 0)
-    const hasRefunds = response.transactions
-      ? response.transactions.length > 0
-        ? true
-        : false
-      : false
+    const hasRefunds = hasTransactions ? true : false
     const orderToSummary = {
       ...order,
       hasRefunds: hasRefunds,

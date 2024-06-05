@@ -65,8 +65,10 @@ export const createInvoice = async (
       'info'
     )
 
-    const items = await args.items.map((item) => {
-      const itemSummary = refundsSummaryService.items.find(orderItem => orderItem.id === item.id);
+    const items = args.items.map((item) => {
+      const itemSummary = refundsSummaryService.items.find(
+        (orderItem) => orderItem.id === item.id
+      )
 
       const description = JSON.stringify({
         amount: item.amount,

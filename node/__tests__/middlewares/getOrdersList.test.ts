@@ -7,14 +7,12 @@ jest.mock('../../services/returnOrdersListService', () => ({
 
 describe('getOrdersList', () => {
   let ctx: any
-  let next: jest.Mock
 
   beforeEach(() => {
     ctx = {
       body: { someKey: 'someValue' },
       set: jest.fn(),
     }
-    next = jest.fn()
 
     jest.clearAllMocks()
   })

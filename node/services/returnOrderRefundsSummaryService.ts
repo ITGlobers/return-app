@@ -7,11 +7,7 @@ import { mapToOrderSummary } from '../utils/mapToOrderSummary'
 type ReturnRequestStatusUpdate = ReturnRequestInput & {
   statusTx: 'accepted' | 'denied' | 'pending'
 }
-type TransactionData =
-  | ReturnRequestStatusUpdate
-  | Goodwill
-  | InvoicetoSummary
-  | any
+type TransactionData = any
 
 const returnOrderRefundsSummaryService = async (
   ctx: Context,
@@ -38,10 +34,10 @@ const returnOrderRefundsSummaryService = async (
 
   if (action === 'denied' && refundSummaryData.transactions) {
     const goodwillData = transactionData as Goodwill
+    const available =
+      goodwillData.goodwillCreditAmount - goodwillData.shippingCost
     const amountsAvailable = {
-      order:
-        refundSummaryData.amountsAvailable.order +
-        (goodwillData.goodwillCreditAmount - goodwillData.shippingCost ?? 0),
+      order: refundSummaryData.amountsAvailable.order + (available ?? 0),
       shipping:
         refundSummaryData.amountsAvailable.shipping + goodwillData.shippingCost,
     }

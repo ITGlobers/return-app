@@ -71,8 +71,8 @@ export const createStatusTimeline = (
   for (const status of refundStatusData ?? []) {
     const { status: statusName, comments, createdAt, submittedBy } = status
 
-    refundStatusMap.set(statusName as Status, {
-      status: statusName as Status,
+    refundStatusMap.set(statusName, {
+      status: statusName,
       visited: true,
       comments,
       createdAt,

@@ -10,7 +10,6 @@ jest.mock('../../services/createReturnRequestService', () => ({
 }))
 describe('createPrerefund middleware', () => {
   let ctx: any
-  let next: jest.Mock<any, any>
 
   beforeEach(() => {
     ctx = {
@@ -23,7 +22,6 @@ describe('createPrerefund middleware', () => {
       },
       set: jest.fn(),
     }
-    next = jest.fn().mockResolvedValue(null)
   }) as unknown as Context
 
   it('should throw UserInputError if locale is not provided', async () => {

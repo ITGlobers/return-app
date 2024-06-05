@@ -30,7 +30,7 @@ export const severityMapper = (severity: ExternalLogSeverity): LogLevel => {
 }
 
 export async function errorHandler(ctx: Context, next: () => Promise<void>) {
-   const {
+  const {
     clients: { events },
     vtex: { logger, account, workspace },
     state: { appSettings },
@@ -50,7 +50,7 @@ export async function errorHandler(ctx: Context, next: () => Promise<void>) {
       },
     })
 
-    const error = err as any
+    const error = err
 
     const { message, status } = error
 
@@ -63,30 +63,28 @@ export async function errorHandler(ctx: Context, next: () => Promise<void>) {
     if (ctx.state.logs.length === 0) return
 
     const mappedLogs = ctx.state.logs.map((log) => {
-     // log into VTEX logging system
-    logger.log(JSON.stringify(log, null, 2), severityMapper(log.severity))
+      // log into VTEX logging system
+      logger.log(JSON.stringify(log, null, 2), severityMapper(log.severity))
 
-     // map the log for the external log system
-    const message: ExternalLogMetadata = {
-      severity: log.severity,
-      account,
-      workspace,
-      text: log.message,
-      middleware: log.middleware,
-      additionalInfo: log.payload,
-    }
+      // map the log for the external log system
+      const message: ExternalLogMetadata = {
+        severity: log.severity,
+        account,
+        workspace,
+        text: log.message,
+        middleware: log.middleware,
+        additionalInfo: log.payload,
+      }
 
-    return message
-   })
+      return message
+    })
 
     if (appSettings) {
-     await events.sendEvent(
-       appSettings.loggerSettings.resourceId,
-       appSettings.loggerSettings.eventName,
-       mappedLogs
-     )
-   }
+      await events.sendEvent(
+        appSettings.loggerSettings.resourceId,
+        appSettings.loggerSettings.eventName,
+        mappedLogs
+      )
+    }
   }
-
-
 }

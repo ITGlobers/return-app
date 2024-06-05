@@ -12,7 +12,6 @@ jest.mock('../../services/updateRequestStatusService', () => ({
 
 describe('updateRequestStatus', () => {
   let ctx: any
-  let next: jest.Mock
 
   beforeEach(() => {
     ctx = {
@@ -25,7 +24,6 @@ describe('updateRequestStatus', () => {
       body: {},
       set: jest.fn(),
     }
-    next = jest.fn()
   })
 
   afterEach(() => {
