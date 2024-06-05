@@ -15,12 +15,10 @@ export async function saveAppSetting(ctx: Context) {
     await schemaAppSetting.validateAsync(body)
 
     const settings = await appSettings.get(SETTINGS_PATH, true)
-
     const newSettings = {
       ...settings,
       ...body,
     }
-
     await appSettings.save(SETTINGS_PATH, newSettings)
 
     ctx.body = { settingsSaved: newSettings }

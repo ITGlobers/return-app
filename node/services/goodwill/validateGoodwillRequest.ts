@@ -29,7 +29,7 @@ const validateGoodwillRequest = async (ctx: Context, goodwill: Goodwill) => {
     )
 
     goodwillCreditIdIsDuplicated = !!previousGoodwillByOrder.find(
-      (item) => item.goodwillCreditId === goodwill.goodwillCreditId &&  goodwill.status !== 'failed'
+      (item) => item.goodwillCreditId === goodwill.goodwillCreditId && item.status !== 'failed'
     )
   } catch (error) {
     ctx.status = 400

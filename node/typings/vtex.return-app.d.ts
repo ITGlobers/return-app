@@ -117,4 +117,5 @@ interface RefundItem {
   description: string
   isCompensation: boolean
   compensationValue: number
+  itemIndex?: number | null
 }

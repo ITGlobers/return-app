@@ -3,6 +3,8 @@ export type OrderRefundsSummaryItem = {
   unitCost: number
   quantity: number
   amount: number
+  sellerSku: string
+  itemIndex: number
   amountAvailablePerItem: {
     amount: number
     quantity: number

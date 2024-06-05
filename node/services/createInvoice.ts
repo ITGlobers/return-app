@@ -50,9 +50,10 @@ export const createInvoice = async (
   }
 
   if (args.type === 'Input') {
+    let invoiceRequest = args
     const invoicetoSummary: InvoicetoSummary = {
       orderId: validateOrderId(orderId),
-      invoiceRequest: args,
+      invoiceRequest: invoiceRequest,
     }
 
     const refundsSummaryService = await returnOrderRefundsSummaryService(
@@ -65,13 +66,15 @@ export const createInvoice = async (
     )
 
     const items = await args.items.map((item) => {
+      const itemSummary = refundsSummaryService.items.find(orderItem => orderItem.id === item.id);
+
       const description = JSON.stringify({
         amount: item.amount,
         returnReason: item.description,
       })
 
       return {
-        id: item.id,
+        id: itemSummary?.sellerSku || item.id,
         description,
         price: 0,
         quantity: item.quantity,

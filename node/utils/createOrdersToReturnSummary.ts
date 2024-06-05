@@ -104,7 +104,7 @@ export const createOrdersToReturnSummary = async (
   const returnedQuantityInvoiced = mapItemIndexAndQuantity(inputIvoicedItems)
 
   // Create a map to get quantity committed (added in other RMA) for an item (based on its index)
-  const committedQuantityMap = mapItemIndexAndQuantity(committedItemsToReturn)
+  //const committedQuantityMap = mapItemIndexAndQuantity(committedItemsToReturn)
 
   const invoicedItems: InvoicedItem[] = []
   const excludedItems: ExcludedItem[] = []
@@ -149,9 +149,9 @@ export const createOrdersToReturnSummary = async (
 
     // A item could have been refunded via RMA (committedQuantity) app or OMS interface or manually via API order/{orderId}/invoice (returnedQuantity)
     const returnedQuantity = returnedQuantityInvoiced.get(index) ?? 0
-    const committedQuantity = committedQuantityMap.get(index) ?? 0
-
-    const processedQuantity = returnedQuantity + committedQuantity
+    //  const committedQuantity = committedQuantityMap.get(index) ?? 0
+    //const processedQuantity = returnedQuantity + committedQuantity
+    const processedQuantity = returnedQuantity
 
     if (processedQuantity) {
       processedItems.push({
@@ -162,7 +162,6 @@ export const createOrdersToReturnSummary = async (
   }
 
   const sellerName = order.sellers[0].name
-
   return {
     orderId,
     creationDate,

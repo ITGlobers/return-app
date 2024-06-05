@@ -27,14 +27,17 @@ export const validateReturnReason = (
     const { maxDays, reason, translations } = customReason
 
     maxDaysPercustomReasonMap.set(reason, maxDays)
-
+    if (reason.includes("-")) {
+      const reasonWithoutText =  reason.substring(0, reason.indexOf("-"));
+      maxDaysPercustomReasonMap.set(reasonWithoutText, maxDays)
+    }
     for (const { translation } of translations ?? []) {
       maxDaysPercustomReasonMap.set(translation, maxDays)
     }
   }
 
   for (const item of itemsToReturn) {
-    const {
+    let {
       orderItemIndex,
       returnReason: { reason },
     } = item
@@ -42,6 +45,9 @@ export const validateReturnReason = (
     if (reason === 'otherReason') {
       continue
     }
+    console.log("maxDaysPercustomReasonMap",maxDaysPercustomReasonMap)
+    console.log(reason)
+
 
     const maxDayForReason = maxDaysPercustomReasonMap.get(reason)
 

@@ -11,7 +11,7 @@ export default async function createGoodwill(
   next: () => Promise<any>
 ): Promise<any> {
   const body = ctx.body as Goodwill
-   ctx.state.logs.push({
+  ctx.state.logs.push({
     message: 'Request received',
     middleware: 'Middleware create Goodwill',
     severity: ExternalLogSeverity.INFO,
@@ -39,8 +39,15 @@ export default async function createGoodwill(
     },
     'update'
   )
-
-  const invoicesData = generateInvoiceFromGoodwill(body)
+  const orderSummary = await returnOrderRefundsSummaryService(
+    ctx,
+    {
+      ...body,
+      type: 'GET',
+    },
+    'get'
+  )
+  const invoicesData = generateInvoiceFromGoodwill(body, orderSummary)
 
   ctx.body = {
     message: 'Goodwill created',

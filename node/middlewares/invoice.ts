@@ -17,13 +17,14 @@ export default async function invoice(
   } = ctx
 
   const body = await json(req)
+
   ctx.state.logs.push({
     message: 'Request received',
     middleware: 'Middleware create invoice',
     severity: ExternalLogSeverity.INFO,
     payload: {
       details: 'Body of the request captured',
-      stack: JSON.stringify(req),
+      stack: JSON.stringify(body),
     },
   })
   ctx.body = await createInvoice(ctx, orderId, body)

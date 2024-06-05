@@ -6,7 +6,8 @@
     "lint": "eslint --ext js,jsx,ts,tsx .",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json}\"",
     "doc": "apidoc -i node\\middlewares -o public",
-    "docmark": "apidoc-markdown -i node\\middlewares -o docs\\README-APIDOC.md"
+    "docmark": "apidoc-markdown -i node\\middlewares -o docs\\README-APIDOC.md",
+    "test": "vtex-test-tools test"
   },
   "husky": {
     "hooks": {
@@ -25,19 +26,20 @@
   "devDependencies": {
     "@types/node": "12.12.21",
     "@vtex/prettier-config": "^1.0.0",
+    "apidoc": "^1.2.0",
+    "apidoc-markdown": "^7.2.5",
     "eslint": "^7.4.0",
     "eslint-config-vtex": "^12.7.0",
     "eslint-config-vtex-react": "^6.7.0",
     "husky": "^4.2.5",
     "lint-staged": "^10.2.2",
     "prettier": "^2.0.5",
-    "typescript": "^3.9.6",
-    "apidoc": "^1.2.0",
-    "apidoc-markdown": "^7.2.5"
+    "typescript": "^3.9.6"
   },
   "dependencies": {
     "@typescript-eslint/eslint-plugin": "^4.14.1",
     "@typescript-eslint/parser": "^4.14.1",
+    "@vtex/test-tools": "^3.4.3",
     "axios": "^0.20.0"
   }
 }

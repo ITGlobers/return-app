@@ -45,8 +45,11 @@ export async function auth(ctx: Context, next: () => Promise<void>) {
 
   // Either userProfile or appKeyState must be on state to continue
   if (!userProfile && !appKeyState) {
+    console.log('aquio')
     ctx.status = 401
-    throw new AuthenticationError(getErrorLog('Request failed with status code 401','AUT000'))
+    throw new AuthenticationError(
+      getErrorLog('Request failed with status code 401', 'AUT000')
+    )
   }
 
   await next()

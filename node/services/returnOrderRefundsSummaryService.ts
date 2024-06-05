@@ -7,7 +7,11 @@ import { mapToOrderSummary } from '../utils/mapToOrderSummary'
 type ReturnRequestStatusUpdate = ReturnRequestInput & {
   statusTx: 'accepted' | 'denied' | 'pending'
 }
-type TransactionData = ReturnRequestStatusUpdate | Goodwill | InvoicetoSummary | any
+type TransactionData =
+  | ReturnRequestStatusUpdate
+  | Goodwill
+  | InvoicetoSummary
+  | any
 
 const returnOrderRefundsSummaryService = async (
   ctx: Context,
@@ -21,11 +25,12 @@ const returnOrderRefundsSummaryService = async (
     vtex: { logger },
   } = ctx
 
-  const [order] = await Promise.all([
-    oms.order(transactionData.orderId)
-  ])
+  const [order] = await Promise.all([oms.order(transactionData.orderId)])
 
-  let refundSummaryData: OrderRefundsSummary = await mapToOrderSummary(ctx , transactionData.orderId)
+  let refundSummaryData: OrderRefundsSummary = await mapToOrderSummary(
+    ctx,
+    transactionData.orderId
+  )
 
   if (action === 'get') {
     return refundSummaryData
@@ -211,48 +216,62 @@ const returnOrderRefundsSummaryService = async (
 
     let orderValueToRefund = 0
 
-    const items = await Promise.all( refundSummaryData.items.map((refundSummaryItems) => {
-      const itemToUpdate = invoiceRequest.items.find(
-        (invoiceDataItem) => refundSummaryItems.id === invoiceDataItem.id
-      )
-      if (itemToUpdate) {
-        if(itemToUpdate.amount === undefined){
-          ctx.status = 400
-          throw new Error(getErrorLog(`The field amount to item ${itemToUpdate.id} is required` , 'INV007'))
+    const items = await Promise.all(
+      refundSummaryData.items.map((refundSummaryItems) => {
+        const itemToUpdate = invoiceRequest.items.find(
+          (invoiceDataItem) =>
+            refundSummaryItems.sellerSku === invoiceDataItem.id
+        )
+        if (itemToUpdate) {
+          if (itemToUpdate.amount === undefined) {
+            ctx.status = 400
+            throw new Error(
+              getErrorLog(
+                `The field amount to item ${itemToUpdate.id} is required`,
+                'INV007'
+              )
+            )
+          }
+          const newAmountAvailablePerItem =
+            refundSummaryItems.amountAvailablePerItem.amount -
+            itemToUpdate.amount
+
+          const newQuantityAvailablePerItem =
+            refundSummaryItems.amountAvailablePerItem.quantity -
+            itemToUpdate.quantity
+
+          if (newQuantityAvailablePerItem < 0) {
+            ctx.status = 400
+
+            throw new Error(
+              getErrorLog(
+                `The quantity to be returned to the item ${itemToUpdate.id} is not valid, it is greater than the available`,
+                'INV002'
+              )
+            )
+          }
+          if (itemToUpdate.amount < 0 || newAmountAvailablePerItem < 0) {
+            ctx.status = 400
+            const errorMessage = getErrorLog(
+              `The amount to be returned to the item ${itemToUpdate.id} is not valid`,
+              'INV003'
+            )
+
+            logger.error(errorMessage)
+            throw new Error(errorMessage)
+          }
+          orderValueToRefund += itemToUpdate.amount
+
+          refundSummaryItems.amountAvailablePerItem.amount =
+            newAmountAvailablePerItem
+
+          refundSummaryItems.amountAvailablePerItem.quantity =
+            newQuantityAvailablePerItem
         }
-        const newAmountAvailablePerItem =
-          refundSummaryItems.amountAvailablePerItem.amount - itemToUpdate.amount
 
-        const newQuantityAvailablePerItem =
-          refundSummaryItems.amountAvailablePerItem.quantity -
-          itemToUpdate.quantity
-
-        if (newQuantityAvailablePerItem < 0) {
-          ctx.status = 400
-
-          throw new Error(getErrorLog(`The quantity to be returned to the item ${itemToUpdate.id} is not valid, it is greater than the available` , 'INV002'))
-        }
-        if (itemToUpdate.amount < 0 || newAmountAvailablePerItem < 0) {
-          ctx.status = 400
-          const errorMessage = getErrorLog(
-            `The amount to be returned to the item ${itemToUpdate.id} is not valid`,
-            'INV003'
-          )
-
-          logger.error(errorMessage)
-          throw new Error(errorMessage)
-        }
-        orderValueToRefund += itemToUpdate.amount
-
-        refundSummaryItems.amountAvailablePerItem.amount =
-          newAmountAvailablePerItem
-
-        refundSummaryItems.amountAvailablePerItem.quantity =
-          newQuantityAvailablePerItem
-      }
-
-      return refundSummaryItems
-    }))
+        return refundSummaryItems
+      })
+    )
 
     let shippingValueToRefund = invoiceRequest.invoiceValue - orderValueToRefund
 
@@ -319,7 +338,6 @@ const returnOrderRefundsSummaryService = async (
     }
 
     return refundSummaryData
-
   } else {
     ctx.status = 400
 

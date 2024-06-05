@@ -1,7 +1,7 @@
 {
   "vendor": "obi",
   "name": "return-app",
-  "version": "3.16.40",
+  "version": "3.16.45",
   "title": "Return app",
   "description": "Return app",
   "dependencies": {

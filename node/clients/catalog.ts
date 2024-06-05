@@ -21,8 +21,13 @@ export class Catalog extends JanusClient {
     })
 
 
-    public getSKU = (skuId: string): Promise<any> =>
+  public getSKU = (skuId: string): Promise<any> =>
     this.http.get(`/api/catalog_system/pvt/sku/stockkeepingunitbyid/${skuId}`, {
       metric: 'catalog-get-category-tree',
+  })
+
+  public getSKUBinding = (sellerId: string ,skuId: string): Promise<any> =>
+    this.http.get(`/sku-binding/pvt/skuseller/${sellerId}/${skuId}`, {
+      metric: 'catalog-get',
   })
 }

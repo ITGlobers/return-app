@@ -23,8 +23,10 @@ export const mapToOrderSummary = async (
         shipping: 0,
       }
 
-      const items = await Promise.all( order.items.map((item) => ({
+      const items = await Promise.all( order.items.map((item , index) => ({
         id: item.id,
+        sellerSku: item.sellerSku,
+        itemIndex: index,
         unitCost: item.sellingPrice,
         quantity: item.quantity,
         amount: item.priceDefinition.total,
@@ -49,9 +51,9 @@ export const mapToOrderSummary = async (
         packages.items.map((itemInvoices: any)=>{
           const posicion = itemInvoices.itemIndex
           let value = itemInvoices.price *  itemInvoices.quantity
-          if(items[posicion].quantity === itemInvoices.quantity && value !== items[posicion].amount){
+          /*if(items[posicion].quantity === itemInvoices.quantity && value !== items[posicion].amount){
             value = items[posicion].amount
-          }
+          }*/
           items[posicion].amountAvailablePerItem.quantity += itemInvoices.quantity
           items[posicion].amountAvailablePerItem.amount += value
           sumAmountAvailable += value
@@ -60,9 +62,9 @@ export const mapToOrderSummary = async (
         if(packages.invoiceValue > sumAmountAvailable){
           const shipping = packages.invoiceValue - sumAmountAvailable
           refundSummaryData.amountsAvailable.shipping += shipping
-          if(refundSummaryData.amountsAvailable.shipping > shippingValue){
+          /*if(refundSummaryData.amountsAvailable.shipping > shippingValue){
              refundSummaryData.amountsAvailable.shipping = shippingValue
-          }
+          }*/
         }
           refundSummaryData.amountsAvailable.order += sumAmountAvailable
       }))
@@ -73,7 +75,7 @@ export const mapToOrderSummary = async (
         let shippingGoodwill = 0
         await Promise.all(packages.restitutions.Refund.items.map((itemRefund: any)=>{
           let itemSummary = items.find((itemSummary)=>
-            itemSummary.id === itemRefund.id
+            itemSummary.sellerSku === itemRefund.id || itemSummary.id === itemRefund.id
           )
           if(itemRefund.isCompensation){
             if(itemRefund.id == null){
@@ -96,7 +98,7 @@ export const mapToOrderSummary = async (
               } catch (error) {}
               itemSummary.amountAvailablePerItem.quantity -= itemRefund.quantity
               itemSummary.amountAvailablePerItem.amount -= itemRefund.price === 0 ? description?.amount : itemRefund.quantity * itemRefund.price
-              lessAmountAvailable += description?.amount
+              lessAmountAvailable += itemRefund.price === 0 ? description?.amount : itemRefund.quantity * itemRefund.price
             }
           }
         }))

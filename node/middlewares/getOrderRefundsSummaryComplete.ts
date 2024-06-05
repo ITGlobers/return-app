@@ -9,7 +9,6 @@ export async function getOrderRefundsSummaryComplete(ctx: Context) {
 
   const orderId = params.orderId as string
   const response = await getSummary(ctx , orderId)
-
   ctx.body = response
   ctx.status = 200
 

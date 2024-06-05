@@ -1,14 +1,29 @@
+import OrderRefundsSummary from "../../typings/OrderRefundsSummary"
 
-const generateInvoiceFromGoodwill = (goodwill: Goodwill): Invoice => {
-  const itemsToInvoice = goodwill.items.map((item) => ({
+const generateInvoiceFromGoodwill = (goodwill: Goodwill, orderSummary: OrderRefundsSummary): Invoice => {
+  const itemsToRefund = goodwill.items.map((item) => {
+    const itemSummary = orderSummary.items.find(orderItem => orderItem.id === item.id);
+    return ({
     useFreight: false,
-    id: item.id,
+    id: itemSummary?.sellerSku || item.id,
     quantity: 0,
     price: 0,
     description: item.description,
     isCompensation: true,
     compensationValue: item.amount,
-  })) as RefundItem[]
+  })
+  }) as RefundItem[]
+
+  const itemsToInvoice = goodwill.items.map((item) => {
+    const itemSummary = orderSummary.items.find(orderItem => orderItem.id === item.id);
+    return ({
+      quantity: 0,
+      price: 0,
+      id: itemSummary?.sellerSku || item.id,
+      description: item.description,
+
+    })
+  }) as InvoiceItem[]
 
   const invoices: Invoice = {
     type: 'Input',
@@ -17,11 +32,12 @@ const generateInvoiceFromGoodwill = (goodwill: Goodwill): Invoice => {
     invoiceValue: goodwill.goodwillCreditAmount,
     invoiceKey: JSON.stringify({ preRefund: false }),
     description: goodwill.reason,
+    items: itemsToInvoice,
     restitutions: {
       Refund: {
         value: goodwill.goodwillCreditAmount,
         giftCardData: null,
-        items: itemsToInvoice,
+        items: itemsToRefund,
       },
     },
   }
