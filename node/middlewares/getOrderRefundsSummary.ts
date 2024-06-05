@@ -64,7 +64,7 @@
  *     }
  */
 
-import { mapToOrderSummary } from "../utils/mapToOrderSummary"
+import { mapToOrderSummary } from '../utils/mapToOrderSummary'
 
 export async function getOrderRefundsSummary(ctx: Context) {
   const {
@@ -75,7 +75,7 @@ export async function getOrderRefundsSummary(ctx: Context) {
 
   const orderId = params.orderId as string
 
-  const response = await mapToOrderSummary(ctx , orderId)
+  const response = await mapToOrderSummary(ctx, orderId)
 
   ctx.body = response
   ctx.status = 200

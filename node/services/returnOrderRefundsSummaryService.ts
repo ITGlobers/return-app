@@ -7,11 +7,10 @@ import { mapToOrderSummary } from '../utils/mapToOrderSummary'
 type ReturnRequestStatusUpdate = ReturnRequestInput & {
   statusTx: 'accepted' | 'denied' | 'pending'
 }
-type TransactionData = any
 
 const returnOrderRefundsSummaryService = async (
   ctx: Context,
-  transactionData: TransactionData & {
+  transactionData: any & {
     type: 'GOODWILL' | 'RETURN_REQUEST' | 'INVOICE'
   },
   action: 'info' | 'denied' | 'get' | 'update' = 'get'

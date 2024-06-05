@@ -12,6 +12,7 @@ export const mapToOrderSummary = async (
   } = ctx
   try {
     const order = await oms.order(orderId)
+
     let refundSummaryData: OrderRefundsSummary
     let transactions: Transaction[] = []
     const shippingValue =
@@ -53,104 +54,121 @@ export const mapToOrderSummary = async (
         (pack: any) => pack.type === 'Output'
       )
     )
-    await Promise.all(
-      Outputs.map((packages: any) => {
-        let sumAmountAvailable = 0
-        packages.items.map((itemInvoices: any) => {
-          const posicion = itemInvoices.itemIndex
-          let value = itemInvoices.price * itemInvoices.quantity
-          //if(items[posicion].quantity === itemInvoices.quantity && value !== items[posicion].amount){
-          //  value = items[posicion].amount
-          //}
-          items[posicion].amountAvailablePerItem.quantity +=
-            itemInvoices.quantity
-          items[posicion].amountAvailablePerItem.amount += value
-          sumAmountAvailable += value
-        })
 
-        if (packages.invoiceValue > sumAmountAvailable) {
-          const shipping = packages.invoiceValue - sumAmountAvailable
-          refundSummaryData.amountsAvailable.shipping += shipping
-          //if(refundSummaryData.amountsAvailable.shipping > shippingValue){
-          //   refundSummaryData.amountsAvailable.shipping = shippingValue
-          //}
-        }
-        refundSummaryData.amountsAvailable.order += sumAmountAvailable
-      })
-    )
-
+    await calculateOutputs(Outputs, items, refundSummaryData)
     const Inputs = await Promise.all(
       order.packageAttachment.packages.filter(
         (pack: any) => pack.type === 'Input'
       )
     )
-    await Promise.all(
-      Inputs.map(async (packages: any) => {
-        let lessAmountAvailable = 0
-        let shippingGoodwill = 0
-        await Promise.all(
-          packages.restitutions.Refund.items.map((itemRefund: any) => {
-            let itemSummary = items.find(
-              (itemSummary) =>
-                itemSummary.sellerSku === itemRefund.id ||
-                itemSummary.id === itemRefund.id
-            )
-            if (itemRefund.isCompensation) {
-              if (itemRefund.id == null) {
-                //shipping goodwill
-                shippingGoodwill += itemRefund.compensationValue
-                refundSummaryData.amountsAvailable.shipping -=
-                  itemRefund.compensationValue
-              } else {
-                if (itemSummary) {
-                  itemSummary.amountAvailablePerItem.quantity -=
-                    itemRefund.quantity
-                  itemSummary.amountAvailablePerItem.amount -=
-                    itemRefund.compensationValue
-                  lessAmountAvailable += itemRefund.compensationValue
-                }
-              }
-            } else {
-              if (itemSummary) {
-                let description
-                try {
-                  description = JSON.parse(itemRefund.description)
-                } catch (error) {}
-                itemSummary.amountAvailablePerItem.quantity -=
-                  itemRefund.quantity
-                itemSummary.amountAvailablePerItem.amount -=
-                  itemRefund.price === 0
-                    ? description?.amount
-                    : itemRefund.quantity * itemRefund.price
-                lessAmountAvailable +=
-                  itemRefund.price === 0
-                    ? description?.amount
-                    : itemRefund.quantity * itemRefund.price
-              }
-            }
-          })
-        )
-        shippingGoodwill += lessAmountAvailable
-        if (packages.invoiceValue > shippingGoodwill) {
-          const shipping = packages.invoiceValue - lessAmountAvailable
-          refundSummaryData.amountsAvailable.shipping -= shipping
-          if (refundSummaryData.amountsAvailable.shipping < 0) {
-            refundSummaryData.amountsAvailable.shipping = 0
-          }
-        }
-        refundSummaryData.amountsAvailable.order -= lessAmountAvailable
+    await calculateInputs(Inputs, items, refundSummaryData, transactions)
 
-        transactions.push({
-          id: packages.invoiceNumber,
-          amount: packages.invoiceValue,
-          status: 'accepted',
-        })
-      })
-    )
     refundSummaryData.transactions = await Promise.all(transactions)
     return refundSummaryData
   } catch (error) {
     ctx.status = error.response?.status | 400
-    throw new Error(getErrorLog(error.response, 'SUM000'))
+    throw new Error(
+      getErrorLog(JSON.stringify(error.response.data.error.message), 'SUM000')
+    )
   }
+}
+
+export const calculateOutputs = async (
+  Outputs: any,
+  items: any,
+  refundSummaryData: any
+) => {
+  await Promise.all(
+    Outputs.map((packages: any) => {
+      let sumAmountAvailable = 0
+      packages.items.map((itemInvoices: any) => {
+        const posicion = itemInvoices.itemIndex
+        let value = itemInvoices.price * itemInvoices.quantity
+        //if(items[posicion].quantity === itemInvoices.quantity && value !== items[posicion].amount){
+        //  value = items[posicion].amount
+        //}
+        items[posicion].amountAvailablePerItem.quantity += itemInvoices.quantity
+        items[posicion].amountAvailablePerItem.amount += value
+        sumAmountAvailable += value
+      })
+
+      if (packages.invoiceValue > sumAmountAvailable) {
+        const shipping = packages.invoiceValue - sumAmountAvailable
+        refundSummaryData.amountsAvailable.shipping += shipping
+        //if(refundSummaryData.amountsAvailable.shipping > shippingValue){
+        //   refundSummaryData.amountsAvailable.shipping = shippingValue
+        //}
+      }
+      refundSummaryData.amountsAvailable.order += sumAmountAvailable
+    })
+  )
+}
+export const calculateInputs = async (
+  Inputs: any,
+  items: any,
+  refundSummaryData: any,
+  transactions: any
+) => {
+  await Promise.all(
+    Inputs.map(async (packages: any) => {
+      let lessAmountAvailable = 0
+      let shippingGoodwill = 0
+      await Promise.all(
+        packages.restitutions.Refund.items.map((itemRefund: any) => {
+          let itemSummary = items.find(
+            (itemSummary: { sellerSku: any; id: any }) =>
+              itemSummary.sellerSku === itemRefund.id ||
+              itemSummary.id === itemRefund.id
+          )
+          if (itemRefund.isCompensation) {
+            if (itemRefund.id == null) {
+              //shipping goodwill
+              shippingGoodwill += itemRefund.compensationValue
+              refundSummaryData.amountsAvailable.shipping -=
+                itemRefund.compensationValue
+            } else {
+              if (itemSummary) {
+                itemSummary.amountAvailablePerItem.quantity -=
+                  itemRefund.quantity
+                itemSummary.amountAvailablePerItem.amount -=
+                  itemRefund.compensationValue
+                lessAmountAvailable += itemRefund.compensationValue
+              }
+            }
+          } else {
+            if (itemSummary) {
+              let description
+              try {
+                description = JSON.parse(itemRefund.description)
+              } catch (error) {}
+              itemSummary.amountAvailablePerItem.quantity -= itemRefund.quantity
+              itemSummary.amountAvailablePerItem.amount -=
+                itemRefund.price === 0
+                  ? description?.amount
+                  : itemRefund.quantity * itemRefund.price
+              lessAmountAvailable +=
+                itemRefund.price === 0
+                  ? description?.amount
+                  : itemRefund.quantity * itemRefund.price
+            }
+          }
+        })
+      )
+      shippingGoodwill += lessAmountAvailable
+      if (packages.invoiceValue > shippingGoodwill) {
+        const shipping = packages.invoiceValue - lessAmountAvailable
+        refundSummaryData.amountsAvailable.shipping -= shipping
+        if (refundSummaryData.amountsAvailable.shipping < 0) {
+          refundSummaryData.amountsAvailable.shipping = 0
+        }
+      }
+      refundSummaryData.amountsAvailable.order -= lessAmountAvailable
+
+      transactions.push({
+        id: packages.invoiceNumber,
+        amount: packages.invoiceValue,
+        status: 'accepted',
+      })
+    })
+  )
 }

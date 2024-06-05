@@ -5,5 +5,4 @@ export async function getOrdersList(ctx: Context) {
 
   ctx.set('Cache-Control', 'no-cache')
   ctx.body = await returnOrdersListService(ctx, body)
-  return
 }

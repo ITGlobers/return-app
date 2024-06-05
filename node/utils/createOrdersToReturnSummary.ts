@@ -41,8 +41,7 @@ export const createOrdersToReturnSummary = async (
   )
 
   const invoicesCreatedByReturnApp: string[] = []
-  const committedItemsToReturn: Array<{ itemIndex: number; quantity: number }> =
-    []
+  const committedItemsToReturn = []
 
   for (const returnRequest of returnRequestSameOrder) {
     const { refundData, items: rmaItems } =
