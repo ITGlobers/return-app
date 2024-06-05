@@ -74,6 +74,7 @@ export async function getOrderRefundsSummary(ctx: Context) {
   } = ctx
 
   const orderId = params.orderId as string
+  console.log(orderId)
 
   const response = await mapToOrderSummary(ctx, orderId)
 

@@ -10,9 +10,7 @@ type ReturnRequestStatusUpdate = ReturnRequestInput & {
 
 const returnOrderRefundsSummaryService = async (
   ctx: Context,
-  transactionData: any & {
-    type: 'GOODWILL' | 'RETURN_REQUEST' | 'INVOICE'
-  },
+  transactionData: any,
   action: 'info' | 'denied' | 'get' | 'update' = 'get'
 ): Promise<OrderRefundsSummary> => {
   const {

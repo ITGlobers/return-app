@@ -84,9 +84,6 @@ export const calculateOutputs = async (
       packages.items.map((itemInvoices: any) => {
         const posicion = itemInvoices.itemIndex
         let value = itemInvoices.price * itemInvoices.quantity
-        //if(items[posicion].quantity === itemInvoices.quantity && value !== items[posicion].amount){
-        //  value = items[posicion].amount
-        //}
         items[posicion].amountAvailablePerItem.quantity += itemInvoices.quantity
         items[posicion].amountAvailablePerItem.amount += value
         sumAmountAvailable += value
@@ -95,9 +92,6 @@ export const calculateOutputs = async (
       if (packages.invoiceValue > sumAmountAvailable) {
         const shipping = packages.invoiceValue - sumAmountAvailable
         refundSummaryData.amountsAvailable.shipping += shipping
-        //if(refundSummaryData.amountsAvailable.shipping > shippingValue){
-        //   refundSummaryData.amountsAvailable.shipping = shippingValue
-        //}
       }
       refundSummaryData.amountsAvailable.order += sumAmountAvailable
     })
@@ -126,14 +120,11 @@ export const calculateInputs = async (
               shippingGoodwill += itemRefund.compensationValue
               refundSummaryData.amountsAvailable.shipping -=
                 itemRefund.compensationValue
-            } else {
-              if (itemSummary) {
-                itemSummary.amountAvailablePerItem.quantity -=
-                  itemRefund.quantity
-                itemSummary.amountAvailablePerItem.amount -=
-                  itemRefund.compensationValue
-                lessAmountAvailable += itemRefund.compensationValue
-              }
+            } else if (itemSummary) {
+              itemSummary.amountAvailablePerItem.quantity -= itemRefund.quantity
+              itemSummary.amountAvailablePerItem.amount -=
+                itemRefund.compensationValue
+              lessAmountAvailable += itemRefund.compensationValue
             }
           } else {
             if (itemSummary) {
@@ -141,15 +132,13 @@ export const calculateInputs = async (
               try {
                 description = JSON.parse(itemRefund.description)
               } catch (error) {}
+              const itemRefundPrice = itemRefund.price === 0
+              const value = itemRefundPrice
+                ? description?.amount
+                : itemRefund.quantity * itemRefund.price
               itemSummary.amountAvailablePerItem.quantity -= itemRefund.quantity
-              itemSummary.amountAvailablePerItem.amount -=
-                itemRefund.price === 0
-                  ? description?.amount
-                  : itemRefund.quantity * itemRefund.price
-              lessAmountAvailable +=
-                itemRefund.price === 0
-                  ? description?.amount
-                  : itemRefund.quantity * itemRefund.price
+              itemSummary.amountAvailablePerItem.amount -= value
+              lessAmountAvailable += value
             }
           }
         })
