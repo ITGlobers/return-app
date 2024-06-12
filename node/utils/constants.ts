@@ -35,5 +35,5 @@ export const SCHEMAS = {
   GOODWILL: '3.16.1-hkignore',
   ORDER_REFUND_DETAILS: '3.16.1-hkignore',
   RETURN_REQUEST: '3.16.1-hkignore',
-  SELLER_SETTING: '3.16.1-hkignore'
+  SELLER_SETTING: '3.16.1-hkignore',
 }

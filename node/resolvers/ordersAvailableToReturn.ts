@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 import { ResolverError } from '@vtex/api'
 
 import type {
@@ -95,12 +96,7 @@ export const ordersAvailableToReturn = async (
 ): Promise<OrdersToReturnList> => {
   const {
     state: { userProfile },
-    clients: {
-      appSettings,
-      oms,
-      returnRequest: returnRequestClient,
-      catalogGQL,
-    },
+    clients: { appSettings, oms, returnRequestClient, catalogGQL },
   } = ctx
 
   const { page, storeUserEmail, isAdmin, filter } = args

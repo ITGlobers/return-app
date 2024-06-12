@@ -1,5 +1,4 @@
-import { SCHEMAS } from "./constants"
-
+import { SCHEMAS } from './constants'
 
 interface ContextFunction<T> {
   (_: any, params: any, ctx: Context): Promise<T>
@@ -7,7 +6,7 @@ interface ContextFunction<T> {
 
 export const wrapperFunction = <T>(originalFunction: ContextFunction<T>) => {
   return async (_: any, params: any, ctx: Context): Promise<T> => {
-    ctx.clients.returnRequest.schema = SCHEMAS.DEFAULT
+    ctx.clients.returnRequestClient.schema = SCHEMAS.DEFAULT
     ctx.clients.goodwill.schema = SCHEMAS.DEFAULT
     ctx.clients.sellerSetting.schema = SCHEMAS.DEFAULT
     ctx.clients.orderRefundDetails.schema = SCHEMAS.DEFAULT

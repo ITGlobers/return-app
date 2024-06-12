@@ -1,0 +1,47 @@
+{
+  "properties": {
+    "orderValue": {
+      "type": "integer"
+    },
+    "refundable": {
+      "type": "object",
+      "properties": {
+        "items": {
+          "type": "integer"
+        },
+        "shipping": {
+          "type": "integer"
+        }
+      },
+      "required": ["items", "shipping"]
+    },
+    "refunds": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["goodwill", "prerefund", "refund", "invoice"]
+          },
+          "status": {
+            "type": "string",
+            "enum": ["pending", "accepted", "denied"]
+          },
+          "value": {
+            "type": "integer"
+          }
+        },
+        "required": ["id", "type", "status", "value"]
+      }
+    }
+  },
+  "required": ["orderValue", "refundable", "refunds"],
+  "v-cache": false,
+  "v-default-fields": ["id", "createdIn"],
+  "v-indexed": ["id"],
+  "v-immediate-indexing": true
+}

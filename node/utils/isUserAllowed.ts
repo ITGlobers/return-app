@@ -5,7 +5,7 @@ export const isUserAllowed = ({
   requesterUser,
   clientProfile,
   appkey,
-  sellerId
+  sellerId,
 }: {
   requesterUser?: UserProfile
   clientProfile: ClientProfileDetail

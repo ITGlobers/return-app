@@ -2,8 +2,7 @@ import { IOClients, Sphinx } from '@vtex/api'
 import { vbaseFor, masterDataFor } from '@vtex/clients'
 
 import type { ReturnAppSettings } from '../../typings/ReturnAppSettings'
-import type { ReturnRequest } from '../../typings/ReturnRequest'
-import type { SellerSetting } from '../../typings/SellerSetting'
+import { SellerSetting } from '../../typings/SellerSetting'
 import { Catalog } from './catalog'
 import { OMSCustom as OMS } from './oms'
 import { GiftCard } from './giftCard'
@@ -11,15 +10,19 @@ import { MailClient } from './mail'
 import Checkout from './checkout'
 import { VtexId } from './vtexId'
 import { CatalogGQL } from './catalogGQL'
+import ReturnRequestClient from './returnRequest'
+import OrderRefundsSummaryClient from './orderRefundsSummary'
 import { ProfileClient } from './profile'
 import { Marketplace } from './marketplace'
 import Scheduler from './scheduler'
+
+const SellerSetting = masterDataFor<SellerSetting>('sellerSetting')
 
 const ReturnAppSettingsClient = vbaseFor<string, ReturnAppSettings>(
   'appSettings'
 )
 
-const ReturnRequestClient = masterDataFor<ReturnRequest | any>('returnRequest')
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const GoodwillClient = masterDataFor<Goodwill | any>('goodwill')
 const SellerSettingClient = masterDataFor<SellerSetting>('sellerSetting')
 const OrderRefundDetails =
@@ -42,8 +45,12 @@ export class Clients extends IOClients {
     return this.getOrSet('catalogGQL', CatalogGQL)
   }
 
-  public get returnRequest() {
-    return this.getOrSet('returnRequest', ReturnRequestClient)
+  public get returnRequestClient() {
+    return this.getOrSet('ReturnRequestClient', ReturnRequestClient)
+  }
+
+  public get orderRefundsSummaryClient() {
+    return this.getOrSet('OrderRefundsSummaryClient', OrderRefundsSummaryClient)
   }
 
   public get goodwill() {

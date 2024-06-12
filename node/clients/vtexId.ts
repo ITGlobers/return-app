@@ -59,7 +59,7 @@ export class VtexId extends JanusClient {
       const response = await this.http.get(`/api/vlm/account?an=${account}`, {
         metric: 'vtexid-get-account',
         headers: {
-          VtexIdClientAutCookie: token || '',
+          VtexIdClientAutCookie: token ?? '',
         },
       })
 

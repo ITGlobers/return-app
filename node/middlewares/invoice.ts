@@ -1,5 +1,6 @@
-import { json } from "co-body"
-import { createInvoice } from "../services/createInvoice"
+import { json } from 'co-body'
+
+import { createInvoice } from '../services/createInvoice'
 
 export async function invoice(ctx: Context): Promise<any> {
   const {
@@ -10,8 +11,8 @@ export async function invoice(ctx: Context): Promise<any> {
       },
     },
   } = ctx
+
   const body = await json(req)
 
   ctx.body = await createInvoice(ctx, orderId, body)
-
 }

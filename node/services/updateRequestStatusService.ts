@@ -1,8 +1,4 @@
-import {
-  ResolverError,
-  NotFoundError,
-  UserInputError,
-} from '@vtex/api'
+import { ResolverError, NotFoundError, UserInputError } from '@vtex/api'
 
 import type {
   MutationUpdateReturnRequestStatusArgs,
@@ -93,14 +89,10 @@ export const updateRequestStatusService = async (
   const {
     header,
     state: { userProfile, appkey },
-    clients: {
-      returnRequest: returnRequestClient,
-      oms,
-      giftCard: giftCardClient,
-      mail,
-    },
+    clients: { returnRequestClient, oms, giftCard: giftCardClient, mail },
     vtex: { logger },
   } = ctx
+
   let { sellerId } = ctx.state
   const { status, comment, refundData, requestId, sellerName } = args
 
@@ -108,9 +100,9 @@ export const updateRequestStatusService = async (
 
   const requestDate = new Date().toISOString()
   const submittedByNameOrEmail =
-  firstName || lastName ? `${firstName} ${lastName}` : email
+    firstName ?? lastName ? `${firstName} ${lastName}` : email
 
-  sellerId = sellerId ?? header['x-vtex-caller'] as string | undefined
+  sellerId = sellerId ?? (header['x-vtex-caller'] as string | undefined)
   const submittedBy = appkey ?? submittedByNameOrEmail ?? sellerId
 
   if (!submittedBy) {
@@ -177,6 +169,7 @@ export const updateRequestStatusService = async (
 
   let availableAmountsToRefund
   let updatedRequest
+
   try {
     const refundReturn = await handleRefund({
       currentStatus: requestStatus,
@@ -219,7 +212,7 @@ export const updateRequestStatusService = async (
         )
       : error.message
 
-    throw new ResolverError(errorMessageString, error.response?.status || 500)
+    throw new ResolverError(errorMessageString, error.response?.status ?? 500)
   }
 
   try {
@@ -257,7 +250,8 @@ export const updateRequestStatusService = async (
     throw new Error("Can't calculate available amounts to refund")
   }
 
-  console.log("availableAmountsToRefund",availableAmountsToRefund)
+  // eslint-disable-next-line no-console
+  console.log('availableAmountsToRefund', availableAmountsToRefund)
   const { cultureInfoData } = updatedRequest
 
   // We add a try/catch here so we avoid sending an error to the browser only if the email fails.

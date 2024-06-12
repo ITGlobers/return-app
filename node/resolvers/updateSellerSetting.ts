@@ -14,7 +14,7 @@ export const updateSellerSetting = async (
     clients: { sellerSetting },
   } = ctx
 
-  const { id, settings } = args || {}
+  const { id, settings } = args ?? {}
 
   // validate if all custom reasons have max days smaller than the general max days
   validateMaxDaysCustomReasons(settings.maxDays, settings.customReturnReasons)

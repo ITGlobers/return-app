@@ -17,7 +17,7 @@ export const createReturnRequestSellerService = async (
 ): Promise<ReturnRequestCreated> => {
   const {
     header,
-    clients: { oms, returnRequest: returnRequestClient, appSettings, mail },
+    clients: { oms, returnRequestClient, appSettings, mail },
     state: { userProfile, appkey },
     vtex: { logger },
   } = ctx
@@ -46,11 +46,11 @@ export const createReturnRequestSellerService = async (
   const { firstName, lastName, email } = userProfile ?? {}
 
   const submittedByNameOrEmail =
-    firstName || lastName ? `${firstName} ${lastName}` : email
+    firstName ?? lastName ? `${firstName} ${lastName}` : email
 
   // If request was validated using appkey and apptoken, we assign the appkey as a sender
   // Otherwise, we try to use requester name. Email is the last resort.
-  sellerId = sellerId ?? header['x-vtex-caller'] as string | undefined
+  sellerId = sellerId ?? (header['x-vtex-caller'] as string | undefined)
   const submittedBy = appkey ?? submittedByNameOrEmail ?? sellerId
 
   if (!submittedBy) {
@@ -61,7 +61,7 @@ export const createReturnRequestSellerService = async (
 
   // Check items since a request via endpoint might not have it.
   // Graphql validation doesn't prevent user to send empty items
-  if (!items || items.length === 0) {
+  if (!items ?? items.length === 0) {
     throw new UserInputError('There are no items in the request')
   }
 
@@ -108,13 +108,13 @@ export const createReturnRequestSellerService = async (
   } = searchRMA
 
   isUserAllowed({
-    requesterUser: userProfile ,
+    requesterUser: userProfile,
     clientProfile: clientProfileData,
     appkey,
-    sellerId
+    sellerId,
   })
 
-  const currentSequenceNumber = `${sequence}-${total + 1}`
+  const currentSequenceNumber = `${sequence}-${Number(total) + 1}`
 
   // customerProfileData can be undefined when coming from a endpoint request
   const { email: inputEmail } = customerProfileData ?? {}
@@ -125,7 +125,7 @@ export const createReturnRequestSellerService = async (
       userProfile,
       appkey,
       inputEmail,
-      sellerId
+      sellerId,
     },
     {
       logger,
@@ -172,7 +172,7 @@ export const createReturnRequestSellerService = async (
         )
       : error.message
 
-    throw new ResolverError(errorMessageString, error.response?.status || 500)
+    throw new ResolverError(errorMessageString, error.response?.status ?? 500)
   }
 
   // We add a try/catch here so we avoid sending an error to the browser only if the email fails.

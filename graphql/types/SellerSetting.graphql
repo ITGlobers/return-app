@@ -15,7 +15,7 @@ type SellerSettingResponseList {
   sellers: [SellerSetting]
 }
 
-input SellerSettingInput  {
+input SellerSettingInput {
   id: String
   sellerId: String!
   parentAccount: String

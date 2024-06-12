@@ -1,24 +1,20 @@
 import { UserInputError, ResolverError } from '@vtex/api'
 
-import {
-  SETTINGS_PATH
-} from '../utils/constants'
+import { SETTINGS_PATH } from '../utils/constants'
 import { isUserAllowed } from '../utils/isUserAllowed'
-import { InvoiceRequest } from '../typings/InvoiceRequest'
+import type { InvoiceRequest } from '../typings/InvoiceRequest'
 import { calculateAvailableAmountsService } from './calculateAvailableAmountsService'
 
 export const createInvoice = async (
   ctx: Context,
-  id: string | string[] ,
+  id: string | string[],
   args: InvoiceRequest
 ) => {
   const {
-    clients: {
-      oms,
-      appSettings,
-    },
+    clients: { oms, appSettings },
     state: { userProfile, appkey },
   } = ctx
+
   const orderId = String(id)
   const {
     type,
@@ -59,22 +55,18 @@ export const createInvoice = async (
     throw new UserInputError('Order ID is missing')
   }
 
-    // For requests where type is not correct
-    if (type !== 'Input' && type !== 'Output'  ) {
-      throw new UserInputError('Required type Input or Output')
-    }
+  // For requests where type is not correct
+  if (type !== 'Input' && type !== 'Output') {
+    throw new UserInputError('Required type Input or Output')
+  }
 
   const orderPromise = oms.order(orderId, 'AUTH_TOKEN')
-
 
   const settingsPromise = appSettings.get(SETTINGS_PATH, true)
 
   // If order doesn't exist, it throws an error and stop the process.
   // If there is no request created for that order, request searchRMA will be an empty array.
-  const [order, settings] = await Promise.all([
-    orderPromise,
-    settingsPromise,
-  ])
+  const [order, settings] = await Promise.all([orderPromise, settingsPromise])
 
   if (!settings) {
     throw new ResolverError('Return App settings is not configured', 500)
@@ -91,8 +83,8 @@ export const createInvoice = async (
     clientProfile: clientProfileData,
     appkey,
   })
-  //Validate type
-  //GET availableAmount
+  // Validate type
+  // GET availableAmount
   let availableAmount = await calculateAvailableAmountsService(
     ctx,
     {
@@ -101,14 +93,20 @@ export const createInvoice = async (
     'GET'
   )
 
-  if(type === 'Input'){
-    //If is INPUT validate valueAvailabeToReturn
-    let available = availableAmount.remainingRefundableAmount - availableAmount.amountToBeRefundedInProcess
-    if(invoiceValue > available){
-      throw new ResolverError('Return App already have a amountToBeRefundedInProcess that is greater than the invoiceValue', 500)
-    }
+  if (type === 'Input') {
+    // If is INPUT validate valueAvailabeToReturn
+    const available =
+      availableAmount.remainingRefundableAmount -
+      availableAmount.amountToBeRefundedInProcess
 
+    if (invoiceValue > available) {
+      throw new ResolverError(
+        'Return App already have a amountToBeRefundedInProcess that is greater than the invoiceValue',
+        500
+      )
+    }
   }
+
   try {
     const response = await oms.createInvoice(orderId, {
       type,
@@ -118,17 +116,18 @@ export const createInvoice = async (
       dispatchDate,
       items,
     })
-    if(type === 'Input'){
-      if(availableAmount.initialInvoicedAmount){
+
+    if (type === 'Input') {
+      if (availableAmount.initialInvoicedAmount) {
         calculateAvailableAmountsService(
           ctx,
           {
-            order: { orderId: orderId},
+            order: { orderId },
             amountRefunded: invoiceValue,
           },
           'UPDATE'
         )
-      }else{
+      } else {
         calculateAvailableAmountsService(
           ctx,
           {
@@ -139,6 +138,7 @@ export const createInvoice = async (
         )
       }
     }
+
     availableAmount = await calculateAvailableAmountsService(
       ctx,
       {
@@ -146,11 +146,9 @@ export const createInvoice = async (
       },
       'GET'
     )
-    return { response , availableAmount}
 
+    return { response, availableAmount }
   } catch (error) {
-    throw new ResolverError(`Return App invoice error ${error.message}`, 500 )
-
+    throw new ResolverError(`Return App invoice error ${error.message}`, 500)
   }
-
 }

@@ -33,11 +33,13 @@ const {
   sellerValidation,
   getOrdersList,
   createGiftcard,
+  getOrderRefundsSummary,
   createPrerefund,
   invoice,
 } = middlewares
 
 const TIMEOUT_MS = 5000
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const catalogMemoryCache = new LRUCache<string, any>({ max: 5000 })
 
 const clients: ClientsConfig<Clients> = {
@@ -208,7 +210,10 @@ export default new Service<Clients, State, ParamsContext>({
       POST: [ping],
     }),
     invoice: method({
-      POST: [auth, invoice],
+      POST: [invoice],
+    }),
+    orderSummary: method({
+      POST: [getOrderRefundsSummary],
     }),
   },
   graphql: {

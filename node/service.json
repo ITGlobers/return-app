@@ -175,6 +175,10 @@
       "path": "/_v/return-app/ping",
       "public": true
     },
+    "orderSummary": {
+      "path": "/_v/return-request/orders/:orderId/summary",
+      "public": true
+    },
     "invoice": {
       "path": "/_v/return-app/invoice/:orderId",
       "public": true

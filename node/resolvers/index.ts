@@ -16,7 +16,7 @@ import { returnSellerSettings } from './returnSellerSettings'
 import { updateSellerSetting } from './updateSellerSetting'
 import { resolversWrapper } from '../utils/resolversWrapper'
 
-export const mutations = resolversWrapper( {
+export const mutations = resolversWrapper({
   createReturnRequest,
   updateReturnRequestStatus,
   updateSellerSetting,

@@ -1,3 +1,4 @@
+/* eslint-disable no-empty */
 import { ResolverError, UserInputError } from '@vtex/api'
 
 import type { OrderToReturnSummary } from '../../typings/OrderToReturn'
@@ -16,14 +17,8 @@ export const orderToReturnSummary = async (
   const { orderId, storeUserEmail } = args
 
   const {
-    state: { userProfile, appkey , sellerId },
-    clients: {
-      appSettings,
-      oms,
-      returnRequest: returnRequestClient,
-      catalogGQL,
-      profile,
-    },
+    state: { userProfile, appkey, sellerId },
+    clients: { appSettings, oms, returnRequestClient, catalogGQL, profile },
     vtex: { logger, adminUserAuthToken },
   } = ctx
 
@@ -45,12 +40,13 @@ export const orderToReturnSummary = async (
   const { creationDate, clientProfileData, status } = order
 
   let userEmail = ''
+
   sellerId
   isUserAllowed({
     requesterUser: userProfile,
     clientProfile: clientProfileData,
     appkey,
-    sellerId
+    sellerId,
   })
 
   canOrderBeReturned({
@@ -127,8 +123,8 @@ export const orderToReturnSummary = async (
     {
       userProfile,
       appkey,
-      inputEmail: storeUserEmail || userEmail || clientProfileData?.email,
-      sellerId
+      inputEmail: storeUserEmail ?? userEmail ?? clientProfileData?.email,
+      sellerId,
     },
     {
       logger,

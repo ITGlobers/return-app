@@ -7,7 +7,7 @@ import {
 import { SETTINGS_PATH } from '../utils/constants'
 
 export async function saveSellerSetting(ctx: Context) {
-  const { body }: any = ctx || {}
+  const { body }: any = ctx ?? {}
 
   ctx.set('Cache-Control', 'no-cache')
 
@@ -25,8 +25,8 @@ export async function saveSellerSetting(ctx: Context) {
 
     ctx.status = 200
   } catch (error) {
-    ctx.body = error?.response?.data || error.response?.statusText || error
-    ctx.status = error.response?.status || 400
+    ctx.body = error?.response?.data ?? error.response?.statusText ?? error
+    ctx.status = error.response?.status ?? 400
   }
 }
 
@@ -73,7 +73,7 @@ export async function returnSellerSetting(ctx: Context) {
       throw new UserInputError('sellerId is required')
     }
   } catch (error) {
-    ctx.body = error?.response?.data || error.response?.statusText || error
-    ctx.status = error.response?.status || 400
+    ctx.body = error?.response?.data ?? error.response?.statusText ?? error
+    ctx.status = error.response?.status ?? 400
   }
 }
